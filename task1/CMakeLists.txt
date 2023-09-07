@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.14)
 set(CMAKE_CXX_STANDARD 17)
 project(begin)
 set(exe_name ${PROJECT_NAME})
-#add_executable(${exe_name} src/main.cpp)
-add_executable(${exe_name} begin/main.cpp begin/m1.cpp begin/m2.cpp)
+add_executable(${exe_name} src/main.cpp)
+#add_executable(${exe_name} begin/main.cpp begin/m1.cpp begin/m2.cpp)
 
 # Включаем отслеживание всех предупреждений (warnings) и запрещаем компиляцию при наличии предупреждений.
 # Считается хорошим тоном, когда программа собирается без предупрреждений.

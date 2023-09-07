@@ -1,11 +1,14 @@
 #include <iostream>
 #include <fstream>
-//int argc, char **argv
 using namespace std;
 
-int main(void) {
-    ofstream in;
-    in.open("in.txt");
+int main(int argc, char* argv[]) {
+//    ifstream fileIn(argv[1]);
+    ifstream fileIn("in.txt");
+    if (!fileIn) return -1;
 
 
+
+    fileIn.close();
+    return 0;
 }
