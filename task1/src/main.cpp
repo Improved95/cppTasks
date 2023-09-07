@@ -1,6 +1,11 @@
 #include <iostream>
-
+#include <fstream>
+//int argc, char **argv
 using namespace std;
+
 int main(void) {
-    cout << "hello world!";
+    ofstream in;
+    in.open("in.txt");
+
+
 }
