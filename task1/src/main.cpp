@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <map>
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -8,8 +9,16 @@ int main(int argc, char* argv[]) {
 //    if (argc < 2) return -1;
     ifstream fileIn("in.txt");
     if (!fileIn) return -1;
+
     string word;
-    fileIn.getLine(word, 1500, ' ');
+    map<string, int> table;
+    while (getline(fileIn, word, ' ')) {
+        if () {
+
+        } else {
+
+        }
+    }
 
     fileIn.close();
     return 0;
