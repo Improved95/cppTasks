@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cctype>
-#include <fstream>
 #include <string>
 #include <map>
 #include <vector>
@@ -36,28 +35,6 @@ bool isAlphaNumeric(char c) {
 }
 
 map<string, int> readFile(ifstream& fileIn) {
-//    while (getline(fileIn, word, ' ')) {
-//        if (table.find(word) == table.end()) {
-//            table[word] = 1;
-//        } else {
-//            table[word] += 1;
-//        }
-//    }
-
-//    char character;
-//    while(fileIn.get(character)) {
-//        if (('A' <= character and character <= 'Z') or ('a' <= character and character <= 'z') or ('0' <= character and character <= '9')) {
-//            word += character;
-//        } else {
-//            if (table.find(word) == table.end()) {
-//                table[word] = 1;
-//            } else {
-//                table[word] += 1;
-//            }
-//            word = "";
-//        }
-//    }
-
     string word;
     char character;
     map<string, int> table;
