@@ -63,17 +63,21 @@ map<string, int> readFile(ifstream& fileIn) {
     return table;
 }
 
-int main(int argc, char* argv[]) {
-//    ifstream fileIn(argv[1]);
-//    if (argc < 2) return -1;
-    ifstream fileIn("in.txt");
-    ofstream fileOut("out.csv");
+int main(int argc, char **argv) {
+    if (argc < 3) {
+//        cout << argc << endl;
+//        cout << "b1" << endl;
+        return -1;
+    }
+    ifstream fileIn(argv[1]);
+    ofstream fileOut(argv[2]);
     if ((!fileIn) or (!fileOut)) return -1;
 
     map<string, int> table = readFile(fileIn);
     vector<pair<string, int>> mapVector = mapSort(table);
     createOutput(mapVector, fileOut);
 
+    cout << "b4";
     fileIn.close();
     return 0;
 }

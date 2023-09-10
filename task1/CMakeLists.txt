@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 set(CMAKE_CXX_STANDARD 17)
-project(begin)
+project(task1)
 set(exe_name ${PROJECT_NAME})
 set(CMAKE_CXX_FLAGS "-O0")
 add_executable(${exe_name} src/main.cpp)
