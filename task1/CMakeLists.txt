@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 set(CMAKE_CXX_STANDARD 17)
 project(begin)
 set(exe_name ${PROJECT_NAME})
+set(CMAKE_CXX_FLAGS "-O0")
 add_executable(${exe_name} src/main.cpp)
 #add_executable(${exe_name} begin/main.cpp begin/m1.cpp begin/m2.cpp)
 
