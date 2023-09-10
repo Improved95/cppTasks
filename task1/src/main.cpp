@@ -21,10 +21,7 @@ vector<pair<string, int>> mapSort(map<string, int> map) {
     return mapVector;
 }
 
-int createOutput(vector<pair<string, int>> mapVector) {
-    ofstream fileOut("out.csv");
-    if (!fileOut) return -1;
-
+void createOutput(vector<pair<string, int>> mapVector, ofstream& fileOut) {
     size_t wordsQuantity = 0;
     for(auto& it: mapVector) {
         wordsQuantity += it.second;
@@ -32,19 +29,13 @@ int createOutput(vector<pair<string, int>> mapVector) {
     for(auto& it: mapVector) {
         fileOut << it.first << ";" << it.second << ";" << (it.second * 100) / wordsQuantity << endl;
     }
-
-    return 0;
 }
 
-int main(int argc, char* argv[]) {
-//    ifstream fileIn(argv[1]);
-//    if (argc < 2) return -1;
-    ifstream fileIn;
-    fileIn.open("in.txt");
-    if (!fileIn) return -1;
+bool isAlphaNumeric(char c) {
+    return isalnum(static_cast<unsigned char>(c)) != 0;
+}
 
-    string word;
-    map<string, int> table;
+map<string, int> readFile(ifstream& fileIn) {
 //    while (getline(fileIn, word, ' ')) {
 //        if (table.find(word) == table.end()) {
 //            table[word] = 1;
@@ -67,10 +58,44 @@ int main(int argc, char* argv[]) {
 //        }
 //    }
 
+    string word;
+    char character;
+    map<string, int> table;
+    while(fileIn.get(character)) {
+        if (isAlphaNumeric(character)) {
+            word += character;
+        } else if (!word.empty()) {
+            if (table.find(word) == table.end()) {
+                table[word] = 1;
+            } else {
+                table[word] += 1;
+            }
+            word.clear();
+        }
+    }
 
+    if (!word.empty()) {
+        if (table.find(word) == table.end()) {
+            table[word] = 1;
+        } else {
+            table[word] += 1;
+        }
+        word.clear();
+    }
 
+    return table;
+}
+
+int main(int argc, char* argv[]) {
+//    ifstream fileIn(argv[1]);
+//    if (argc < 2) return -1;
+    ifstream fileIn("in.txt");
+    ofstream fileOut("out.csv");
+    if ((!fileIn) or (!fileOut)) return -1;
+
+    map<string, int> table = readFile(fileIn);
     vector<pair<string, int>> mapVector = mapSort(table);
-    if (createOutput(mapVector) == -1) return -1;
+    createOutput(mapVector, fileOut);
 
     fileIn.close();
     return 0;
