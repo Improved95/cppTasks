@@ -1,1 +1,0 @@
-CMakeLists.txt not found in C:\improved\cpp\gitHub\cppTasks\task1 Select CMakeLists.txt
