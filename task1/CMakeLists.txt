@@ -6,9 +6,6 @@ set(CMAKE_CXX_FLAGS "-O0")
 add_executable(${exe_name} src/main.cpp)
 #add_executable(${exe_name} begin/main.cpp begin/m1.cpp begin/m2.cpp)
 
-# Включаем отслеживание всех предупреждений (warnings) и запрещаем компиляцию при наличии предупреждений.
-# Считается хорошим тоном, когда программа собирается без предупрреждений.
-# Но вы можете убрать /WX и -Werror (разрешив компиляцию с предупреждениями), если сможете разумно объяснить своё решение.
 if (MSVC)
     # warning level 4 and all warnings as errors
     add_compile_options(/W4 /WX)

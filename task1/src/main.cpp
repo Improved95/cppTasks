@@ -1,9 +1,8 @@
 #include <iostream>
+#include <fstream>
 #include <cctype>
-#include <string>
 #include <map>
 #include <vector>
-#include <bits/stdc++.h>
 using namespace std;
 
 bool cmp(pair<string, int> a, pair<string, int> b) {
@@ -64,11 +63,7 @@ map<string, int> readFile(ifstream& fileIn) {
 }
 
 int main(int argc, char **argv) {
-    if (argc < 3) {
-//        cout << argc << endl;
-//        cout << "b1" << endl;
-        return -1;
-    }
+    if (argc < 3) return -1;
     ifstream fileIn(argv[1]);
     ofstream fileOut(argv[2]);
     if ((!fileIn) or (!fileOut)) return -1;
@@ -77,7 +72,7 @@ int main(int argc, char **argv) {
     vector<pair<string, int>> mapVector = mapSort(table);
     createOutput(mapVector, fileOut);
 
-    cout << "b4";
     fileIn.close();
+    fileOut.close();
     return 0;
 }
