@@ -26,7 +26,7 @@ void createOutput(vector<pair<string, int>> mapVector, ofstream& fileOut) {
         wordsQuantity += it.second;
     }
     for(auto& it: mapVector) {
-        fileOut << it.first << ";" << it.second << ";" << (it.second * 100) / wordsQuantity << endl;
+        fileOut << it.first << ";" << it.second << ";" << (it.second * 100.00) / wordsQuantity << endl;
     }
 }
 
