@@ -3,6 +3,7 @@
 #include <cctype>
 #include <map>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 bool cmp(pair<string, int> a, pair<string, int> b) {
@@ -66,7 +67,7 @@ int main(int argc, char **argv) {
     if (argc < 3) return -1;
     ifstream fileIn(argv[1]);
     ofstream fileOut(argv[2]);
-    if ((!fileIn) or (!fileOut)) return -1;
+    if ((!fileIn) || (!fileOut)) return -1;
 
     map<string, int> table = readFile(fileIn);
     vector<pair<string, int>> mapVector = mapSort(table);
