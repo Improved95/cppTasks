@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cctype>
 #include <fstream>
 #include <string>
 #include <map>
@@ -44,13 +45,29 @@ int main(int argc, char* argv[]) {
 
     string word;
     map<string, int> table;
-    while (getline(fileIn, word, ' ')) {
-        if (table.find(word) == table.end()) {
-            table[word] = 1;
-        } else {
-            table[word] += 1;
-        }
-    }
+//    while (getline(fileIn, word, ' ')) {
+//        if (table.find(word) == table.end()) {
+//            table[word] = 1;
+//        } else {
+//            table[word] += 1;
+//        }
+//    }
+
+//    char character;
+//    while(fileIn.get(character)) {
+//        if (('A' <= character and character <= 'Z') or ('a' <= character and character <= 'z') or ('0' <= character and character <= '9')) {
+//            word += character;
+//        } else {
+//            if (table.find(word) == table.end()) {
+//                table[word] = 1;
+//            } else {
+//                table[word] += 1;
+//            }
+//            word = "";
+//        }
+//    }
+
+
 
     vector<pair<string, int>> mapVector = mapSort(table);
     if (createOutput(mapVector) == -1) return -1;
