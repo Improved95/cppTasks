@@ -1,15 +1,18 @@
-#include <iostream>
-#include <cctype>
-#include <map>
-#include <vector>
-#include <algorithm>
+#include "../headers/head.h"
+#include "../headers/countWordsClass.h"
 using namespace std;
+
+countWordsClass::countWordsClass() {}
 
 bool cmp(pair<string, int>& a, pair<string, int>& b) {
     return a.second > b.second;
 }
 
-vector<pair<string, int>> mapSort(map<string, int>& map) {
+bool isAlphaNumeric(char c) {
+    return isalnum(static_cast<unsigned char>(c)) != 0;
+}
+
+vector<pair<string, int>> countWordsClass::mapSort(map<string, int>& map) {
     vector<pair<string, int> > mapVector;
     for (auto& it : map) {
         mapVector.push_back(it);
@@ -19,21 +22,17 @@ vector<pair<string, int>> mapSort(map<string, int>& map) {
     return mapVector;
 }
 
-void createOutput(vector<pair<string, int>>& mapVector, ofstream& fileOut) {
+void countWordsClass::createOutput(vector<pair<string, int>>& mapVector, fstream& fileOut) {
     size_t wordsQuantity = 0;
-    for(auto& it: mapVector) {
+    for (auto& it : mapVector) {
         wordsQuantity += it.second;
     }
-    for(auto& it: mapVector) {
-        fileOut << it.first << ";" << it.second << ";" << (it.second * 100.00) / wordsQuantity << endl;
+    for (auto& it : mapVector) {
+        fileOut << it.first << ";" << it.second << ";" << (it.second * 100.00) / wordsQuantity << "\n";
     }
 }
 
-bool isAlphaNumeric(char c) {
-    return isalnum(static_cast<unsigned char>(c)) != 0;
-}
-
-map<string, int> readFile(ifstream& fileIn) {
+map<string, int> countWordsClass::readFile(fstream& fileIn) {
     string word;
     char character;
     map<string, int> table;

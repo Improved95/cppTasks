@@ -39,3 +39,5 @@ CMakeSettings.json
 **idea
 **cmake-build-debug
 **out
+**.gitignore
+**.md
