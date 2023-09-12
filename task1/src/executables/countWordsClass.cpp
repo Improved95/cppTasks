@@ -2,9 +2,7 @@
 #include "../headers/countWordsClass.h"
 using namespace std;
 
-countWordsClass::countWordsClass() {
-
-}
+countWordsClass::countWordsClass() {}
 
 bool cmp(pair<string, int>& a, pair<string, int>& b) {
     return a.second > b.second;
