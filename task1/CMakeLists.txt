@@ -14,3 +14,21 @@ endif()
 add_library(corelib OBJECT src/executables/countWordsClass.cpp)
 add_executable(${exe_name} src/executables/main.cpp)
 target_link_libraries(${exe_name} corelib)
+
+# скачиваем библиотеку GoogleTest
+#include(FetchContent)
+#FetchContent_Declare(
+#        googletest
+#        # Specify the commit you depend on and update it regularly.
+#        URL https://github.com/google/googletest/archive/58d77fa8070e8cec2dc1ed015d66b454c8d78850.zip
+#)
+## For Windows: Prevent overriding the parent project's compiler/linker settings
+#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+#FetchContent_MakeAvailable(googletest)
+
+# описываем исполняемый файл программы для запуска тестов: это cpp-файлы тестов + основная библиотека + библиотека gtest_main
+# наш собственный main.cpp здесь не нужен, т.к. функция main реализована в gtest_main
+#set(test_name testT1)
+#add_executable(${test_name} src/test/task1Test.cpp)
+#target_link_libraries(${test_name} gtest_main)
+#target_link_libraries(${test_name} corelib)
