@@ -15,11 +15,7 @@ private:
 
 public:
     countWordsClass();
-    void callMainFunctions(fstream& fileIn, fstream& fileOut) {
-        table = readFile(fileIn);
-        mapVector = mapSort();
-        createOutput(fileOut);
-    };
+    void callMainFunctions(fstream& fileIn, fstream& fileOut);
 };
 
 #endif //COUNTWORDSCLASS_H
