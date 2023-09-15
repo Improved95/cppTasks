@@ -58,6 +58,9 @@ map<string, int> countWordsClass::readFile(fstream& fileIn) {
 }
 
 void countWordsClass::callMainFunctions(fstream& fileIn, fstream& fileOut) {
+        table.clear();
+        mapVector.clear();
+        
         table = readFile(fileIn);
         mapVector = mapSort();
         createOutput(fileOut);
