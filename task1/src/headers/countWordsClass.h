@@ -10,16 +10,11 @@ private:
     vector<pair<string, int>> mapVector;
 
     map<string, int> readFile(fstream& fileIn);
-    vector<pair<string, int>> mapSort(map<string, int>& map);
-    void createOutput(vector<pair<string, int>>& mapVector, fstream& fileOut);
+    vector<pair<string, int>> mapSort();
+    void createOutput(fstream& fileOut);
 
 public:
-    countWordsClass();
-    void callMainFunctions(fstream& fileIn, fstream& fileOut) {
-        table = readFile(fileIn);
-        mapVector = mapSort(table);
-        createOutput(mapVector, fileOut);
-    };
+    void callMainFunctions(fstream& fileIn, fstream& fileOut);
 };
 
 #endif //COUNTWORDSCLASS_H
