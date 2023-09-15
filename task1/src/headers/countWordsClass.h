@@ -14,7 +14,6 @@ private:
     void createOutput(fstream& fileOut);
 
 public:
-    countWordsClass();
     void callMainFunctions(fstream& fileIn, fstream& fileOut);
 };
 
