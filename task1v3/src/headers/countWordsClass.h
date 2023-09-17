@@ -4,17 +4,16 @@
 #include "head.h"
 using namespace std;
 
-class countWordsClass {
+class CountWordsClass {
 private:
     map<string, int> table;
-    vector<pair<string, int>> mapVector;
 
-    map<string, int> readFile(fstream& fileIn);
+    map<string, int> readFile(istream& fileIn);
     vector<pair<string, int>> mapSort();
-    void createOutput(fstream& fileOut);
+    void createOutput(ostream& fileOut, vector<pair<string, int>>);
 
 public:
-    void callMainFunctions(fstream& fileIn, fstream& fileOut);
+    void countingWordsFromFile(istream& fileIn, ostream& fileOut);
 };
 
 #endif //COUNTWORDSCLASS_H

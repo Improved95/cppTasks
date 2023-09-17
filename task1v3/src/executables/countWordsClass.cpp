@@ -1,5 +1,5 @@
 #include "../headers/head.h"
-#include "../headers/countWordsClass.h"
+#include "../headers/CountWordsClass.h"
 using namespace std;
 
 bool cmp(pair<string, int>& a, pair<string, int>& b) {
@@ -10,7 +10,8 @@ bool isAlphaNumeric(char c) {
     return isalnum(static_cast<unsigned char>(c)) != 0;
 }
 
-vector<pair<string, int>> countWordsClass::mapSort() {
+vector<pair<string, int>> CountWordsClass::mapSort() {
+    vector<pair<string, int>> mapVector;
     for (auto& it : table) {
         mapVector.push_back(it);
     }
@@ -19,7 +20,7 @@ vector<pair<string, int>> countWordsClass::mapSort() {
     return mapVector;
 }
 
-void countWordsClass::createOutput(fstream& fileOut) {
+void CountWordsClass::createOutput(ostream& fileOut, vector<pair<string, int>> mapVector) {
     size_t wordsQuantity = 0;
     for (auto& it : mapVector) {
         wordsQuantity += it.second;
@@ -29,7 +30,7 @@ void countWordsClass::createOutput(fstream& fileOut) {
     }
 }
 
-map<string, int> countWordsClass::readFile(fstream& fileIn) {
+map<string, int> CountWordsClass::readFile(istream& fileIn) {
     string word;
     char character;
     while(fileIn.get(character)) {
@@ -57,11 +58,10 @@ map<string, int> countWordsClass::readFile(fstream& fileIn) {
     return table;
 }
 
-void countWordsClass::callMainFunctions(fstream& fileIn, fstream& fileOut) {
+void CountWordsClass::countingWordsFromFile(istream& fileIn, ostream& fileOut) {
         table.clear();
-        mapVector.clear();
         
         table = readFile(fileIn);
-        mapVector = mapSort();
-        createOutput(fileOut);
+        vector<pair<string, int>> mapVector = mapSort();
+        createOutput(fileOut, mapVector);
 };

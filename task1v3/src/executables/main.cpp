@@ -9,8 +9,8 @@ int main(int argc, char* argv[]) {
     fileOut.open(argv[2], fstream::out);
     if ((!fileIn.is_open()) || (!fileOut.is_open())) return -1;
 
-    countWordsClass countWords;
-    countWords.callMainFunctions(fileIn, fileOut);
+    CountWordsClass countWords;
+    countWords.countingWordsFromFile(fileIn, fileOut);
 
     fileIn.close();
     fileOut.close();

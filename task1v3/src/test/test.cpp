@@ -1,4 +1,4 @@
-#include "../headers/countWordsClass.h"
+#include "../headers/CountWordsClass.h"
 #include "gtest/gtest.h"
 using namespace std;
 
@@ -8,14 +8,14 @@ TEST(task1, countWords) {
     fileIn.open("in.txt", fstream::out);
     fileOut.open("out.txt", fstream::out);
     ASSERT_EQ((fileIn.is_open() && fileOut.is_open()), true);
-    countWordsClass classObj;
+    CountWordsClass classObj;
 
     //act
     fileIn << "one two three pragme one two one one" << endl;
     fileIn.close();
 
     fileIn.open("in.txt", fstream::in);
-    classObj.callMainFunctions(fileIn, fileOut);
+    classObj.countingWordsFromFile(fileIn, fileOut);
     fileIn.close();
     fileOut.close();
     
@@ -38,7 +38,7 @@ TEST(task1, countWords) {
     fileIn.close();
 
     fileIn.open("in.txt", fstream::in);
-    classObj.callMainFunctions(fileIn, fileOut);
+    classObj.countingWordsFromFile(fileIn, fileOut);
     fileIn.close();
     fileOut.close();
 
