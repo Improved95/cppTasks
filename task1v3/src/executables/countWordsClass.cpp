@@ -59,9 +59,11 @@ map<string, int> CountWordsClass::readFile(istream& fileIn) {
 }
 
 void CountWordsClass::countingWordsFromFile(istream& fileIn, ostream& fileOut) {
-        table.clear();
-        
         table = readFile(fileIn);
         vector<pair<string, int>> mapVector = mapSort();
         createOutput(fileOut, mapVector);
-};
+}
+
+void CountWordsClass::clearTable() {
+    table.clear();
+}

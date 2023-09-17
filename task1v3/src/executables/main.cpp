@@ -1,5 +1,5 @@
 #include "../headers/head.h"
-#include "../headers/countWordsClass.h"
+#include "../headers/CountWordsClass.h"
 using namespace std;
 
 int main(int argc, char* argv[]) {
