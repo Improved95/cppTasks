@@ -8,7 +8,7 @@ class CountWordsClass {
 private:
     map<string, int> table;
     
-    map<string, int> readFile(istream& fileIn);
+    void readFile(istream& fileIn);
     void createOutput(ostream& fileOut, vector<pair<string, int>>);
 
 public:

@@ -30,7 +30,7 @@ void CountWordsClass::createOutput(ostream& fileOut, vector<pair<string, int>> m
     }
 }
 
-map<string, int> CountWordsClass::readFile(istream& fileIn) {
+void CountWordsClass::readFile(istream& fileIn) {
     string word;
     char character;
     while(fileIn.get(character)) {
@@ -54,14 +54,12 @@ map<string, int> CountWordsClass::readFile(istream& fileIn) {
         }
         word.clear();
     }
-
-    return table;
 }
 
 void CountWordsClass::countingWordsFromFile(istream& fileIn, ostream& fileOut) {
-        table = readFile(fileIn);
-        vector<pair<string, int>> mapVector = mapSort();
-        createOutput(fileOut, mapVector);
+    readFile(fileIn);
+    vector<pair<string, int>> mapVector = mapSort();
+    createOutput(fileOut, mapVector);
 }
 
 void CountWordsClass::clearTable() {
