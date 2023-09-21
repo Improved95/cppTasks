@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
-set(CMAKE_CXX_STANDARD 17)
-project(task1)
+set(CMAKE_CXX_STANDARD 20)
+project(lab2)
 set(exe_name ${PROJECT_NAME})
 set(test_name test)
 
@@ -12,9 +12,9 @@ else()
     add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 
-#add_library(corelib OBJECT src/executables/countWordsClass.cpp)
-add_executable(${exe_name} src/executables/main.cpp)
-#target_link_libraries(${exe_name} corelib)
+add_library(corelib OBJECT src/CircularBuffer.cpp)
+add_executable(${exe_name} src/main.cpp)
+target_link_libraries(${exe_name} corelib)
 #
 #if(POLICY CMP0135)
 #    cmake_policy(SET CMP0135 NEW)
