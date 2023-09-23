@@ -1,11 +1,13 @@
 #ifndef CIRCULAR_BUFFER
 #define CIRCULAR_BUFFER
 
-typedef char value_type;
-
-class CircularBuffer {
+namespace CircularBufferClassNamespace {
+    class CircularBuffer {
     public:
-
-};
+        CircularBuffer();
+        ~CircularBuffer();
+        CircularBuffer(const CircularBuffer &cb);
+    };
+}
 
 #endif
