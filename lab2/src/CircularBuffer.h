@@ -2,24 +2,17 @@
 #define CIRCULAR_BUFFER
 
 #include "head.h"
-using std::string;
 using std::vector;
 
-template<typename T>
+template<class T>
 class CircularBuffer {
 private:
     size_t bufferSize;
-    vector<T> bufferVector;
+    vector<T> bufferVector; // переименовать, когдас танет понятно на что: на начало буфера или на что-то еще
 
 public:
-    CircularBuffer(size_t bufferSize) {
-        this->bufferSize = bufferSize;
-        this->bufferVector = vector<T>(bufferSize);
-    }
-
-    vector<T> getBufferVector() {
-        return this->bufferVector;
-    }
+    CircularBuffer(size_t bufferSize); // конструктор копирование
+    vector<T> getBufferVector();
 };
 
 #endif
