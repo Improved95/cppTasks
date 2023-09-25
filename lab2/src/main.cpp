@@ -1,4 +1,3 @@
-#include "head.h"
 #include "CircularBuffer.h"
 using std::cout;
 
