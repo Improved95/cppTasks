@@ -10,19 +10,26 @@ class CircularBuffer {
 private:
     vector<T> bufferVector; // переименовать, когда станет понятно на что: на начало буфера или на что-то еще
     size_t capacity;
+    size_t positionInBuffer;
 
 public:
     CircularBuffer();
     explicit CircularBuffer(size_t capacity);
     explicit CircularBuffer(size_t capacity, T elem);
 
-    T & operator[](int i);
-    T & operator[](int i) const;
+    //Доступ по индексу. Не проверяют правильность индекса
+    T & operator[](size_t i);
+    const T & operator[](size_t i) const;
+
+    //Доступ по индексу. Методы бросают исключение в случае неверного индекса
+    T & at(size_t i);
+    const T & at(size_t i) const;
 };
 
 // всевозможные конструкторы класса
 template<class T>
 CircularBuffer<T>::CircularBuffer() {
+    this->positionInBuffer = 0;
     this->capacity = 0;
     this->bufferVector = vector<T>(this->capacity);
 }
@@ -42,16 +49,25 @@ CircularBuffer<T>::CircularBuffer(size_t capacity, T elem):CircularBuffer(capaci
 
 //Доступ по индексу. Не проверяют правильность индекса
 template<class T>
-T & CircularBuffer<T>::operator[](int i) {
+T & CircularBuffer<T>::operator[](size_t i) {
+    if (i > this->capacity || i < 0) {
+        return this->bufferVector[0];
+    }
     return this->bufferVector[i];
 }
 
 template<class T>
-T & CircularBuffer<T>::operator[](int i) const {
-    return this->bufferVector[i % this->capacity];
+const T & CircularBuffer<T>::operator[](size_t i) const {
+    if (i > this->capacity || i < 0) {
+        return this->bufferVector[0];
+    }
+    return this->bufferVector[i];
 }
 
 //Доступ по индексу. Методы бросают исключение в случае неверного индекса.
+template<class T>
+T & CircularBuffer<T>::at(size_t i) {
 
+}
 
 #endif

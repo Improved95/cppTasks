@@ -4,9 +4,9 @@ using std::endl;
 using std::string;
 
 int main() {
-    CircularBuffer<int> cb1(5, 3);
+    const CircularBuffer<int> cb1(5, 3);
 
-    cout << cb1[0] << endl;
+    cout << cb1[4] << endl;
 
     return 0;
 }
