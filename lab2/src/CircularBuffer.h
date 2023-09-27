@@ -3,7 +3,9 @@
 
 #include "head.h"
 using std::vector;
-using namespace std;
+using std::cout;
+using std::endl;
+using std::exception;
 
 template<class T>
 class CircularBuffer {
@@ -22,8 +24,8 @@ public:
     const T & operator[](size_t i) const;
 
     //Доступ по индексу. Методы бросают исключение в случае неверного индекса
-    T & at(size_t i);
-    const T & at(size_t i) const;
+    T at(size_t i);
+    const T at(size_t i) const;
 };
 
 // всевозможные конструкторы класса
@@ -50,24 +52,36 @@ CircularBuffer<T>::CircularBuffer(size_t capacity, T elem):CircularBuffer(capaci
 //Доступ по индексу. Не проверяют правильность индекса
 template<class T>
 T & CircularBuffer<T>::operator[](size_t i) {
-    if (i > this->capacity || i < 0) {
-        return this->bufferVector[0];
-    }
-    return this->bufferVector[i];
+    return this->bufferVector[i % this->capacity];
 }
 
 template<class T>
 const T & CircularBuffer<T>::operator[](size_t i) const {
-    if (i > this->capacity || i < 0) {
-        return this->bufferVector[0];
-    }
-    return this->bufferVector[i];
+    return this->bufferVector[i % this->capacity];
 }
 
 //Доступ по индексу. Методы бросают исключение в случае неверного индекса.
 template<class T>
-T & CircularBuffer<T>::at(size_t i) {
+/*вот тут я возвращаю элемент из вектора,
+элемент не константый, поэтому ссылку я не могу использовать,
+но чуть выше могу, надо узнать, в чем проблема*/
+T CircularBuffer<T>::at(size_t i) {
+    try {
+        return this->bufferVector.at(i);
+    } catch(const exception & ex) {
+        cout << ex.what() << endl;
+    }
+    return 0;
+}
 
+template<class T>
+const T CircularBuffer<T>::at(size_t i) const {
+    try {
+        return this->bufferVector.at(i);
+    } catch(const exception & ex) {
+        cout << ex.what() << endl;
+    }
+    return 0;
 }
 
 #endif
