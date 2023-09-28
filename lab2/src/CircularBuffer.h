@@ -14,7 +14,6 @@ private:
     size_t capacity;
     size_t beginPosInBuf;
     size_t endPosInBuf;
-    size_t quantWriteElem;
 
 public:
     CircularBuffer();
@@ -26,21 +25,17 @@ public:
     void pop_back();
     void pop_front();
 
-     /*полностью переделать методы*/
-     //Доступ по индексу. Не проверяют правильность индекса
+    /*---------- переделать методы*/
     T & operator[](size_t i);
     const T & operator[](size_t i) const;
-
-    //Доступ по индексу. Методы бросают исключение в случае неверного индекса
     T & at(size_t i);
     const T & at(size_t i) const;
 
-    //Ссылка на первый элемент
     T & front();
     const T & front() const;
-    //Ссылка на последний элемент.
     T & back();
     const T & back() const;
+    //----------
 };
 
 // всевозможные конструкторы класса
@@ -49,7 +44,6 @@ CircularBuffer<T>::CircularBuffer() {
     this->beginPosInBuf = 0;
     this->endPosInBuf = 0;
     this->capacity = 0;
-    this->quantWriteElem = 0;
     this->beginBufferInMem = vector<T>(capacity);
 }
 
@@ -83,12 +77,12 @@ void CircularBuffer<T>::push_back(const T &item) {
 
 template<class T>
 void CircularBuffer<T>::push_front(const T &item) {
-    beginBufferInMem[beginPosInBuf] = item;
     if (beginPosInBuf <= 0) {
         beginPosInBuf = capacity - 1;
     } else {
         beginPosInBuf--;
     }
+    beginBufferInMem[beginPosInBuf] = item;
 
     if (beginPosInBuf == endPosInBuf) {
         if (endPosInBuf <= 0) {
@@ -99,7 +93,47 @@ void CircularBuffer<T>::push_front(const T &item) {
     }
 }
 
-/*полностью переделать все эти методы*/
+template<class T>
+void CircularBuffer<T>::pop_back() {
+    /*когда у нас end достиг begin и нужно, чтобы элемент, который следующим шагом
+     можно переписать был посленим добавленым*/
+    if (((beginPosInBuf - endPosInBuf) == 1) && endPosInBuf < beginPosInBuf) {
+        if (beginPosInBuf == 0) {
+            beginPosInBuf = capacity;
+        }
+        beginPosInBuf--;
+    }
+
+    if (endPosInBuf == 0) {
+        endPosInBuf = capacity;
+    }
+    if (beginPosInBuf == endPosInBuf) {
+        if (beginPosInBuf == 0) {
+            beginPosInBuf = capacity;
+        }
+        beginPosInBuf--;
+    }
+    endPosInBuf--;
+    beginBufferInMem[endPosInBuf] = 0;
+}
+
+template<class T>
+void CircularBuffer<T>::pop_front() {
+    beginBufferInMem[beginPosInBuf] = 0;
+    beginPosInBuf++;
+    if (beginPosInBuf == endPosInBuf) {
+        endPosInBuf++;
+        if (endPosInBuf == capacity) {
+            endPosInBuf = 0;
+        }
+    }
+    if (beginPosInBuf == capacity) {
+        beginPosInBuf = 0;
+    }
+}
+
+
+//------------ переделать все методы:
 //Доступ по индексу. Не проверяют правильность индекса
 template<class T>
 T & CircularBuffer<T>::operator[](size_t i) {
@@ -143,7 +177,7 @@ const T & CircularBuffer<T>::front() const {
     return beginBufferInMem[0];
 }
 
-//Ссылка на последний элемент.
+//Ссылка на последний элемент
 template<class T>
 T & CircularBuffer<T>::back() {
     return beginBufferInMem[capacity - 1];
@@ -153,5 +187,6 @@ template<class T>
 const T & CircularBuffer<T>::back() const {
     return beginBufferInMem[capacity - 1];
 }
+//------------
 
 #endif
