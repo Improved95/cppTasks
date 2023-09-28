@@ -60,6 +60,7 @@ CircularBuffer<T>::CircularBuffer(size_t capacity, T elem):CircularBuffer(capaci
     }
 }
 
+// push
 template<class T>
 void CircularBuffer<T>::push_back(const T &item) {
     beginBufferInMem[endPosInBuf] = item;
@@ -93,6 +94,7 @@ void CircularBuffer<T>::push_front(const T &item) {
     }
 }
 
+//pop
 template<class T>
 void CircularBuffer<T>::pop_back() {
     /*когда у нас end достиг begin и нужно, чтобы элемент, который следующим шагом
@@ -119,6 +121,12 @@ void CircularBuffer<T>::pop_back() {
 
 template<class T>
 void CircularBuffer<T>::pop_front() {
+    /*тот же самый случай, только с другой стороны, нужно "удалить" элемент, который
+    был последним добавленым, но который предполагалось, что будет переписан*/
+    if (((beginPosInBuf - endPosInBuf) == 1) && endPosInBuf < beginPosInBuf) {
+        beginPosInBuf--;
+    }
+
     beginBufferInMem[beginPosInBuf] = 0;
     beginPosInBuf++;
     if (beginPosInBuf == endPosInBuf) {
@@ -131,7 +139,6 @@ void CircularBuffer<T>::pop_front() {
         beginPosInBuf = 0;
     }
 }
-
 
 //------------ переделать все методы:
 //Доступ по индексу. Не проверяют правильность индекса
