@@ -4,9 +4,7 @@ using std::endl;
 using std::string;
 
 int main() {
-    CircularBuffer<int> cb1(5, 3);
-
-    cout << cb1.at(10) << endl;
+    CircularBuffer<int> cb1(5);
 
     return 0;
 }
