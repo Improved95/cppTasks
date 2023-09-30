@@ -1,6 +1,14 @@
 #ifndef CIRCULAR_BUFFER
 #define CIRCULAR_BUFFER
 
+/*в большинстве методов работающими с индексами очень много проверок для этого:
+когда буфер полностью заполнился и начал перезаписываться, указатель end указывает на элемент, который
+хочет перезаписать, этот самый элемент - последний записанный (если я правильно понял работу буфера)
+и на него должен указывать указатель begin, но так как предполагается что следующим шагом его перезапишут, то
+на него указывет указатель end, а все, что работает через указатель begin ломается без этих проверок
+-----
+ну и с самими индексами много проблем, потому что они должны идти по кругу*/
+
 #include "head.h"
 using std::vector;
 using std::cout;
@@ -14,6 +22,7 @@ private:
     size_t capacity;
     size_t beginPosInBuf;
     size_t endPosInBuf;
+    size_t quantWriteEl;
 
 public:
     CircularBuffer();
@@ -25,7 +34,6 @@ public:
     void pop_back();
     void pop_front();
 
-    /*---------- переделать методы*/
     T & operator[](size_t i);
     const T & operator[](size_t i) const;
     T & at(size_t i);
@@ -35,7 +43,6 @@ public:
     const T & front() const;
     T & back();
     const T & back() const;
-    //----------
 };
 
 // всевозможные конструкторы класса
@@ -44,6 +51,7 @@ CircularBuffer<T>::CircularBuffer() {
     this->beginPosInBuf = 0;
     this->endPosInBuf = 0;
     this->capacity = 0;
+    this->quantWriteEl = 0;
     this->beginBufferInMem = vector<T>(capacity);
 }
 
@@ -74,6 +82,9 @@ void CircularBuffer<T>::push_back(const T &item) {
             beginPosInBuf = 0;
         }
     }
+    if (quantWriteEl < capacity) {
+        quantWriteEl++;
+    }
 }
 
 template<class T>
@@ -92,55 +103,63 @@ void CircularBuffer<T>::push_front(const T &item) {
             endPosInBuf--;
         }
     }
+    if (quantWriteEl < capacity) {
+        quantWriteEl++;
+    }
 }
 
 //pop
 template<class T>
 void CircularBuffer<T>::pop_back() {
-    /*когда у нас end достиг begin и нужно, чтобы элемент, который следующим шагом
-     можно переписать был посленим добавленым*/
-    if (((beginPosInBuf - endPosInBuf) == 1) && endPosInBuf < beginPosInBuf) {
-        if (beginPosInBuf == 0) {
-            beginPosInBuf = capacity;
+    if (endPosInBuf != beginPosInBuf) {
+        if (endPosInBuf == 0) {
+            endPosInBuf = capacity - 1;
+            beginBufferInMem[endPosInBuf] = 0;
+        } else {
+            beginBufferInMem[endPosInBuf - 1] = 0;
+            endPosInBuf--;
         }
-        beginPosInBuf--;
+    } else {
+        beginBufferInMem[endPosInBuf] = 0;
+    }
+    if (quantWriteEl == capacity) {
+        if (beginPosInBuf == 0) {
+            beginPosInBuf = capacity - 1;
+        } else {
+            beginPosInBuf--;
+        }
     }
 
-    if (endPosInBuf == 0) {
-        endPosInBuf = capacity;
+    if (quantWriteEl > 0) {
+        quantWriteEl--;
     }
-    if (beginPosInBuf == endPosInBuf) {
-        if (beginPosInBuf == 0) {
-            beginPosInBuf = capacity;
-        }
-        beginPosInBuf--;
-    }
-    endPosInBuf--;
-    beginBufferInMem[endPosInBuf] = 0;
 }
 
 template<class T>
 void CircularBuffer<T>::pop_front() {
-    /*тот же самый случай, только с другой стороны, нужно "удалить" элемент, который
-    был последним добавленым, но который предполагалось, что будет переписан*/
-    if (((beginPosInBuf - endPosInBuf) == 1) && endPosInBuf < beginPosInBuf) {
-        beginPosInBuf--;
+    if (endPosInBuf != beginPosInBuf) {
+        if (quantWriteEl == capacity) {
+            if (beginPosInBuf == 0) {
+                beginBufferInMem[capacity - 1] = 0;
+            } else {
+                beginBufferInMem[beginPosInBuf - 1] = 0;
+            }
+        } else {
+            beginBufferInMem[beginPosInBuf] = 0;
+            beginPosInBuf++;
+            if (beginPosInBuf == capacity) {
+                beginPosInBuf = 0;
+            }
+        }
+    } else {
+        beginBufferInMem[beginPosInBuf] = 0;
     }
 
-    beginBufferInMem[beginPosInBuf] = 0;
-    beginPosInBuf++;
-    if (beginPosInBuf == endPosInBuf) {
-        endPosInBuf++;
-        if (endPosInBuf == capacity) {
-            endPosInBuf = 0;
-        }
-    }
-    if (beginPosInBuf == capacity) {
-        beginPosInBuf = 0;
+    if (quantWriteEl > 0) {
+        quantWriteEl--;
     }
 }
 
-//------------ переделать все методы:
 //Доступ по индексу. Не проверяют правильность индекса
 template<class T>
 T & CircularBuffer<T>::operator[](size_t i) {
@@ -156,9 +175,13 @@ const T & CircularBuffer<T>::operator[](size_t i) const {
 template<class T>
 T & CircularBuffer<T>::at(size_t i) {
     try {
-        return beginBufferInMem.at(i);
-    } catch(const exception & ex) {
-        cout << ex.what()  << endl;
+        if ((i > capacity - 1) || (beginPosInBuf < endPosInBuf && (i < beginPosInBuf || i > endPosInBuf)) \
+        || (beginPosInBuf > endPosInBuf && (i >= endPosInBuf && i < beginPosInBuf))){
+            throw "incorrect index";
+        }
+        return beginBufferInMem[i];
+    } catch(const char *ex) {
+        cout << ex << endl;
     }
     return beginBufferInMem[0];
 }
@@ -166,9 +189,13 @@ T & CircularBuffer<T>::at(size_t i) {
 template<class T>
 const T & CircularBuffer<T>::at(size_t i) const {
     try {
-        return beginBufferInMem.at(i);
-    } catch(const exception & ex) {
-        cout << ex.what() << endl;
+        if ((i > capacity - 1) || (beginPosInBuf < endPosInBuf && (i < beginPosInBuf || i > endPosInBuf)) \
+        || (beginPosInBuf > endPosInBuf && (i >= endPosInBuf && i < beginPosInBuf))){
+            throw "incorrect index";
+        }
+        return beginBufferInMem[i];
+    } catch(const char *ex) {
+        cout << ex << endl;
     }
     return beginBufferInMem[0];
 }
@@ -176,24 +203,43 @@ const T & CircularBuffer<T>::at(size_t i) const {
 //Ссылка на первый элемент
 template<class T>
 T & CircularBuffer<T>::front() {
-    return beginBufferInMem[0];
+    if (quantWriteEl == capacity) {
+        if (beginPosInBuf == 0) {
+            return beginBufferInMem[capacity - 1];
+        }
+        return beginBufferInMem[beginPosInBuf - 1];
+    }
+    return beginBufferInMem[beginPosInBuf];
 }
 
 template<class T>
 const T & CircularBuffer<T>::front() const {
-    return beginBufferInMem[0];
+    if (quantWriteEl == capacity) {
+        if (beginPosInBuf == 0) {
+            return beginBufferInMem[capacity - 1];
+        }
+        return beginBufferInMem[beginPosInBuf - 1];
+    }
+    return beginBufferInMem[beginPosInBuf];
 }
 
 //Ссылка на последний элемент
 template<class T>
 T & CircularBuffer<T>::back() {
-    return beginBufferInMem[capacity - 1];
+    if (endPosInBuf == 0) {
+        return beginBufferInMem[capacity - 1];
+    }
+    return beginBufferInMem[endPosInBuf - 1];
+
 }
 
 template<class T>
 const T & CircularBuffer<T>::back() const {
-    return beginBufferInMem[capacity - 1];
+    if (endPosInBuf == 0) {
+        return beginBufferInMem[capacity - 1];
+    }
+    return beginBufferInMem[endPosInBuf - 1];
 }
-//------------
+
 
 #endif
