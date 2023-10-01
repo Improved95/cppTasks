@@ -33,6 +33,12 @@ public:
     explicit CircularBuffer(size_t capacity);
     explicit CircularBuffer(size_t capacity, T elem);
 
+    vector<T> getBeginBufferInMem() const{ return beginBufferInMem; }
+    size_t getCapacity() const { return capacity; }
+    size_t getBeginPosInBuf() const { return beginPosInBuf; }
+    size_t getEndPosInBuf() const { return endPosInBuf; }
+    size_t getQquantWriteEl() const { return quantWriteEl; }
+
     void push_back(const T &item);
     void push_front(const T &item);
     void pop_back();
@@ -50,6 +56,9 @@ public:
     const T & front() const;
     T & back();
     const T & back() const;
+
+    bool operator==(const CircularBuffer<T> &a);
+    bool operator!=(const CircularBuffer<T> &a);
 };
 
 // всевозможные конструкторы класса
@@ -288,6 +297,29 @@ const T & CircularBuffer<T>::back() const {
     return beginBufferInMem[endPosInBuf - 1];
 }
 
+//Очищает буфер
+template<class T>
+void CircularBuffer<T>::clear() {
+    //я не понимаю зачем нужен clear, он будет зануляет объекты в векторе
+    // или удаляет и очищает память от этих объектов в векторе
+}
 
+//оператор ==; не сработает, если в векторе будут непростые объекты, структуры или классы, для каждого такого объекта
+// нужно переписывать сравнение
+template<class T>
+bool CircularBuffer<T>::operator==(const CircularBuffer<T> &a) {
+    return (this->beginBufferInMem == a.getBeginBufferInMem() && this->capacity == a.getCapacity() && \
+    this->beginPosInBuf == a.getBeginPosInBuf() && this->endPosInBuf == a.endPosInBuf && \
+    this->quantWriteEl == a.quantWriteEl);
+}
+
+//оператор !=; не сработает, если в векторе будут непростые объекты, структуры или классы, для каждого такого объекта
+// нужно переписывать сравнение
+template<class T>
+bool CircularBuffer<T>::operator!=(const CircularBuffer<T> &a) {
+    return !(this->beginBufferInMem == a.getBeginBufferInMem() && this->capacity == a.getCapacity() && \
+    this->beginPosInBuf == a.getBeginPosInBuf() && this->endPosInBuf == a.endPosInBuf && \
+    this->quantWriteEl == a.quantWriteEl);
+}
 
 #endif
