@@ -10,6 +10,7 @@
 ну и с самими индексами много проблем, потому что они должны идти по кругу*/
 
 #include "head.h"
+#include "cmath"
 using std::vector;
 using std::cout;
 using std::endl;
@@ -120,13 +121,9 @@ void CircularBuffer<T>::pop_back() {
     if (endPosInBuf != beginPosInBuf) {
         if (endPosInBuf == 0) {
             endPosInBuf = capacity - 1;
-            beginBufferInMem[endPosInBuf] = 0;
         } else {
-            beginBufferInMem[endPosInBuf - 1] = 0;
             endPosInBuf--;
         }
-    } else {
-        beginBufferInMem[endPosInBuf] = 0;
     }
     if (quantWriteEl == capacity) {
         if (beginPosInBuf == 0) {
@@ -144,23 +141,11 @@ void CircularBuffer<T>::pop_back() {
 template<class T>
 void CircularBuffer<T>::pop_front() {
     if (endPosInBuf != beginPosInBuf) {
-        if (quantWriteEl == capacity) {
-            if (beginPosInBuf == 0) {
-                beginBufferInMem[capacity - 1] = 0;
-            } else {
-                beginBufferInMem[beginPosInBuf - 1] = 0;
-            }
-        } else {
-            beginBufferInMem[beginPosInBuf] = 0;
-            beginPosInBuf++;
-            if (beginPosInBuf == capacity) {
-                beginPosInBuf = 0;
-            }
+        beginPosInBuf++;
+        if (beginPosInBuf == capacity) {
+            beginPosInBuf = 0;
         }
-    } else {
-        beginBufferInMem[beginPosInBuf] = 0;
     }
-
     if (quantWriteEl > 0) {
         quantWriteEl--;
     }
@@ -184,11 +169,8 @@ void CircularBuffer<T>::swap(T &a, T &b) {
 
 template<class T>
 void CircularBuffer<T>::eraseWhenBeginPosLessEndPos(const size_t first, const size_t last) {
-    for (size_t i = 0; i < (last - first); i++) {
-        beginBufferInMem[last - 1 - i] = 0;
-    }
     for (size_t i = 0; i < (endPosInBuf - last); i++) {
-        swap(beginBufferInMem[first + i], beginBufferInMem[last + i]);
+        swap(beginBufferInMem[first + i], beginBufferInMem[last + i]); //swap, потому что не свап лень писать
     }
     endPosInBuf = first + (endPosInBuf - last);
     quantWriteEl -= (last - first);
@@ -196,9 +178,22 @@ void CircularBuffer<T>::eraseWhenBeginPosLessEndPos(const size_t first, const si
 
 template<class T>
 void CircularBuffer<T>::eraseWhenBeginPosMoreEndPos(const size_t first, const size_t last) {
-    for (size_t i = 0; i < (last - first); i++) {
-        beginBufferInMem[(beginPosInBuf ) % capacity] = 0;
+    if (quantWriteEl == capacity) {
+        beginPosInBuf--;
     }
+    endPosInBuf--;
+    // не сработает если (beginPosInBuf + last) больше size, но такое вряд ли произойдет
+    size_t quantReplaceEl = 0;
+    if ((beginPosInBuf + last) % capacity > beginPosInBuf) {
+        quantReplaceEl = (capacity - last) + endPosInBuf;
+    } else {
+        quantReplaceEl = endPosInBuf - ((beginPosInBuf + last) % capacity) + 1;
+    }
+    for (size_t i = 0; i < quantReplaceEl; i++) {
+        swap(beginBufferInMem[(beginPosInBuf + first + i) % capacity], beginBufferInMem[(beginPosInBuf + last + i) % capacity]);
+    }
+    endPosInBuf = (beginPosInBuf + first + quantReplaceEl) % capacity;
+    quantReplaceEl -= (last - first);
 }
 
 template<class T>
