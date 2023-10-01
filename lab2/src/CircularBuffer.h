@@ -13,7 +13,6 @@
 using std::vector;
 using std::cout;
 using std::endl;
-using std::exception;
 
 template<class T>
 class CircularBuffer {
@@ -24,6 +23,10 @@ private:
     size_t endPosInBuf;
     size_t quantWriteEl;
 
+    void eraseWhenBeginPosLessEndPos(const size_t first, const size_t last);
+    void eraseWhenBeginPosMoreEndPos(const size_t first, const size_t last);
+    void swap(T &a, T &b);
+
 public:
     CircularBuffer();
     explicit CircularBuffer(size_t capacity);
@@ -33,11 +36,14 @@ public:
     void push_front(const T &item);
     void pop_back();
     void pop_front();
+    void insert(const size_t pos, const T &item);
+    void erase(const size_t first, const size_t last);
+    void clear();
 
-    T & operator[](size_t i);
-    const T & operator[](size_t i) const;
-    T & at(size_t i);
-    const T & at(size_t i) const;
+    T & operator[](const size_t i);
+    const T & operator[](const size_t i) const;
+    T & at(const size_t i);
+    const T & at(const size_t i) const;
 
     T & front();
     const T & front() const;
@@ -160,20 +166,66 @@ void CircularBuffer<T>::pop_front() {
     }
 }
 
+//Вставляет элемент item по индексу pos. Ёмкость буфера остается неизменной
+template<class T>
+void CircularBuffer<T>::insert(const size_t pos, const T &item) {
+    if (pos < quantWriteEl) {
+        beginBufferInMem[(beginPosInBuf + pos) % capacity] = item;
+    }
+}
+
+//Удаляет элементы из буфера в интервале [first, last)
+template<class T>
+void CircularBuffer<T>::swap(T &a, T &b) {
+    T c = a;
+    a = b;
+    b = c;
+}
+
+template<class T>
+void CircularBuffer<T>::eraseWhenBeginPosLessEndPos(const size_t first, const size_t last) {
+    for (size_t i = 0; i < (last - first); i++) {
+        beginBufferInMem[last - 1 - i] = 0;
+    }
+    for (size_t i = 0; i < (endPosInBuf - last); i++) {
+        swap(beginBufferInMem[first + i], beginBufferInMem[last + i]);
+    }
+    endPosInBuf = first + (endPosInBuf - last);
+    quantWriteEl -= (last - first);
+}
+
+template<class T>
+void CircularBuffer<T>::eraseWhenBeginPosMoreEndPos(const size_t first, const size_t last) {
+    for (size_t i = 0; i < (last - first); i++) {
+        beginBufferInMem[(beginPosInBuf ) % capacity] = 0;
+    }
+}
+
+template<class T>
+void CircularBuffer<T>::erase(const size_t first, const size_t last) {
+    if (first < last && last <= capacity) {
+        if (beginPosInBuf <= endPosInBuf) {
+            eraseWhenBeginPosLessEndPos(first, last);
+        } else {
+            eraseWhenBeginPosMoreEndPos(first, last);
+        }
+    }
+}
+
 //Доступ по индексу. Не проверяют правильность индекса
 template<class T>
-T & CircularBuffer<T>::operator[](size_t i) {
+T & CircularBuffer<T>::operator[](const size_t i) {
     return beginBufferInMem[i % capacity];
 }
 
 template<class T>
-const T & CircularBuffer<T>::operator[](size_t i) const {
+const T & CircularBuffer<T>::operator[](const size_t i) const {
     return beginBufferInMem[i % capacity];
 }
 
 //Доступ по индексу. Методы бросают исключение в случае неверного индекса.
 template<class T>
-T & CircularBuffer<T>::at(size_t i) {
+T & CircularBuffer<T>::at(const size_t i) {
     try {
         if ((i > capacity - 1) || (beginPosInBuf < endPosInBuf && (i < beginPosInBuf || i > endPosInBuf)) \
         || (beginPosInBuf > endPosInBuf && (i >= endPosInBuf && i < beginPosInBuf))){
@@ -187,7 +239,7 @@ T & CircularBuffer<T>::at(size_t i) {
 }
 
 template<class T>
-const T & CircularBuffer<T>::at(size_t i) const {
+const T & CircularBuffer<T>::at(const size_t i) const {
     try {
         if ((i > capacity - 1) || (beginPosInBuf < endPosInBuf && (i < beginPosInBuf || i > endPosInBuf)) \
         || (beginPosInBuf > endPosInBuf && (i >= endPosInBuf && i < beginPosInBuf))){
@@ -240,6 +292,7 @@ const T & CircularBuffer<T>::back() const {
     }
     return beginBufferInMem[endPosInBuf - 1];
 }
+
 
 
 #endif
