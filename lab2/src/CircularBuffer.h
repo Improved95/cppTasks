@@ -23,11 +23,11 @@ private:
     size_t capacity;
     size_t beginPosInBuf;
     size_t endPosInBuf;
-    size_t quantWriteEl;
+    size_t size;
 
     void eraseWhenBeginPosLessEndPos(const size_t first, const size_t last);
     void eraseWhenBeginPosMoreEndPos(const size_t first, const size_t last);
-    void swap(T &a, T &b);
+    void swapElement(T &a, T &b);
 
 public:
     CircularBuffer();
@@ -38,7 +38,7 @@ public:
     size_t getCapacity() const { return capacity; }
     size_t getBeginPosInBuf() const { return beginPosInBuf; }
     size_t getEndPosInBuf() const { return endPosInBuf; }
-    size_t getQquantWriteEl() const { return quantWriteEl; }
+    size_t getSize() const { return size; }
 
     void push_back(const T &item);
     void push_front(const T &item);
@@ -63,7 +63,10 @@ public:
 
     T * linearize();
     bool is_linearized() const;
-    void rotate();
+    void rotate(const size_t newBegin);
+    bool empty() const;
+    bool full() const;
+    size_t reserve() const;
 };
 
 // всевозможные конструкторы класса
@@ -72,7 +75,7 @@ CircularBuffer<T>::CircularBuffer() {
     this->beginPosInBuf = 0;
     this->endPosInBuf = 0;
     this->capacity = 0;
-    this->quantWriteEl = 0;
+    this->size = 0;
     this->beginBufferInMem = vector<T>(capacity);
 }
 
@@ -89,9 +92,9 @@ CircularBuffer<T>::CircularBuffer(size_t capacity, T elem):CircularBuffer(capaci
     }
 }
 
-//swap
+//swapElement
 template<class T>
-void CircularBuffer<T>::swap(T &a, T &b) {
+void CircularBuffer<T>::swapElement(T &a, T &b) {
     T c = a;
     a = b;
     b = c;
@@ -105,8 +108,8 @@ void CircularBuffer<T>::push_back(const T &item) {
     if (endPosInBuf == beginPosInBuf) {
         beginPosInBuf = (beginPosInBuf + 1) % capacity;
     }
-    if (quantWriteEl < capacity) {
-        quantWriteEl++;
+    if (size < capacity) {
+        size++;
     }
 }
 
@@ -117,8 +120,8 @@ void CircularBuffer<T>::push_front(const T &item) {
     if (beginPosInBuf == endPosInBuf) {
         endPosInBuf = (endPosInBuf - 1) % capacity;
     }
-    if (quantWriteEl < capacity) {
-        quantWriteEl++;
+    if (size < capacity) {
+        size++;
     }
 }
 
@@ -127,9 +130,12 @@ template<class T>
 void CircularBuffer<T>::pop_back() {
     if (endPosInBuf != beginPosInBuf) {
         endPosInBuf = (endPosInBuf - 1) % capacity;
+        if (size == capacity) {
+            beginPosInBuf = (beginPosInBuf - 1) % capacity;
+        }
     }
-    if (quantWriteEl > 0) {
-        quantWriteEl--;
+    if (size > 0) {
+        size--;
     }
 }
 
@@ -138,15 +144,15 @@ void CircularBuffer<T>::pop_front() {
     if (endPosInBuf != beginPosInBuf) {
         beginPosInBuf = (beginPosInBuf + 1) % capacity;
     }
-    if (quantWriteEl > 0) {
-        quantWriteEl--;
+    if (size > 0) {
+        size--;
     }
 }
 
 //Вставляет элемент item по индексу pos. Ёмкость буфера остается неизменной
 template<class T>
 void CircularBuffer<T>::insert(const size_t pos, const T &item) {
-    if (pos < quantWriteEl) {
+    if (pos < size) {
         beginBufferInMem[(beginPosInBuf + pos) % capacity] = item;
     }
 }
@@ -155,15 +161,15 @@ void CircularBuffer<T>::insert(const size_t pos, const T &item) {
 template<class T>
 void CircularBuffer<T>::eraseWhenBeginPosLessEndPos(const size_t first, const size_t last) {
     for (size_t i = 0; i < (endPosInBuf - last); i++) {
-        swap(beginBufferInMem[first + i], beginBufferInMem[last + i]); //swap, потому что не свап лень писать
+        swapElement(beginBufferInMem[first + i], beginBufferInMem[last + i]); //swapElement, потому что не свап лень писать
     }
     endPosInBuf = first + (endPosInBuf - last);
-    quantWriteEl -= (last - first);
+    size -= (last - first);
 }
 
 template<class T>
 void CircularBuffer<T>::eraseWhenBeginPosMoreEndPos(const size_t first, const size_t last) {
-    if (quantWriteEl == capacity) {
+    if (size == capacity) {
         beginPosInBuf--;
     }
     endPosInBuf--;
@@ -175,10 +181,10 @@ void CircularBuffer<T>::eraseWhenBeginPosMoreEndPos(const size_t first, const si
         quantReplaceEl = endPosInBuf - ((beginPosInBuf + last) % capacity) + 1;
     }
     for (size_t i = 0; i < quantReplaceEl; i++) {
-        swap(beginBufferInMem[(beginPosInBuf + first + i) % capacity], beginBufferInMem[(beginPosInBuf + last + i) % capacity]);
+        swapElement(beginBufferInMem[(beginPosInBuf + first + i) % capacity], beginBufferInMem[(beginPosInBuf + last + i) % capacity]);
     }
     endPosInBuf = (beginPosInBuf + first + quantReplaceEl) % capacity;
-    quantWriteEl -= (last - first);
+    size -= (last - first);
 }
 
 template<class T>
@@ -235,22 +241,16 @@ const T & CircularBuffer<T>::at(const size_t i) const {
 //Ссылка на первый элемент
 template<class T>
 T & CircularBuffer<T>::front() {
-    if (quantWriteEl == capacity) {
-        if (beginPosInBuf == 0) {
-            return beginBufferInMem[capacity - 1];
-        }
-        return beginBufferInMem[beginPosInBuf - 1];
+    if (size == capacity) {
+        return beginBufferInMem[(beginPosInBuf - 1) % capacity];
     }
     return beginBufferInMem[beginPosInBuf];
 }
 
 template<class T>
 const T & CircularBuffer<T>::front() const {
-    if (quantWriteEl == capacity) {
-        if (beginPosInBuf == 0) {
-            return beginBufferInMem[capacity - 1];
-        }
-        return beginBufferInMem[beginPosInBuf - 1];
+    if (size == capacity) {
+        return beginBufferInMem[(beginPosInBuf - 1) % capacity];
     }
     return beginBufferInMem[beginPosInBuf];
 }
@@ -258,19 +258,12 @@ const T & CircularBuffer<T>::front() const {
 //Ссылка на последний элемент
 template<class T>
 T & CircularBuffer<T>::back() {
-    if (endPosInBuf == 0) {
-        return beginBufferInMem[capacity - 1];
-    }
-    return beginBufferInMem[endPosInBuf - 1];
-
+    return beginBufferInMem[(endPosInBuf - 1) % capacity];
 }
 
 template<class T>
 const T & CircularBuffer<T>::back() const {
-    if (endPosInBuf == 0) {
-        return beginBufferInMem[capacity - 1];
-    }
-    return beginBufferInMem[endPosInBuf - 1];
+    return beginBufferInMem[(endPosInBuf - 1) % capacity];
 }
 
 //Очищает буфер
@@ -280,7 +273,7 @@ void CircularBuffer<T>::clear() {
     beginBufferInMem.resize(0);
     beginPosInBuf = 0;
     endPosInBuf = 0;
-    quantWriteEl = 0;
+    size = 0;
     beginBufferInMem.resize(capacity);
 }
 
@@ -291,7 +284,7 @@ template<class T>
 bool CircularBuffer<T>::operator==(const CircularBuffer<T> &a) {
     return (this->beginBufferInMem == a.getBeginBufferInMem() && this->capacity == a.getCapacity() && \
     this->beginPosInBuf == a.getBeginPosInBuf() && this->endPosInBuf == a.endPosInBuf && \
-    this->quantWriteEl == a.quantWriteEl);
+    this->size == a.getSize());
 }
 
 //оператор !=
@@ -301,7 +294,7 @@ template<class T>
 bool CircularBuffer<T>::operator!=(const CircularBuffer<T> &a) {
     return !(this->beginBufferInMem == a.getBeginBufferInMem() && this->capacity == a.getCapacity() && \
     this->beginPosInBuf == a.getBeginPosInBuf() && this->endPosInBuf == a.endPosInBuf && \
-    this->quantWriteEl == a.quantWriteEl);
+    this->size == a.getSize());
 }
 
 //Линеаризация
@@ -311,27 +304,29 @@ T * CircularBuffer<T>::linearize() {
     if (beginPosInBuf != 0) {
         if (beginPosInBuf < endPosInBuf) {
             for (size_t i = 0; i < endPosInBuf - beginPosInBuf - 1; i++) {
-                swap(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + i]);
+                swapElement(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + i]);
             }
             endPosInBuf -= beginPosInBuf;
             beginPosInBuf = 0;
         } else {
             endPosInBuf = (endPosInBuf - 1) % capacity;
-            beginPosInBuf--;
+            if (size == capacity) {
+                beginPosInBuf = (beginPosInBuf - 1) % capacity;
+            }
             if (beginPosInBuf != 0) {
                 T *pel = new T[endPosInBuf + 1];
                 for (size_t i = 0; i < endPosInBuf + 1; i++) {
                     pel[i] = beginBufferInMem[i];
                 }
                 for (size_t i = 0; i < capacity - beginPosInBuf; i++) {
-                    swap(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + i]);
+                    swapElement(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + i]);
                 }
                 for (size_t i = 0; i < endPosInBuf + 1; i++) {
                     beginBufferInMem[capacity - beginPosInBuf + i] = pel[i];
                 }
                 delete[] pel;
-                endPosInBuf = quantWriteEl % capacity;
-                if (quantWriteEl == capacity) {
+                endPosInBuf = size % capacity;
+                if (size == capacity) {
                     beginPosInBuf = 1;
                 } else {
                     beginPosInBuf = 0;
@@ -348,15 +343,46 @@ bool CircularBuffer<T>::is_linearized() const {
     return (&beginBufferInMem[beginPosInBuf] == &(*beginBufferInMem.begin()));
 }
 
+//Сдвигает буфер так, что по нулевому индексу окажется элемент с индексом new_begin
 template<class T>
-void CircularBuffer<T>::rotate() {
-    if (beginPosInBuf <= endPosInBuf) {
-        for (size_t i = 0; i < (endPosInBuf - beginPosInBuf) % 2; i++) {
-            swap(beginBufferInMem[i], beginBufferInMem[endPosInBuf - i]);
-        }
-    } else {
+void CircularBuffer<T>::rotate(const size_t newBegin) {
 
-    }
+}
+
+//проверка на пустоту
+template<class T>
+bool CircularBuffer<T>::empty() const {
+    return size == 0;
+}
+
+//проверка на заполнение
+template<class T>
+bool CircularBuffer<T>::full() const {
+    return size == capacity;
+}
+
+//колво свободных ячеек
+template<class T>
+size_t CircularBuffer<T>::reserve() const {
+    return capacity - size;
 }
 
 #endif
+
+// проверить еще раз линеаризацию
+// переписать insert
+// я точно не ебу, но что то точно не работает
+
+/*
+  осталось немного:
+  void rotate(int new_begin);
+  -----------------------------------------------------------------
+  void set_capacity(int new_capacity);
+  //Изменяет размер буфера.
+  //В случае расширения, новые элементы заполняются элементом item.
+  void resize(int new_size, const value_type & item = value_type());
+  //Оператор присваивания.
+  CircularBuffer & operator=(const CircularBuffer & cb);
+  //Обменивает содержимое буфера с буфером cb.
+  void swap(CircularBuffer & cb);
+ */
