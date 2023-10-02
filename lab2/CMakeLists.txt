@@ -12,9 +12,7 @@ else()
     add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 
-add_library(corelib OBJECT src/CircularBuffer.cpp)
 add_executable(${exe_name} src/main.cpp)
-target_link_libraries(${exe_name} corelib)
 #
 #if(POLICY CMP0135)
 #    cmake_policy(SET CMP0135 NEW)
