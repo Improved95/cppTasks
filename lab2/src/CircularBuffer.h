@@ -28,7 +28,6 @@ private:
     void eraseWhenBeginPosLessEndPos(const size_t first, const size_t last);
     void eraseWhenBeginPosMoreEndPos(const size_t first, const size_t last);
     void swap(T &a, T &b);
-    void assignment(T &a);
 
 public:
     CircularBuffer();
@@ -88,16 +87,12 @@ CircularBuffer<T>::CircularBuffer(size_t capacity, T elem):CircularBuffer(capaci
     }
 }
 
+//swap
 template<class T>
 void CircularBuffer<T>::swap(T &a, T &b) {
     T c = a;
     a = b;
     b = c;
-}
-
-template<class T>
-void CircularBuffer<T>::assignment(T &a) {
-
 }
 
 // push
@@ -144,18 +139,7 @@ void CircularBuffer<T>::push_front(const T &item) {
 template<class T>
 void CircularBuffer<T>::pop_back() {
     if (endPosInBuf != beginPosInBuf) {
-        if (endPosInBuf == 0) {
-            endPosInBuf = capacity - 1;
-        } else {
-            endPosInBuf--;
-        }
-    }
-    if (quantWriteEl == capacity) {
-        if (beginPosInBuf == 0) {
-            beginPosInBuf = capacity - 1;
-        } else {
-            beginPosInBuf--;
-        }
+        endPosInBuf = (endPosInBuf - 1) % capacity;
     }
 
     if (quantWriteEl > 0) {
@@ -166,10 +150,7 @@ void CircularBuffer<T>::pop_back() {
 template<class T>
 void CircularBuffer<T>::pop_front() {
     if (endPosInBuf != beginPosInBuf) {
-        beginPosInBuf++;
-        if (beginPosInBuf == capacity) {
-            beginPosInBuf = 0;
-        }
+        beginPosInBuf = (beginPosInBuf + 1) % capacity;
     }
     if (quantWriteEl > 0) {
         quantWriteEl--;
@@ -338,25 +319,20 @@ bool CircularBuffer<T>::operator!=(const CircularBuffer<T> &a) {
 }
 
 //Линеаризация
+// есть способ сделать перемещение очень быстро и без доп памяти, но я его не знаю
 template<class T>
 T * CircularBuffer<T>::linearize() {
     if (beginPosInBuf != 0) {
         if (beginPosInBuf < endPosInBuf) {
             for (size_t i = 0; i < endPosInBuf - beginPosInBuf - 1; i++) {
-                // есть способ сделать это перемещение очень быстро, но я его не знаю
                 swap(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + i]);
             }
-//            beginBufferInMem.erase(beginBufferInMem.begin(), beginBufferInMem.begin() + beginPosInBuf);
             endPosInBuf -= beginPosInBuf;
             beginPosInBuf = 0;
-//            beginBufferInMem.resize(capacity);
         } else {
-            if (beginPosInBuf - endPosInBuf == 1) {
-                endPosInBuf = (endPosInBuf - 1) % capacity;
-                beginPosInBuf--;
-            }
+            endPosInBuf = (endPosInBuf - 1) % capacity;
+            beginPosInBuf--;
             if (beginPosInBuf != 0) {
-                // есть способ сделать это перемещение очень быстро и без доп памяти, но я его не знаю
                 T *pel = new T[endPosInBuf + 1];
                 for (size_t i = 0; i < endPosInBuf + 1; i++) {
                     pel[i] = beginBufferInMem[i];
@@ -368,7 +344,12 @@ T * CircularBuffer<T>::linearize() {
                     beginBufferInMem[capacity - beginPosInBuf + i] = pel[i];
                 }
                 delete[] pel;
-
+                endPosInBuf = quantWriteEl % capacity;
+                if (quantWriteEl == capacity) {
+                    beginPosInBuf = 1;
+                } else {
+                    beginPosInBuf = 0;
+                }
             }
         }
     }
