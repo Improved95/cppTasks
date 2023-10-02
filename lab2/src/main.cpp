@@ -1,19 +1,18 @@
 #include "CircularBuffer.h"
-using std::cout;
-using std::endl;
-using std::string;
 
 int main() {
     CircularBuffer<int> cb1(7);
-    CircularBuffer<int> cb2(7);
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 10; i++) {
         cb1.push_back(i);
-        cb2.push_back(i);
     }
 
-    if (cb1 == cb2) {
-        cout << "good" << endl;
-    }
+//    for (int i = 0; i < 4; i++) {
+//        cb1.pop_back();
+//    }
+
+    int *pa = cb1.linearize();
+
+    cout << *pa << endl;
 
     cout << "" << endl;
     return 0;

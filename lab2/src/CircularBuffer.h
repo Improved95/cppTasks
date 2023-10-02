@@ -9,7 +9,8 @@
 -----
 ну и с самими индексами много проблем, потому что они должны идти по кругу*/
 
-#include "head.h"
+#include <iostream>
+#include <vector>
 #include "cmath"
 using std::vector;
 using std::cout;
@@ -27,6 +28,7 @@ private:
     void eraseWhenBeginPosLessEndPos(const size_t first, const size_t last);
     void eraseWhenBeginPosMoreEndPos(const size_t first, const size_t last);
     void swap(T &a, T &b);
+    void assignment(T &a);
 
 public:
     CircularBuffer();
@@ -59,6 +61,8 @@ public:
 
     bool operator==(const CircularBuffer<T> &a);
     bool operator!=(const CircularBuffer<T> &a);
+
+    T * linearize();
 };
 
 // всевозможные конструкторы класса
@@ -82,6 +86,18 @@ CircularBuffer<T>::CircularBuffer(size_t capacity, T elem):CircularBuffer(capaci
     for (size_t i = 0; i < capacity; i++) {
         this->beginBufferInMem[i] = elem;
     }
+}
+
+template<class T>
+void CircularBuffer<T>::swap(T &a, T &b) {
+    T c = a;
+    a = b;
+    b = c;
+}
+
+template<class T>
+void CircularBuffer<T>::assignment(T &a) {
+
 }
 
 // push
@@ -169,13 +185,6 @@ void CircularBuffer<T>::insert(const size_t pos, const T &item) {
 }
 
 //Удаляет элементы из буфера в интервале [first, last)
-template<class T>
-void CircularBuffer<T>::swap(T &a, T &b) {
-    T c = a;
-    a = b;
-    b = c;
-}
-
 template<class T>
 void CircularBuffer<T>::eraseWhenBeginPosLessEndPos(const size_t first, const size_t last) {
     for (size_t i = 0; i < (endPosInBuf - last); i++) {
@@ -298,13 +307,18 @@ const T & CircularBuffer<T>::back() const {
 }
 
 //Очищает буфер
+// если в векторе будет что-то связанное и динамической памятью, то пользователю ее придется самому очищать
 template<class T>
 void CircularBuffer<T>::clear() {
-    //я не понимаю зачем нужен clear, он будет зануляет объекты в векторе
-    // или удаляет и очищает память от этих объектов в векторе
+    beginBufferInMem.resize(0);
+    beginPosInBuf = 0;
+    endPosInBuf = 0;
+    quantWriteEl = 0;
+    beginBufferInMem.resize(capacity);
 }
 
-//оператор ==; не сработает, если в векторе будут непростые объекты, структуры или классы, для каждого такого объекта
+//оператор ==
+// не сработает, если в векторе будут непростые объекты, структуры или классы, для каждого такого объекта
 // нужно переписывать сравнение
 template<class T>
 bool CircularBuffer<T>::operator==(const CircularBuffer<T> &a) {
@@ -313,13 +327,52 @@ bool CircularBuffer<T>::operator==(const CircularBuffer<T> &a) {
     this->quantWriteEl == a.quantWriteEl);
 }
 
-//оператор !=; не сработает, если в векторе будут непростые объекты, структуры или классы, для каждого такого объекта
+//оператор !=
+// не сработает, если в векторе будут непростые объекты, структуры или классы, для каждого такого объекта
 // нужно переписывать сравнение
 template<class T>
 bool CircularBuffer<T>::operator!=(const CircularBuffer<T> &a) {
     return !(this->beginBufferInMem == a.getBeginBufferInMem() && this->capacity == a.getCapacity() && \
     this->beginPosInBuf == a.getBeginPosInBuf() && this->endPosInBuf == a.endPosInBuf && \
     this->quantWriteEl == a.quantWriteEl);
+}
+
+//Линеаризация
+template<class T>
+T * CircularBuffer<T>::linearize() {
+    if (beginPosInBuf != 0) {
+        if (beginPosInBuf < endPosInBuf) {
+            for (size_t i = 0; i < endPosInBuf - beginPosInBuf - 1; i++) {
+                // есть способ сделать это перемещение очень быстро, но я его не знаю
+                swap(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + i]);
+            }
+//            beginBufferInMem.erase(beginBufferInMem.begin(), beginBufferInMem.begin() + beginPosInBuf);
+            endPosInBuf -= beginPosInBuf;
+            beginPosInBuf = 0;
+//            beginBufferInMem.resize(capacity);
+        } else {
+            if (beginPosInBuf - endPosInBuf == 1) {
+                endPosInBuf = (endPosInBuf - 1) % capacity;
+                beginPosInBuf--;
+            }
+            if (beginPosInBuf != 0) {
+                // есть способ сделать это перемещение очень быстро и без доп памяти, но я его не знаю
+                T *pel = new T[endPosInBuf + 1];
+                for (size_t i = 0; i < endPosInBuf + 1; i++) {
+                    pel[i] = beginBufferInMem[i];
+                }
+                for (size_t i = 0; i < capacity - beginPosInBuf; i++) {
+                    swap(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + i]);
+                }
+                for (size_t i = 0; i < endPosInBuf + 1; i++) {
+                    beginBufferInMem[capacity - beginPosInBuf + i] = pel[i];
+                }
+                delete[] pel;
+
+            }
+        }
+    }
+    return &beginBufferInMem[0];
 }
 
 #endif
