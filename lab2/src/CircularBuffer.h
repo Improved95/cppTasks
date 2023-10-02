@@ -62,6 +62,8 @@ public:
     bool operator!=(const CircularBuffer<T> &a);
 
     T * linearize();
+    bool is_linearized() const;
+    void rotate();
 };
 
 // всевозможные конструкторы класса
@@ -99,15 +101,9 @@ void CircularBuffer<T>::swap(T &a, T &b) {
 template<class T>
 void CircularBuffer<T>::push_back(const T &item) {
     beginBufferInMem[endPosInBuf] = item;
-    endPosInBuf++;
-    if (endPosInBuf >= capacity) {
-        endPosInBuf = 0;
-    }
+    endPosInBuf = (endPosInBuf + 1) % capacity;
     if (endPosInBuf == beginPosInBuf) {
-        beginPosInBuf++;
-        if (beginPosInBuf >= capacity) {
-            beginPosInBuf = 0;
-        }
+        beginPosInBuf = (beginPosInBuf + 1) % capacity;
     }
     if (quantWriteEl < capacity) {
         quantWriteEl++;
@@ -116,19 +112,10 @@ void CircularBuffer<T>::push_back(const T &item) {
 
 template<class T>
 void CircularBuffer<T>::push_front(const T &item) {
-    if (beginPosInBuf <= 0) {
-        beginPosInBuf = capacity - 1;
-    } else {
-        beginPosInBuf--;
-    }
+    beginPosInBuf = (beginPosInBuf - 1) % capacity;
     beginBufferInMem[beginPosInBuf] = item;
-
     if (beginPosInBuf == endPosInBuf) {
-        if (endPosInBuf <= 0) {
-            endPosInBuf = capacity - 1;
-        } else {
-            endPosInBuf--;
-        }
+        endPosInBuf = (endPosInBuf - 1) % capacity;
     }
     if (quantWriteEl < capacity) {
         quantWriteEl++;
@@ -141,7 +128,6 @@ void CircularBuffer<T>::pop_back() {
     if (endPosInBuf != beginPosInBuf) {
         endPosInBuf = (endPosInBuf - 1) % capacity;
     }
-
     if (quantWriteEl > 0) {
         quantWriteEl--;
     }
@@ -192,7 +178,7 @@ void CircularBuffer<T>::eraseWhenBeginPosMoreEndPos(const size_t first, const si
         swap(beginBufferInMem[(beginPosInBuf + first + i) % capacity], beginBufferInMem[(beginPosInBuf + last + i) % capacity]);
     }
     endPosInBuf = (beginPosInBuf + first + quantReplaceEl) % capacity;
-    quantReplaceEl -= (last - first);
+    quantWriteEl -= (last - first);
 }
 
 template<class T>
@@ -354,6 +340,23 @@ T * CircularBuffer<T>::linearize() {
         }
     }
     return &beginBufferInMem[0];
+}
+
+//Проверяет, является ли буфер линеаризованным
+template <class T>
+bool CircularBuffer<T>::is_linearized() const {
+    return (&beginBufferInMem[beginPosInBuf] == &(*beginBufferInMem.begin()));
+}
+
+template<class T>
+void CircularBuffer<T>::rotate() {
+    if (beginPosInBuf <= endPosInBuf) {
+        for (size_t i = 0; i < (endPosInBuf - beginPosInBuf) % 2; i++) {
+            swap(beginBufferInMem[i], beginBufferInMem[endPosInBuf - i]);
+        }
+    } else {
+
+    }
 }
 
 #endif
