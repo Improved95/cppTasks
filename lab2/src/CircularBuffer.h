@@ -391,7 +391,25 @@ bool CircularBuffer<T>::is_linearized() const {
 //Сдвигает буфер так, что по нулевому индексу окажется элемент с индексом new_begin
 template<class T>
 void CircularBuffer<T>::rotate(const size_t newBegin) {
+    if (newBegin < size) {
+        if (size == capacity) {
+            indexDecrement(beginPosInBuf, capacity);
+        }
+        indexDecrement(endPosInBuf, capacity);
 
+        T *pel = new T[(beginPosInBuf + newBegin) % capacity];
+        for (size_t i = 0; i < (beginPosInBuf + newBegin + 1) % capacity; i++) {
+            pel[i] = beginBufferInMem[i];
+        }
+
+
+        endPosInBuf = size % capacity;
+        if (size == capacity) {
+            beginPosInBuf = 1;
+        } else {
+            beginPosInBuf = 0;
+        }
+    }
 }
 
 //проверка на пустоту
