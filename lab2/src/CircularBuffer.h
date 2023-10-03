@@ -7,7 +7,7 @@
 и на него должен указывать указатель begin, но так как предполагается что следующим шагом его перезапишут, то
 на него указывет указатель end, а все, что работает через указатель begin ломается без этих проверок
 -----
-ну и с самими индексами много проблем, потому что они должны идти по кругу*/
+ничего не будет работать, если в () % capacity в скобках будет больше size_t, но думаю, такого никогда не произойдет*/
 
 #include <iostream>
 #include <vector>
@@ -92,6 +92,23 @@ CircularBuffer<T>::CircularBuffer(size_t capacity, T elem):CircularBuffer(capaci
     }
 }
 
+// index increment-decrement
+void indexIncrement(size_t &index, const size_t capacity) {
+    if (index == capacity - 1) {
+        index = 0;
+    } else {
+        index++;
+    }
+}
+
+void indexDecrement(size_t &index, const size_t capacity) {
+    if (index == 0) {
+        index = capacity - 1;
+    } else {
+        index--;
+    }
+}
+
 //swapElement
 template<class T>
 void CircularBuffer<T>::swapElement(T &a, T &b) {
@@ -104,9 +121,9 @@ void CircularBuffer<T>::swapElement(T &a, T &b) {
 template<class T>
 void CircularBuffer<T>::push_back(const T &item) {
     beginBufferInMem[endPosInBuf] = item;
-    endPosInBuf = (endPosInBuf + 1) % capacity;
+    indexIncrement(endPosInBuf, capacity);
     if (endPosInBuf == beginPosInBuf) {
-        beginPosInBuf = (beginPosInBuf + 1) % capacity;
+        indexIncrement(beginPosInBuf, capacity);
     }
     if (size < capacity) {
         size++;
@@ -115,10 +132,10 @@ void CircularBuffer<T>::push_back(const T &item) {
 
 template<class T>
 void CircularBuffer<T>::push_front(const T &item) {
-    beginPosInBuf = (beginPosInBuf - 1) % capacity;
+    indexDecrement(beginPosInBuf, capacity);
     beginBufferInMem[beginPosInBuf] = item;
     if (beginPosInBuf == endPosInBuf) {
-        endPosInBuf = (endPosInBuf - 1) % capacity;
+        indexDecrement(endPosInBuf, capacity);
     }
     if (size < capacity) {
         size++;
@@ -129,9 +146,9 @@ void CircularBuffer<T>::push_front(const T &item) {
 template<class T>
 void CircularBuffer<T>::pop_back() {
     if (endPosInBuf != beginPosInBuf) {
-        endPosInBuf = (endPosInBuf - 1) % capacity;
+        indexDecrement(endPosInBuf, capacity);
         if (size == capacity) {
-            beginPosInBuf = (beginPosInBuf - 1) % capacity;
+            indexDecrement(beginPosInBuf, capacity);
         }
     }
     if (size > 0) {
@@ -142,7 +159,7 @@ void CircularBuffer<T>::pop_back() {
 template<class T>
 void CircularBuffer<T>::pop_front() {
     if (endPosInBuf != beginPosInBuf) {
-        beginPosInBuf = (beginPosInBuf + 1) % capacity;
+        indexIncrement(beginPosInBuf, capacity);
     }
     if (size > 0) {
         size--;
@@ -153,7 +170,19 @@ void CircularBuffer<T>::pop_front() {
 template<class T>
 void CircularBuffer<T>::insert(const size_t pos, const T &item) {
     if (pos < size) {
-        beginBufferInMem[(beginPosInBuf + pos) % capacity] = item;
+        if (beginPosInBuf < endPosInBuf) {
+            for (size_t i = 0; i < (endPosInBuf - (beginPosInBuf + pos)); i++) {
+                swapElement(beginBufferInMem[(endPosInBuf - i - 1) % capacity], beginBufferInMem[(endPosInBuf - i) % capacity]);
+            }
+            beginBufferInMem[beginPosInBuf + pos] = item;
+            if (size == capacity - 1) {
+                beginPosInBuf++;
+            }
+            endPosInBuf = (endPosInBuf + 1) % capacity;
+        }
+        if (size < capacity) {
+            size++;
+        }
     }
 }
 
@@ -344,10 +373,10 @@ bool CircularBuffer<T>::is_linearized() const {
 }
 
 //Сдвигает буфер так, что по нулевому индексу окажется элемент с индексом new_begin
-template<class T>
-void CircularBuffer<T>::rotate(const size_t newBegin) {
-
-}
+//template<class T>
+//void CircularBuffer<T>::rotate(const size_t newBegin) {
+//
+//}
 
 //проверка на пустоту
 template<class T>
