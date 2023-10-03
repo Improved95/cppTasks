@@ -7,7 +7,8 @@
 и на него должен указывать указатель begin, но так как предполагается что следующим шагом его перезапишут, то
 на него указывет указатель end, а все, что работает через указатель begin ломается без этих проверок
 -----
-ничего не будет работать, если в () % capacity в скобках будет больше size_t, но думаю, такого никогда не произойдет*/
+index increment/decrement нужны чтобы работало кольцо, можно было бы через % но оно не работает с отрицательными
+ */
 
 #include <iostream>
 #include <vector>
@@ -178,7 +179,8 @@ void CircularBuffer<T>::insert(const size_t pos, const T &item) {
             if (size == capacity - 1) {
                 beginPosInBuf++;
             }
-            endPosInBuf = (endPosInBuf + 1) % capacity;
+            indexIncrement(endPosInBuf, capacity);
+        } else {
         }
         if (size < capacity) {
             size++;
