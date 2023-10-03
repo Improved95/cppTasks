@@ -12,7 +12,7 @@ index increment/decrement нужны чтобы работало кольцо, �
 
 #include <iostream>
 #include <vector>
-#include "cmath"
+#include <cmath>
 using std::vector;
 using std::cout;
 using std::endl;
@@ -170,18 +170,32 @@ void CircularBuffer<T>::pop_front() {
 //Вставляет элемент item по индексу pos. Ёмкость буфера остается неизменной
 template<class T>
 void CircularBuffer<T>::insert(const size_t pos, const T &item) {
+    size_t insertPosition = (beginPosInBuf + pos) % capacity;
     if (pos < size) {
-        if (beginPosInBuf < endPosInBuf) {
-            for (size_t i = 0; i < (endPosInBuf - (beginPosInBuf + pos)); i++) {
-                swapElement(beginBufferInMem[(endPosInBuf - i - 1) % capacity], beginBufferInMem[(endPosInBuf - i) % capacity]);
-            }
-            beginBufferInMem[beginPosInBuf + pos] = item;
-            if (size == capacity - 1) {
-                beginPosInBuf++;
-            }
-            indexIncrement(endPosInBuf, capacity);
-        } else {
+        if (size == capacity) {
+            indexDecrement(beginPosInBuf, capacity);
         }
+        indexDecrement(endPosInBuf, capacity);
+        if (beginPosInBuf < endPosInBuf) {
+            for (size_t i = 0; i < (endPosInBuf - (beginPosInBuf + pos) + 1); i++) {
+                swapElement(beginBufferInMem[(endPosInBuf - i) % capacity], beginBufferInMem[(endPosInBuf - i + 1) % capacity]);
+            }
+            if (size == capacity - 1) {
+                indexIncrement(beginPosInBuf, capacity);
+            }
+        } else {
+            T elem = beginBufferInMem[(beginPosInBuf + pos) % capacity];
+            for (size_t i = 0; i < (capacity - pos + endPosInBuf + 1); i++) {
+                swapElement(elem, beginBufferInMem[(beginPosInBuf + pos + i + 1) % capacity]);
+            }
+            if (size == capacity) {
+                indexIncrement(beginPosInBuf, capacity);
+                indexIncrement(beginPosInBuf, capacity);
+            }
+        }
+        beginBufferInMem[insertPosition] = item;
+        indexIncrement(endPosInBuf, capacity);
+        indexIncrement(endPosInBuf, capacity);
         if (size < capacity) {
             size++;
         }
@@ -340,9 +354,9 @@ T * CircularBuffer<T>::linearize() {
             endPosInBuf -= beginPosInBuf;
             beginPosInBuf = 0;
         } else {
-            endPosInBuf = (endPosInBuf - 1) % capacity;
+            indexDecrement(endPosInBuf, capacity);
             if (size == capacity) {
-                beginPosInBuf = (beginPosInBuf - 1) % capacity;
+                indexDecrement(beginPosInBuf, capacity);
             }
             if (beginPosInBuf != 0) {
                 T *pel = new T[endPosInBuf + 1];
@@ -375,10 +389,10 @@ bool CircularBuffer<T>::is_linearized() const {
 }
 
 //Сдвигает буфер так, что по нулевому индексу окажется элемент с индексом new_begin
-//template<class T>
-//void CircularBuffer<T>::rotate(const size_t newBegin) {
-//
-//}
+template<class T>
+void CircularBuffer<T>::rotate(const size_t newBegin) {
+
+}
 
 //проверка на пустоту
 template<class T>
@@ -401,7 +415,6 @@ size_t CircularBuffer<T>::reserve() const {
 #endif
 
 // проверить еще раз линеаризацию
-// переписать insert
 // я точно не ебу, но что то точно не работает
 
 /*
