@@ -33,7 +33,17 @@ void CircularBuffer<T>::andBeginPosPlusNewBeginLessCapacity(const size_t newBegi
 
 template <class T>
 void CircularBuffer<T>::andBeginPosPlusNewBeginMoreCapacity(const size_t newBegin) {
-
+    T *pel = new T[(beginPosInBuf + newBegin) % capacity + 1];
+    for (size_t i = 0; i < (beginPosInBuf + newBegin) % capacity + 1; i++) {
+        pel[i] = beginBufferInMem[i];
+    }
+    for (size_t i = 0; i < capacity - newBegin; i++) {
+        swapElement(beginBufferInMem[i], beginBufferInMem[newBegin + i]);
+    }
+    for (size_t i = 0; i < newBegin; i++) {
+        beginBufferInMem[capacity - newBegin + i] = pel[i];
+    }
+    delete[] pel;
 }
 
 template<class T>
@@ -60,3 +70,5 @@ void CircularBuffer<T>::rotate(const size_t newBegin) {
         }
     }
 }
+
+// доделать последний случай + дописать изменение позиций в предпоследнем
