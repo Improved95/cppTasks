@@ -2,9 +2,10 @@
 
 int main() {
     CircularBuffer<int> cb1(7);
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 13; i++) {
         cb1.push_back(i + 1);
     }
+    cb1.pop_back();
 
     cb1.set_capacity(5);
 

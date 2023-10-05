@@ -35,6 +35,8 @@ private:
     void andBeginPosPlusNewBeginLessCapacity(const size_t newBegin);
     void andBeginPosPlusNewBeginMoreCapacity(const size_t newBegin);
 
+    void set_capacityWhenNewCapacityLessOldCapacity(const size_t newCapacity);
+
     void swapElement(T &a, T &b);
 
 public:
@@ -345,6 +347,6 @@ size_t CircularBuffer<T>::reserve() const {
 #include "setCapacity.h"
 
 //В случае расширения, новые элементы заполняются элементом item.
-#include "resize.h"
+//#include "resize.h"
 
 #endif

@@ -1,4 +1,34 @@
 template<class T>
+void CircularBuffer<T>::set_capacityWhenNewCapacityLessOldCapacity(const size_t newCapacity) {
+    if (endPosInBuf >= beginPosInBuf) {
+        beginBufferInMem.resize(newCapacity);
+        if (newCapacity > 0) {
+            if (newCapacity - 1 < endPosInBuf) {
+                endPosInBuf -= endPosInBuf - (newCapacity - 1);
+                size -= endPosInBuf - (newCapacity - 1);
+                if (endPosInBuf < beginPosInBuf) {
+                    beginPosInBuf = 0;
+                }
+            }
+        } else {
+            beginPosInBuf = 0;
+            endPosInBuf = 0;
+        }
+    } else {
+        const size_t diffCap = capacity - newCapacity;
+        if (diffCap < (beginPosInBuf - endPosInBuf)) {
+            beginBufferInMem.erase(beginBufferInMem.begin() + beginPosInBuf - diffCap, beginBufferInMem.begin() + beginPosInBuf);
+        } else {
+            if () {
+
+            } else {
+
+            }
+        }
+    }
+}
+
+template<class T>
 void CircularBuffer<T>::set_capacity(const size_t newCapacity) {
     if (size == capacity) {
         indexDecrement(beginPosInBuf, capacity);
@@ -15,24 +45,7 @@ void CircularBuffer<T>::set_capacity(const size_t newCapacity) {
             }
         }
     } else {
-        if (endPosInBuf >= beginPosInBuf) {
-            beginBufferInMem.resize(newCapacity);
-            if (newCapacity > 0) {
-                if (newCapacity - 1 < endPosInBuf) {
-                    endPosInBuf -= endPosInBuf - (newCapacity - 1);
-                    size -= endPosInBuf - (newCapacity - 1);
-                    if (endPosInBuf < beginPosInBuf) {
-                        beginPosInBuf = 0;
-                    }
-                }
-            } else {
-                beginPosInBuf = 0;
-                endPosInBuf = 0;
-            }
-        } else {
-            const size_t diffCap = capacity - newCapacity;
-            if (diffCap )
-        }
+        set_capacityWhenNewCapacityLessOldCapacity(newCapacity);
     }
 
     capacity = newCapacity;
