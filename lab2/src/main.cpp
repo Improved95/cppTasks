@@ -6,7 +6,7 @@ int main() {
         cb1.push_back(i + 1);
     }
 
-    cb1.rotate(5);
+
 
     cout << "" << endl;
 

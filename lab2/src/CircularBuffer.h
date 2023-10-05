@@ -40,7 +40,7 @@ private:
 public:
     CircularBuffer();
     explicit CircularBuffer(size_t capacity);
-    explicit CircularBuffer(size_t capacity, T elem);
+    explicit CircularBuffer(size_t capacity, T &elem);
 
     vector<T> getBeginBufferInMem() const{ return beginBufferInMem; }
     size_t getCapacity() const { return capacity; }
@@ -70,11 +70,16 @@ public:
 
     bool operator==(const CircularBuffer<T> &a);
     bool operator!=(const CircularBuffer<T> &a);
+    CircularBuffer & operator=(const CircularBuffer & cb);
 
     bool is_linearized() const;
     bool empty() const;
     bool full() const;
     size_t reserve() const;
+
+    void set_capacity(const size_t new_capacity);
+    void resize(const size_t newSize, const T &item);
+    void swap(CircularBuffer & cb);
 };
 
 // всевозможные конструкторы класса
@@ -94,7 +99,7 @@ CircularBuffer<T>::CircularBuffer(size_t capacity):CircularBuffer() {
 }
 
 template<class T>
-CircularBuffer<T>::CircularBuffer(size_t capacity, T elem):CircularBuffer(capacity) {
+CircularBuffer<T>::CircularBuffer(size_t capacity, T &elem):CircularBuffer(capacity) {
     for (size_t i = 0; i < capacity; i++) {
         this->beginBufferInMem[i] = elem;
     }
@@ -336,20 +341,10 @@ size_t CircularBuffer<T>::reserve() const {
     return capacity - size;
 }
 
+//Изменяет размер буфера.
+#include "setCapacity.h"
+
+//В случае расширения, новые элементы заполняются элементом item.
+#include "resize.h"
+
 #endif
-
-// я точно не ебу, но что то точно не работает
-
-/*
-  осталось немного:
-  void rotate(int new_begin);
-  -----------------------------------------------------------------
-  void set_capacity(int new_capacity);
-  //Изменяет размер буфера.
-  //В случае расширения, новые элементы заполняются элементом item.
-  void resize(int new_size, const value_type & item = value_type());
-  //Оператор присваивания.
-  CircularBuffer & operator=(const CircularBuffer & cb);
-  //Обменивает содержимое буфера с буфером cb.
-  void swap(CircularBuffer & cb);
- */

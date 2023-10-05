@@ -78,5 +78,3 @@ void CircularBuffer<T>::rotate(const size_t newBegin) {
         indexIncrement(endPosInBuf, capacity);
     }
 }
-
-// доделать последний случай + дописать изменение позиций в предпоследнем
