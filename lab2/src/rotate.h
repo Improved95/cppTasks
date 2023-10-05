@@ -28,22 +28,23 @@ void CircularBuffer<T>::andBeginPosPlusNewBeginLessCapacity(const size_t newBegi
         beginBufferInMem[capacity - (beginPosInBuf + newBegin) + i] = pel[i];
     }
     delete[] pel;
-    beginPosInBuf = 0;
+    beginPosInBuf =
 }
 
 template <class T>
 void CircularBuffer<T>::andBeginPosPlusNewBeginMoreCapacity(const size_t newBegin) {
-    T *pel = new T[(beginPosInBuf + newBegin) % capacity + 1];
-    for (size_t i = 0; i < (beginPosInBuf + newBegin) % capacity + 1; i++) {
+    T *pel = new T[(beginPosInBuf + newBegin) % capacity];
+    for (size_t i = 0; i < (beginPosInBuf + newBegin) % capacity; i++) {
         pel[i] = beginBufferInMem[i];
     }
-    for (size_t i = 0; i < capacity - newBegin; i++) {
-        swapElement(beginBufferInMem[i], beginBufferInMem[newBegin + i]);
+    for (size_t i = 0; i < capacity - ((beginPosInBuf + newBegin) % capacity); i++) {
+        swapElement(beginBufferInMem[i], beginBufferInMem[(beginPosInBuf + newBegin) % capacity + i]);
     }
-    for (size_t i = 0; i < newBegin; i++) {
-        beginBufferInMem[capacity - newBegin + i] = pel[i];
+    for (size_t i = 0; i < (beginPosInBuf + newBegin) % capacity; i++) {
+        beginBufferInMem[capacity - ((beginPosInBuf + newBegin) % capacity )+ i] = pel[i];
     }
     delete[] pel;
+
 }
 
 template<class T>

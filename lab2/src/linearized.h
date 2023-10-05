@@ -1,3 +1,5 @@
+
+// есть способ сделать перемещение очень быстро и без доп памяти, но я его не знаю
 template<class T>
 T * CircularBuffer<T>::linearize() {
     if (beginPosInBuf != 0) {
