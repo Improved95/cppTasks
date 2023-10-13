@@ -20,7 +20,13 @@ void CircularBuffer<T>::set_capacityWhenNewCapacityLessOldCapacity(const size_t 
             beginBufferInMem.erase(beginBufferInMem.begin() + beginPosInBuf - diffCap, beginBufferInMem.begin() + beginPosInBuf);
         } else {
             if (beginPosInBuf - 1 > diffCap) {
-                endPosInBuf = endPosInBuf - diffCap + (beginPosInBuf - endPosInBuf);
+                size_t oldEndPos = endPosInBuf;
+                endPosInBuf = endPosInBuf - diffCap + (beginPosInBuf - endPosInBuf) - 2;
+                for (size_t i = 0; i < capacity - oldEndPos; i++) {
+                    swapElement(beginBufferInMem[endPosInBuf + i + 1], beginBufferInMem[oldEndPos + i]);
+                }
+//                beginPosInBuf = 0;
+                beginBufferInMem.resize(newCapacity);
             } else {
 
             }
