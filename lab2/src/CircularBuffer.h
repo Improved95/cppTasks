@@ -80,6 +80,7 @@ public:
     size_t reserve() const;
 
     void set_capacity(const size_t new_capacity);
+    void resize(const size_t newSize);
     void resize(const size_t newSize, const T &item);
     void swap(CircularBuffer & cb);
 };
@@ -347,6 +348,6 @@ size_t CircularBuffer<T>::reserve() const {
 #include "setCapacity.h"
 
 //В случае расширения, новые элементы заполняются элементом item.
-//#include "resize.h"
+#include "resize.h"
 
 #endif

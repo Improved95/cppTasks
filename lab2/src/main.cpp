@@ -2,12 +2,11 @@
 
 int main() {
     CircularBuffer<int> cb1(8);
-    for (int i = 0; i < 13; i++) {
+    for (int i = 0; i < 5; i++) {
         cb1.push_back(i + 1);
     }
-    cb1.pop_back();
 
-    cb1.set_capacity(4);
+    cb1.resize(3);
 
     cout << "" << endl;
 
