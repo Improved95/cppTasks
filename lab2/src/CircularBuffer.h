@@ -43,6 +43,7 @@ public:
     CircularBuffer();
     explicit CircularBuffer(size_t capacity);
     explicit CircularBuffer(size_t capacity, T &elem);
+    CircularBuffer(const CircularBuffer<T> &a);
 
     vector<T> getBeginBufferInMem() const{ return beginBufferInMem; }
     size_t getCapacity() const { return capacity; }
@@ -72,7 +73,7 @@ public:
 
     bool operator==(const CircularBuffer<T> &a);
     bool operator!=(const CircularBuffer<T> &a);
-    CircularBuffer & operator=(const CircularBuffer & cb);
+//    CircularBuffer & operator=(const CircularBuffer<T> &cb);
 
     bool is_linearized() const;
     bool empty() const;
@@ -144,6 +145,7 @@ void CircularBuffer<T>::push_back(const T &item) {
         size++;
     }
 }
+
 template<class T>
 void CircularBuffer<T>::push_front(const T &item) {
     indexDecrement(beginPosInBuf, capacity);
@@ -349,5 +351,11 @@ size_t CircularBuffer<T>::reserve() const {
 
 //В случае расширения, новые элементы заполняются элементом item.
 #include "resize.h"
+
+//template<class T>
+//CircularBuffer & CircularBuffer<T>::operator=(const CircularBuffer &cb) {
+//
+//    return ;
+//}
 
 #endif

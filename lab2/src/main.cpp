@@ -6,7 +6,13 @@ int main() {
         cb1.push_back(i + 1);
     }
 
-    cb1.resize(3);
+    CircularBuffer<int> cb2(4);
+    for (int i = 0; i < 5; i++) {
+        cb1.push_back(i + 1);
+    }
+
+    cb2 = cb1;
+
 
     cout << "" << endl;
 
