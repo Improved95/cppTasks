@@ -7,7 +7,7 @@ int main() {
     }
     cb1.pop_back();
 
-    cb1.set_capacity(5);
+    cb1.set_capacity(4);
 
     cout << "" << endl;
 

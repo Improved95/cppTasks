@@ -20,13 +20,12 @@ void CircularBuffer<T>::set_capacityWhenNewCapacityLessOldCapacity(const size_t 
             beginBufferInMem.erase(beginBufferInMem.begin() + beginPosInBuf - diffCap, beginBufferInMem.begin() + beginPosInBuf);
         } else {
             if (beginPosInBuf - 1 > diffCap) {
-                size_t oldEndPos = endPosInBuf;
-                endPosInBuf = endPosInBuf - diffCap + (beginPosInBuf - endPosInBuf) - 2;
-                for (size_t i = 0; i < capacity - oldEndPos; i++) {
-                    swapElement(beginBufferInMem[endPosInBuf + i + 1], beginBufferInMem[oldEndPos + i]);
+                endPosInBuf = endPosInBuf - diffCap + (beginPosInBuf - endPosInBuf) - 1;
+                for (size_t i = 0; i < (capacity - beginPosInBuf); i++) {
+                    swapElement(beginBufferInMem[endPosInBuf + 1 + i], beginBufferInMem[beginPosInBuf + i]);
                 }
-//                beginPosInBuf = 0;
                 beginBufferInMem.resize(newCapacity);
+                beginPosInBuf = endPosInBuf + 1;
             } else {
 
             }
@@ -50,13 +49,12 @@ void CircularBuffer<T>::set_capacity(const size_t newCapacity) {
                 swapElement(beginBufferInMem[beginPosInBuf + i], beginBufferInMem[newCapacity - beginPosInBuf + i + 1]);
             }
         }
+        if (size == capacity) {
+            indexIncrement(beginPosInBuf, capacity);
+        }
+        indexIncrement(endPosInBuf, capacity);
     } else {
         set_capacityWhenNewCapacityLessOldCapacity(newCapacity);
     }
-
     capacity = newCapacity;
-    if (size == capacity) {
-        indexIncrement(beginPosInBuf, capacity);
-    }
-    indexIncrement(endPosInBuf, capacity);
 }
