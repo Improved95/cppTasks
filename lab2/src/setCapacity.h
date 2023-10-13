@@ -19,8 +19,8 @@ void CircularBuffer<T>::set_capacityWhenNewCapacityLessOldCapacity(const size_t 
         if (diffCap < (beginPosInBuf - endPosInBuf)) {
             beginBufferInMem.erase(beginBufferInMem.begin() + beginPosInBuf - diffCap, beginBufferInMem.begin() + beginPosInBuf);
         } else {
-            if () {
-
+            if (beginPosInBuf - 1 > diffCap) {
+                endPosInBuf = endPosInBuf - diffCap + (beginPosInBuf - endPosInBuf);
             } else {
 
             }
