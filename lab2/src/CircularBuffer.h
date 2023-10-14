@@ -43,7 +43,8 @@ public:
     CircularBuffer();
     explicit CircularBuffer(size_t capacity);
     explicit CircularBuffer(size_t capacity, T &elem);
-    CircularBuffer(const CircularBuffer<T> &a);
+    CircularBuffer(const CircularBuffer<T> &cb);
+    void swap(const CircularBuffer<T> &a, const CircularBuffer<T> &b);
 
     vector<T> getBeginBufferInMem() const{ return beginBufferInMem; }
     size_t getCapacity() const { return capacity; }
@@ -73,7 +74,7 @@ public:
 
     bool operator==(const CircularBuffer<T> &a);
     bool operator!=(const CircularBuffer<T> &a);
-//    CircularBuffer & operator=(const CircularBuffer<T> &cb);
+    CircularBuffer & operator=(const CircularBuffer<T> &cb);
 
     bool is_linearized() const;
     bool empty() const;
@@ -107,6 +108,18 @@ CircularBuffer<T>::CircularBuffer(size_t capacity, T &elem):CircularBuffer(capac
     for (size_t i = 0; i < capacity; i++) {
         this->beginBufferInMem[i] = elem;
     }
+}
+
+// конструктор копирования
+template<class T>
+CircularBuffer<T>::CircularBuffer(const CircularBuffer &cb) {
+
+}
+
+// swap object
+template<class T>
+void CircularBuffer<T>::swap(const CircularBuffer &a, const CircularBuffer &b) {
+
 }
 
 // index increment-decrement
@@ -316,6 +329,12 @@ bool CircularBuffer<T>::operator!=(const CircularBuffer<T> &a) {
     this->size == a.getSize());
 }
 
+//оператор =
+template<class T>
+CircularBuffer & CircularBuffer<T>::operator=(const CircularBuffer &cb) {
+    return cb;
+}
+
 //Линеаризация
 #include "linearized.h"
 
@@ -351,11 +370,5 @@ size_t CircularBuffer<T>::reserve() const {
 
 //В случае расширения, новые элементы заполняются элементом item.
 #include "resize.h"
-
-//template<class T>
-//CircularBuffer & CircularBuffer<T>::operator=(const CircularBuffer &cb) {
-//
-//    return ;
-//}
 
 #endif

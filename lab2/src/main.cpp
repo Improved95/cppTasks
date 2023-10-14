@@ -11,9 +11,6 @@ int main() {
         cb1.push_back(i + 1);
     }
 
-    cb2 = cb1;
-
-
     cout << "" << endl;
 
     return 0;
