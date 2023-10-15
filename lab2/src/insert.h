@@ -8,7 +8,7 @@ void CircularBuffer<T>::insert(const size_t pos, const T &item) {
         indexDecrement(endPosInBuf, capacity);
         if (beginPosInBuf < endPosInBuf) {
             for (size_t i = 0; i < (endPosInBuf - (beginPosInBuf + pos) + 1); i++) {
-                swapElement(beginBufferInMem[(endPosInBuf - i) % capacity], beginBufferInMem[(endPosInBuf - i + 1) % capacity]);
+                swapElementInVector(beginBufferInMem[(endPosInBuf - i) % capacity], beginBufferInMem[(endPosInBuf - i + 1) % capacity]);
             }
             if (size == capacity - 1) {
                 indexIncrement(beginPosInBuf, capacity);
@@ -16,7 +16,7 @@ void CircularBuffer<T>::insert(const size_t pos, const T &item) {
         } else {
             T elem = beginBufferInMem[(beginPosInBuf + pos) % capacity];
             for (size_t i = 0; i < (capacity - pos + endPosInBuf + 1); i++) {
-                swapElement(elem, beginBufferInMem[(beginPosInBuf + pos + i + 1) % capacity]);
+                swapElementInVector(elem, beginBufferInMem[(beginPosInBuf + pos + i + 1) % capacity]);
             }
             if (size == capacity) {
                 indexIncrement(beginPosInBuf, capacity);

@@ -4,7 +4,7 @@ T * CircularBuffer<T>::linearize() {
     if (beginPosInBuf != 0) {
         if (beginPosInBuf < endPosInBuf) {
             for (size_t i = 0; i < endPosInBuf - beginPosInBuf - 1; i++) {
-                swapElement(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + i]);
+                swapElementInVector(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + i]);
             }
             endPosInBuf -= beginPosInBuf;
             beginPosInBuf = 0;
@@ -19,7 +19,7 @@ T * CircularBuffer<T>::linearize() {
                     pel[i] = beginBufferInMem[i];
                 }
                 for (size_t i = 0; i < capacity - beginPosInBuf; i++) {
-                    swapElement(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + i]);
+                    swapElementInVector(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + i]);
                 }
                 for (size_t i = 0; i < endPosInBuf + 1; i++) {
                     beginBufferInMem[capacity - beginPosInBuf + i] = pel[i];

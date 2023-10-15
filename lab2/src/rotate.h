@@ -5,7 +5,7 @@ void CircularBuffer<T>::rotateWhenBeginPosLessEndPos(const size_t newBegin) {
         pel[i] = beginBufferInMem[beginPosInBuf + i];
     }
     for (size_t i = 0; i < endPosInBuf - beginPosInBuf - 1; i++) {
-        swapElement(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + newBegin + i]);
+        swapElementInVector(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + newBegin + i]);
     }
     for (size_t i = 0; i < newBegin; i++) {
         beginBufferInMem[endPosInBuf - beginPosInBuf - 1 + i] = pel[i];
@@ -22,7 +22,7 @@ void CircularBuffer<T>::andBeginPosPlusNewBeginLessCapacity(const size_t newBegi
         pel[i] = beginBufferInMem[i];
     }
     for (size_t i = 0; i < capacity - (beginPosInBuf + newBegin); i++) {
-        swapElement(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + newBegin + i]);
+        swapElementInVector(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + newBegin + i]);
     }
     for (size_t i = 0; i < beginPosInBuf + newBegin; i++) {
         beginBufferInMem[capacity - (beginPosInBuf + newBegin) + i] = pel[i];
@@ -39,7 +39,7 @@ void CircularBuffer<T>::andBeginPosPlusNewBeginMoreCapacity(const size_t newBegi
         pel[i] = beginBufferInMem[i];
     }
     for (size_t i = 0; i < capacity - ((beginPosInBuf + newBegin) % capacity); i++) {
-        swapElement(beginBufferInMem[i], beginBufferInMem[(beginPosInBuf + newBegin) % capacity + i]);
+        swapElementInVector(beginBufferInMem[i], beginBufferInMem[(beginPosInBuf + newBegin) % capacity + i]);
     }
     for (size_t i = 0; i < (beginPosInBuf + newBegin) % capacity; i++) {
         beginBufferInMem[capacity - ((beginPosInBuf + newBegin) % capacity ) + i] = pel[i];

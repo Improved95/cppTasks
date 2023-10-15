@@ -1,7 +1,7 @@
 template<class T>
 void CircularBuffer<T>::eraseWhenBeginPosLessEndPos(const size_t first, const size_t last) {
     for (size_t i = 0; i < (endPosInBuf - last); i++) {
-        swapElement(beginBufferInMem[first + i], beginBufferInMem[last + i]); //swapElement, потому что не свап лень писать
+        swapElementInVector(beginBufferInMem[first + i], beginBufferInMem[last + i]); //swapElement, потому что не свап лень писать
     }
     endPosInBuf = first + (endPosInBuf - last);
     size -= (last - first);

@@ -37,13 +37,14 @@ private:
 
     void set_capacityWhenNewCapacityLessOldCapacity(const size_t newCapacity);
 
-    void swapElement(T &a, T &b);
+    void swapElementInVector(T &a, T &b);
 
 public:
     CircularBuffer();
     explicit CircularBuffer(size_t capacity);
     explicit CircularBuffer(size_t capacity, T &elem);
-    CircularBuffer(const CircularBuffer<T> &a);
+    CircularBuffer(const CircularBuffer<T> &cb);
+    void swap(CircularBuffer & cb);
 
     vector<T> getBeginBufferInMem() const{ return beginBufferInMem; }
     size_t getCapacity() const { return capacity; }
@@ -71,9 +72,16 @@ public:
     T & back();
     const T & back() const;
 
-    bool operator==(const CircularBuffer<T> &a);
-    bool operator!=(const CircularBuffer<T> &a);
-//    CircularBuffer & operator=(const CircularBuffer<T> &cb);
+    bool operator==(const CircularBuffer<T> &cb);
+    bool operator!=(const CircularBuffer<T> &cb);
+    CircularBuffer & operator=(const CircularBuffer<T> &cb) {
+        this->beginBufferInMem = cb.beginBufferInMem;
+        this->capacity = cb.capacity;
+        this->size = cb.size;
+        this->beginPosInBuf = cb.beginPosInBuf;
+        this->endPosInBuf = cb.endPosInBuf;
+        return *this;
+    }
 
     bool is_linearized() const;
     bool empty() const;
@@ -83,7 +91,6 @@ public:
     void set_capacity(const size_t new_capacity);
     void resize(const size_t newSize);
     void resize(const size_t newSize, const T &item);
-    void swap(CircularBuffer & cb);
 };
 
 // всевозможные конструкторы класса
@@ -95,18 +102,43 @@ CircularBuffer<T>::CircularBuffer() {
     this->size = 0;
     this->beginBufferInMem = vector<T>(capacity);
 }
-
 template<class T>
 CircularBuffer<T>::CircularBuffer(size_t capacity):CircularBuffer() {
     this->capacity = capacity;
     this->beginBufferInMem = vector<T>(capacity);
 }
-
 template<class T>
 CircularBuffer<T>::CircularBuffer(size_t capacity, T &elem):CircularBuffer(capacity) {
     for (size_t i = 0; i < capacity; i++) {
         this->beginBufferInMem[i] = elem;
     }
+}
+
+// конструктор копирования
+template<class T>
+CircularBuffer<T>::CircularBuffer(const CircularBuffer &cb) {
+    this->beginBufferInMem = cb.beginBufferInMem;
+    this->capacity = cb.capacity;
+    this->size = cb.size;
+    this->beginPosInBuf = cb.beginPosInBuf;
+    this->endPosInBuf = cb.endPosInBuf;
+}
+
+// swap objects
+template<class T2>
+void swapObjectField(T2 &a, T2 &b) {
+    T2 c = a;
+    a = b;
+    b = c;
+}
+
+template<class T>
+void CircularBuffer<T>::swap(CircularBuffer & cb) {
+    swapObjectField(this->beginBufferInMem, cb.beginBufferInMem);
+    swapObjectField(this->capacity, cb.capacity);
+    swapObjectField(this->size, cb.size);
+    swapObjectField(this->beginPosInBuf, cb.beginPosInBuf);
+    swapObjectField(this->endPosInBuf, cb.endPosInBuf);
 }
 
 // index increment-decrement
@@ -125,9 +157,9 @@ void indexDecrement(size_t &index, const size_t capacity) {
     }
 }
 
-//swapElement
+//swapElementInVector
 template<class T>
-void CircularBuffer<T>::swapElement(T &a, T &b) {
+void CircularBuffer<T>::swapElementInVector(T &a, T &b) {
     T c = a;
     a = b;
     b = c;
@@ -145,7 +177,6 @@ void CircularBuffer<T>::push_back(const T &item) {
         size++;
     }
 }
-
 template<class T>
 void CircularBuffer<T>::push_front(const T &item) {
     indexDecrement(beginPosInBuf, capacity);
@@ -300,20 +331,20 @@ void CircularBuffer<T>::clear() {
 // не сработает, если в векторе будут непростые объекты, структуры или классы, для каждого такого объекта
 // нужно переписывать сравнение
 template<class T>
-bool CircularBuffer<T>::operator==(const CircularBuffer<T> &a) {
-    return (this->beginBufferInMem == a.getBeginBufferInMem() && this->capacity == a.getCapacity() && \
-    this->beginPosInBuf == a.getBeginPosInBuf() && this->endPosInBuf == a.endPosInBuf && \
-    this->size == a.getSize());
+bool CircularBuffer<T>::operator==(const CircularBuffer<T> &cb) {
+    return (this->beginBufferInMem == cb.getBeginBufferInMem() && this->capacity == cb.getCapacity() && \
+    this->beginPosInBuf == cb.getBeginPosInBuf() && this->endPosInBuf == cb.endPosInBuf && \
+    this->size == cb.getSize());
 }
 
 //оператор !=
 // не сработает, если в векторе будут непростые объекты, структуры или классы, для каждого такого объекта
 // нужно переписывать сравнение
 template<class T>
-bool CircularBuffer<T>::operator!=(const CircularBuffer<T> &a) {
-    return !(this->beginBufferInMem == a.getBeginBufferInMem() && this->capacity == a.getCapacity() && \
-    this->beginPosInBuf == a.getBeginPosInBuf() && this->endPosInBuf == a.endPosInBuf && \
-    this->size == a.getSize());
+bool CircularBuffer<T>::operator!=(const CircularBuffer<T> &cb) {
+    return !(this->beginBufferInMem == cb.getBeginBufferInMem() && this->capacity == cb.getCapacity() && \
+    this->beginPosInBuf == cb.getBeginPosInBuf() && this->endPosInBuf == cb.endPosInBuf && \
+    this->size == cb.getSize());
 }
 
 //Линеаризация
@@ -351,11 +382,5 @@ size_t CircularBuffer<T>::reserve() const {
 
 //В случае расширения, новые элементы заполняются элементом item.
 #include "resize.h"
-
-//template<class T>
-//CircularBuffer & CircularBuffer<T>::operator=(const CircularBuffer &cb) {
-//
-//    return ;
-//}
 
 #endif
