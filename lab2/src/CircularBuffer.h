@@ -11,6 +11,15 @@ index increment/decrement нужны чтобы работало кольцо, �
 не сработает, если в () % capacity в скобках будет больше чем size_t, но такое врядли произойдет
  */
 
+/*in most methods working with indexes, there are a lot of checks for this:
+when the buffer is completely full and has started to be overwritten, the end pointer points to the element that
+wants to be overwritten, this very element is the last recorded (if I understood the buffer correctly)
+and the begin pointer should point to it, but since it is assumed that the next step is its if they overwrite it, then
+the end pointer points to it, and everything that works through the begin pointer breaks without these checks
+-----
+index increment/decrement is needed for the ring to work, it would be possible through %, but it does not work with negative
+ones, it will not work if the () % capacity in parentheses is greater than size_t, but this is unlikely to happen*/
+
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -93,7 +102,8 @@ public:
     void resize(const size_t newSize, const T &item);
 };
 
-// всевозможные конструкторы класса
+// class constructor
+/*You can create a class object without passing parameters to the constructor or pass the buffer size or pass the size and specify which values to fill the buffer with*/
 template<class T>
 CircularBuffer<T>::CircularBuffer() {
     this->beginPosInBuf = 0;
@@ -114,7 +124,9 @@ CircularBuffer<T>::CircularBuffer(size_t capacity, T &elem):CircularBuffer(capac
     }
 }
 
-// конструктор копирования
+// copy constructor
+/*creates a copy of the passed object*/
+/*accepts a reference object reference*/
 template<class T>
 CircularBuffer<T>::CircularBuffer(const CircularBuffer &cb) {
     this->beginBufferInMem = cb.beginBufferInMem;
@@ -132,6 +144,8 @@ void swapObjectField(T2 &a, T2 &b) {
     b = c;
 }
 
+/*exchanges data with the passed object*/
+/*accepts a reference object reference*/
 template<class T>
 void CircularBuffer<T>::swap(CircularBuffer & cb) {
     swapObjectField(this->beginBufferInMem, cb.beginBufferInMem);
@@ -166,6 +180,8 @@ void CircularBuffer<T>::swapElementInVector(T &a, T &b) {
 }
 
 // push
+/*adds an element to the end of the buffer, increasing the buffer size by one. Overwrites the beginning of the buffer if it has been reached*/
+/*accepts a reference to a new element*/
 template<class T>
 void CircularBuffer<T>::push_back(const T &item) {
     beginBufferInMem[endPosInBuf] = item;
@@ -177,6 +193,9 @@ void CircularBuffer<T>::push_back(const T &item) {
         size++;
     }
 }
+
+/*adds an element to the beginning of the buffer, increasing the buffer size by one. Overwrites the end of the buffer if it has been reached*/
+/*accepts a reference to a new element*/
 template<class T>
 void CircularBuffer<T>::push_front(const T &item) {
     indexDecrement(beginPosInBuf, capacity);
@@ -190,6 +209,9 @@ void CircularBuffer<T>::push_front(const T &item) {
 }
 
 //pop
+/*reduces the buffer end pointer by one, does not actually delete the object that the end pointed to, but it cannot be accessed from the buffer*/
+/*does not accept anything*/
+/*nothing return*/
 template<class T>
 void CircularBuffer<T>::pop_back() {
     if (endPosInBuf != beginPosInBuf) {
@@ -202,6 +224,10 @@ void CircularBuffer<T>::pop_back() {
         size--;
     }
 }
+
+/*increases the buffer start pointer by one, does not actually delete the object that the start pointed to, but it cannot be accessed from the buffer*/
+/*does not accept anything*/
+/*nothing return*/
 template<class T>
 void CircularBuffer<T>::pop_front() {
     if (size != capacity) {
@@ -214,13 +240,19 @@ void CircularBuffer<T>::pop_front() {
     }
 }
 
-//Вставляет элемент item по индексу pos. Ёмкость буфера остается неизменной
+/*inserts an element by index, the buffer capacity remains unchanged, the buffer size increases if the buffer is not fully filled, otherwise the element pointed to by the index is overwritten with a new element*/
+/*accepts the position where the element should be inserted and a reference to the element*/
+/*nothing return*/
 #include "insert.h"
 
-//Удаляет элементы из буфера в интервале [first, last)
+/*removes elements from the interval [first, last), does not change the buffer capacity*/
+/*accepts indexes for the beginning and end of the segment being deleted*/
+/*nothing return*/
 #include "erase.h"
 
-//Доступ по индексу. Не проверяют правильность индекса
+/*Access by index. Do not check the correctness of the index, not used with constant objects*/
+/*takes the index value to be returned*/
+/*returns an element by index*/
 template<class T>
 T & CircularBuffer<T>::operator[](const size_t i) {
     if (size == capacity) {
@@ -229,6 +261,9 @@ T & CircularBuffer<T>::operator[](const size_t i) {
     return beginBufferInMem[(beginPosInBuf + i) % capacity];
 }
 
+/*Access by index. Do not check the correctness of the index, can used with constant objects*/
+/*takes the index value to be returned*/
+/*returns an element by index*/
 template<class T>
 const T & CircularBuffer<T>::operator[](const size_t i) const {
     if (size == capacity) {
@@ -237,7 +272,9 @@ const T & CircularBuffer<T>::operator[](const size_t i) const {
     return beginBufferInMem[(beginPosInBuf + i) % capacity];
 }
 
-//Доступ по индексу. Методы бросают исключение в случае неверного индекса.
+/*Access by index. Check the correctness of the index, not used with constant objects. Returns an exception in case of an invalid index*/
+/*takes the index value to be returned*/
+/*returns an element by index*/
 template<class T>
 T & CircularBuffer<T>::at(const size_t i) {
     try {
@@ -254,6 +291,9 @@ T & CircularBuffer<T>::at(const size_t i) {
     return beginBufferInMem[0];
 }
 
+/*Access by index. Check the correctness of the index, can used with constant objects. Returns an exception in case of an invalid index*/
+/*takes the index value to be returned*/
+/*returns an element by index*/
 template<class T>
 const T & CircularBuffer<T>::at(const size_t i) const {
     try {
@@ -270,7 +310,7 @@ const T & CircularBuffer<T>::at(const size_t i) const {
     return beginBufferInMem[0];
 }
 
-//Ссылка на первый элемент
+/*Returns the element that the beginning of the buffer points to, not used with constant objects*/
 template<class T>
 T & CircularBuffer<T>::front() {
     if (size == capacity) {
@@ -282,6 +322,7 @@ T & CircularBuffer<T>::front() {
     return beginBufferInMem[beginPosInBuf];
 }
 
+/*Returns the element that the beginning of the buffer points to, can used with constant objects*/
 template<class T>
 const T & CircularBuffer<T>::front() const {
     if (size == capacity) {
@@ -293,7 +334,7 @@ const T & CircularBuffer<T>::front() const {
     return beginBufferInMem[beginPosInBuf];
 }
 
-//Ссылка на последний элемент
+/*Returns the element that the end of the buffer points to, not used with constant objects*/
 template<class T>
 T & CircularBuffer<T>::back() {
     if (size > 0) {
@@ -305,6 +346,7 @@ T & CircularBuffer<T>::back() {
     return beginBufferInMem[endPosInBuf];
 }
 
+/*Returns the element that the end of the buffer points to, can used with constant objects*/
 template<class T>
 const T & CircularBuffer<T>::back() const {
     if (size > 0) {
@@ -316,8 +358,7 @@ const T & CircularBuffer<T>::back() const {
     return beginBufferInMem[endPosInBuf];
 }
 
-//Очищает буфер
-// если в векторе будет что-то связанное с динамической памятью, то пользователю ее придется самому очищать
+/*clears the buffer, preserving the buffer capacity. If you use an entity using dynamic memory as an object, then you need to clear it yourself before calling the function*/
 template<class T>
 void CircularBuffer<T>::clear() {
     beginBufferInMem.resize(0);
@@ -327,9 +368,10 @@ void CircularBuffer<T>::clear() {
     beginBufferInMem.resize(capacity);
 }
 
-//оператор ==
-// не сработает, если в векторе будут непростые объекты, структуры или классы, для каждого такого объекта
-// нужно переписывать сравнение
+//operator ==
+/*compares two elements returns true if the elements are equal, false if they are not equal.
+ * If you use complex data structures as elements for which the standard operator '==' is not defined, then this operator will not work correctly, for such cases you need to redefine the operator "==" for your element type*/
+/*takes the object being compared*/
 template<class T>
 bool CircularBuffer<T>::operator==(const CircularBuffer<T> &cb) {
     return (this->beginBufferInMem == cb.getBeginBufferInMem() && this->capacity == cb.getCapacity() && \
@@ -337,9 +379,10 @@ bool CircularBuffer<T>::operator==(const CircularBuffer<T> &cb) {
     this->size == cb.getSize());
 }
 
-//оператор !=
-// не сработает, если в векторе будут непростые объекты, структуры или классы, для каждого такого объекта
-// нужно переписывать сравнение
+//operator !=
+/*compares two elements returns true if the elements are not equal, false if they are equal.
+ * If you use complex data structures as elements for which the standard operator '!=' is not defined, then this operator will not work correctly, for such cases you need to redefine the operator "==" for your element type*/
+/*takes the object being compared*/
 template<class T>
 bool CircularBuffer<T>::operator!=(const CircularBuffer<T> &cb) {
     return !(this->beginBufferInMem == cb.getBeginBufferInMem() && this->capacity == cb.getCapacity() && \
@@ -347,40 +390,47 @@ bool CircularBuffer<T>::operator!=(const CircularBuffer<T> &cb) {
     this->size == cb.getSize());
 }
 
-//Линеаризация
+
+//linearized
+/*moves the buffer elements so that at the beginning of the allocated memory there is an element to which the buffer start pointer points*/
 #include "linearized.h"
 
-//Проверяет, является ли буфер линеаризованным
+/*Checks whether the buffer is linearized*/
 template <class T>
 bool CircularBuffer<T>::is_linearized() const {
     return (&beginBufferInMem[beginPosInBuf] == &(*beginBufferInMem.begin()));
 }
 
-//Сдвигает буфер так, что по нулевому индексу окажется элемент с индексом new_begin
+/*moves the buffer so that an element with the index new_begin appears at the beginning of the allocated memory*/
+/*takes the index element, which will begin of the allocated memory*/
 #include "rotate.h"
 
-//проверка на пустоту
+/*checks if the buffer is empty*/
+/*return true if buffer is empty, false if buffer not empty*/
 template<class T>
 bool CircularBuffer<T>::empty() const {
     return size == 0;
 }
 
-//проверка на заполнение
+/*checks if the buffer is full*/
+/*return true if buffer is full, false if buffer not full*/
 template<class T>
 bool CircularBuffer<T>::full() const {
     return size == capacity;
 }
 
-//колво свободных ячеек
+/*returns the number of free cells*/
 template<class T>
 size_t CircularBuffer<T>::reserve() const {
     return capacity - size;
 }
 
-//Изменяет размер буфера.
+/*changes the buffer capacity*/
+/*take a "newCapacity"*/
 #include "setCapacity.h"
 
-//В случае расширения, новые элементы заполняются элементом item.
+/*changes the buffer size, in case of an increase, it is possible to fill it with new elements*/
+/*take a "newSize", and reference on element, if you want increase buffer size*/
 #include "resize.h"
 
 #endif
