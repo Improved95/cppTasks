@@ -12,8 +12,8 @@ int main() {
     }
 
     CircularBuffer<int> cb3(cb2);
-    cb3.swap(cb1);
 
+    cb3.swap(cb1);
     cout << "" << endl;
 
     return 0;
