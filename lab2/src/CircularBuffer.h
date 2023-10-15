@@ -27,6 +27,8 @@ using std::vector;
 using std::cout;
 using std::endl;
 
+namespace circularBuffer {
+
 template<class T>
 class CircularBuffer {
 private:
@@ -102,7 +104,7 @@ public:
     void resize(const size_t newSize, const T &item);
 };
 
-// class constructor
+/*class constructor*/
 /*You can create a class object without passing parameters to the constructor or pass the buffer size or pass the size and specify which values to fill the buffer with*/
 template<class T>
 CircularBuffer<T>::CircularBuffer() {
@@ -124,7 +126,7 @@ CircularBuffer<T>::CircularBuffer(size_t capacity, T &elem):CircularBuffer(capac
     }
 }
 
-// copy constructor
+/*copy constructor*/
 /*creates a copy of the passed object*/
 /*accepts a reference object reference*/
 template<class T>
@@ -136,7 +138,7 @@ CircularBuffer<T>::CircularBuffer(const CircularBuffer &cb) {
     this->endPosInBuf = cb.endPosInBuf;
 }
 
-// swap objects
+/*swap objects*/
 template<class T2>
 void swapObjectField(T2 &a, T2 &b) {
     T2 c = a;
@@ -179,7 +181,7 @@ void CircularBuffer<T>::swapElementInVector(T &a, T &b) {
     b = c;
 }
 
-// push
+/*push*/
 /*adds an element to the end of the buffer, increasing the buffer size by one. Overwrites the beginning of the buffer if it has been reached*/
 /*accepts a reference to a new element*/
 template<class T>
@@ -208,7 +210,7 @@ void CircularBuffer<T>::push_front(const T &item) {
     }
 }
 
-//pop
+/*pop*/
 /*reduces the buffer end pointer by one, does not actually delete the object that the end pointed to, but it cannot be accessed from the buffer*/
 /*does not accept anything*/
 /*nothing return*/
@@ -432,5 +434,7 @@ size_t CircularBuffer<T>::reserve() const {
 /*changes the buffer size, in case of an increase, it is possible to fill it with new elements*/
 /*take a "newSize", and reference on element, if you want increase buffer size*/
 #include "resize.h"
+
+}
 
 #endif
