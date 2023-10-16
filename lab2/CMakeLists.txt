@@ -36,4 +36,6 @@ FetchContent_MakeAvailable(googletest)
 # наш собственный main.cpp здесь не нужен, т.к. функция main реализована в gtest_main
 add_executable(${test_name} src/test.cpp)
 target_link_libraries(${test_name} gtest_main)
+target_link_libraries(${test_name} gmock_main)
 target_link_libraries(${test_name} corelib)
+
