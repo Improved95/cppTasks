@@ -1,7 +1,7 @@
 template<class T>
 void CircularBuffer<T>::insert(const size_t pos, const T &item) {
     size_t insertPosition = (beginPosInBuf + pos) % capacity;
-    if (pos < size) {
+    if (pos < capacity) {
         if (size < capacity) {
             indexDecrement(endPosInBuf, capacity);
             if (beginPosInBuf < endPosInBuf) {

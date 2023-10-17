@@ -53,7 +53,7 @@ private:
 public:
     CircularBuffer();
     explicit CircularBuffer(size_t capacity);
-    explicit CircularBuffer(size_t capacity, T &elem);
+    explicit CircularBuffer(size_t capacity, const T &elem);
     CircularBuffer(const CircularBuffer<T> &cb);
     void swap(CircularBuffer & cb);
 
@@ -120,7 +120,9 @@ CircularBuffer<T>::CircularBuffer(size_t capacity):CircularBuffer() {
     this->beginBufferInMem = vector<T>(capacity);
 }
 template<class T>
-CircularBuffer<T>::CircularBuffer(size_t capacity, T &elem):CircularBuffer(capacity) {
+CircularBuffer<T>::CircularBuffer(size_t capacity, const T &elem):CircularBuffer(capacity) {
+    this->capacity = capacity;
+    this->size = capacity;
     for (size_t i = 0; i < capacity; i++) {
         this->beginBufferInMem[i] = elem;
     }
