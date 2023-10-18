@@ -103,28 +103,57 @@ TEST(CircularBuffer, pop_front) {
 
 TEST(CircularBuffer, insert) {
     CircularBuffer<int> cb1(4);
-    for (size_t i = 0; i < 3; i++) {
+    for (size_t i = 0; i < 2; i++) {
         cb1.push_back(i + 1);
     }
 
-    cb1.insert(3, 10);
+    cb1.insert(2, 10);
+    EXPECT_EQ(cb1.getSize(), 3);
+    EXPECT_EQ(cb1.getBeginPosInBuf(), 0);
+    EXPECT_EQ(cb1.getEndPosInBuf(), 3);
+    EXPECT_THAT(cb1.getBeginBufferInMem(), testing::ElementsAre(1, 2, 10, 0));
+
+    cb1.insert(2, 20);
     EXPECT_EQ(cb1.getSize(), 4);
     EXPECT_EQ(cb1.getBeginPosInBuf(), 1);
     EXPECT_EQ(cb1.getEndPosInBuf(), 0);
-    EXPECT_THAT(cb1.getBeginBufferInMem(), testing::ElementsAre(1, 2, 3, 10));
+    EXPECT_THAT(cb1.getBeginBufferInMem(), testing::ElementsAre(1, 2, 20, 10));
 
     cb1.push_back(11);
     cb1.push_back(12);
     cb1.pop_back();
 
-    cb1.insert(0, 20);
+    cb1.insert(2, 30);
     EXPECT_EQ(cb1.getSize(), 4);
     EXPECT_EQ(cb1.getBeginPosInBuf(), 3);
     EXPECT_EQ(cb1.getEndPosInBuf(), 2);
-    EXPECT_THAT(cb1.getBeginBufferInMem(), testing::ElementsAre(10, 11, 20, 3));
+    EXPECT_THAT(cb1.getBeginBufferInMem(), testing::ElementsAre(30, 11, 20, 10));
 
-    cb1.insert(2, 30);
-    EXPECT_THAT(cb1.getBeginBufferInMem(), testing::ElementsAre(30, 11, 20, 3));
+    cb1.pop_back();
+
+    cb1.insert(0, 40);
+    EXPECT_EQ(cb1.getSize(), 4);
+    EXPECT_EQ(cb1.getBeginPosInBuf(), 3);
+    EXPECT_EQ(cb1.getEndPosInBuf(), 2);
+    EXPECT_THAT(cb1.getBeginBufferInMem(), testing::ElementsAre(10, 30, 40, 20));
+
+
+    cb1.insert(2, 50);
+    EXPECT_THAT(cb1.getBeginBufferInMem(), testing::ElementsAre(10, 50, 40, 20));
+}
+
+TEST(CircularBuffer, erase) {
+    CircularBuffer<int> cb1(5);
+    for (size_t i = 0; i < 7; i++) {
+        cb1.push_back(i + 1);
+    }
+
+    cb1.erase(1, 2);
+    EXPECT_EQ(cb1.getSize(), 3);
+    EXPECT_EQ(cb1.getBeginPosInBuf(), 2);
+    EXPECT_EQ(cb1.getEndPosInBuf(), 1);
+    EXPECT_THAT(cb1.getBeginBufferInMem(), testing::ElementsAre(7, 3, 3, 5, 6));
+
 }
 
 int main(int argc, char **argv) {

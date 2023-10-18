@@ -12,9 +12,9 @@ else()
     add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 
-add_library(corelib OBJECT src/circularBuffer.h)
-add_executable(${exe_name} src/main.cpp)
-target_link_libraries(${exe_name} corelib)
+add_library(corelib OBJECT src/circularBuffer.cpp)
+set_target_properties(corelib PROPERTIES EXCLUDE_FROM_ALL TRUE)
+set_target_properties(corelib PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD TRUE)
 
 if(POLICY CMP0135)
     cmake_policy(SET CMP0135 NEW)
@@ -38,4 +38,3 @@ add_executable(${test_name} src/test.cpp)
 target_link_libraries(${test_name} gtest_main)
 target_link_libraries(${test_name} gmock_main)
 target_link_libraries(${test_name} corelib)
-

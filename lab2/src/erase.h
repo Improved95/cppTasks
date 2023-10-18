@@ -21,7 +21,7 @@ void CircularBuffer<T>::eraseWhenBeginPosMoreEndPos(const size_t first, const si
         quantReplaceEl = endPosInBuf - ((beginPosInBuf + last) % capacity) + 1;
     }
     for (size_t i = 0; i < quantReplaceEl; i++) {
-        swapElement(beginBufferInMem[(beginPosInBuf + first + i) % capacity], beginBufferInMem[(beginPosInBuf + last + i) % capacity]);
+        swapElementInVector(beginBufferInMem[(beginPosInBuf + first + i) % capacity], beginBufferInMem[(beginPosInBuf + last + i) % capacity]);
     }
     endPosInBuf = (beginPosInBuf + first + quantReplaceEl) % capacity;
     size -= (last - first);
