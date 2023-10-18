@@ -402,7 +402,13 @@ bool CircularBuffer<T>::operator!=(const CircularBuffer<T> &cb) {
 /*Checks whether the buffer is linearized*/
 template <class T>
 bool CircularBuffer<T>::is_linearized() const {
-    return (&beginBufferInMem[beginPosInBuf] == &(*beginBufferInMem.begin()));
+    size_t indexForCheck = beginPosInBuf;
+    if (size == capacity) {
+        indexDecrement(indexForCheck, capacity);
+    }
+    const T *a = &beginBufferInMem[indexForCheck];
+    const T *b = &(beginBufferInMem[0]);
+    return a == b;
 }
 
 /*moves the buffer so that an element with the index new_begin appears at the beginning of the allocated memory*/

@@ -28,7 +28,7 @@ void CircularBuffer<T>::andBeginPosPlusNewBeginLessCapacity(const size_t newBegi
         beginBufferInMem[capacity - (beginPosInBuf + newBegin) + i] = pel[i];
     }
     delete[] pel;
-    beginPosInBuf = capacity - newBegin + beginPosInBuf - 2;
+    beginPosInBuf = capacity - (beginPosInBuf - newBegin);
     endPosInBuf = (beginPosInBuf + size - 1) % capacity;
 }
 

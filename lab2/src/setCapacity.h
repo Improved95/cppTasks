@@ -28,7 +28,7 @@ void CircularBuffer<T>::set_capacityWhenNewCapacityLessOldCapacity(const size_t 
             if (beginPosInBuf > diffCap) {
                 endPosInBuf = endPosInBuf - diffCap + (beginPosInBuf - endPosInBuf) - 1;
                 for (size_t i = 0; i < (capacity - beginPosInBuf); i++) {
-                    swapElement(beginBufferInMem[endPosInBuf + 1 + i], beginBufferInMem[beginPosInBuf + i]);
+                    swapElementInVector(beginBufferInMem[endPosInBuf + 1 + i], beginBufferInMem[beginPosInBuf + i]);
                 }
                 beginBufferInMem.resize(newCapacity);
                 indexIncrement(endPosInBuf, newCapacity); // возвращаем в состояние записи
@@ -38,7 +38,7 @@ void CircularBuffer<T>::set_capacityWhenNewCapacityLessOldCapacity(const size_t 
             } else {
                 endPosInBuf = beginPosInBuf + newCapacity - 1;
                 for (size_t i = 0; i < (endPosInBuf - beginPosInBuf) + 1; i++) {
-                    swapElement(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + i]);
+                    swapElementInVector(beginBufferInMem[i], beginBufferInMem[beginPosInBuf + i]);
                 }
                 beginPosInBuf = 1;
                 endPosInBuf = 0;
@@ -62,7 +62,10 @@ void CircularBuffer<T>::set_capacity(const size_t newCapacity) {
         } else {
             beginBufferInMem.resize(newCapacity);
             for (size_t i = 0; i < capacity - beginPosInBuf; i++) {
-                swapElement(beginBufferInMem[beginPosInBuf + i], beginBufferInMem[newCapacity - beginPosInBuf + i + 1]);
+                swapElementInVector(beginBufferInMem[beginPosInBuf + i], beginBufferInMem[newCapacity - beginPosInBuf + i + 1]);
+            }
+            for (size_t i = 0; i < (newCapacity - capacity); i++) {
+                indexIncrement(beginPosInBuf, capacity);
             }
         }
         if (size == capacity) {
