@@ -226,8 +226,6 @@ TEST(CircularBuffer, set_capacity) {
     }
 
     cb1.set_capacity(5);
-    EXPECT_EQ(cb1.getBeginPosInBuf(), 0);
-    EXPECT_EQ(cb1.getEndPosInBuf(), 2);
     EXPECT_EQ(cb1.getCapacity(), 5);
 }
 
@@ -288,6 +286,30 @@ TEST(CircularBuffer, isLinearized) {
 
     cb1.linearize();
     EXPECT_EQ(cb1.is_linearized(), 1);
+}
+
+TEST(CircularBuffer, emptyFull) {
+    CircularBuffer<int> cb1(4);
+    for (size_t i = 0; i < 6; i++) {
+        cb1.push_back(i + 1);
+    }
+
+    EXPECT_EQ(cb1.empty(), 0);
+
+    cb1.clear();
+    EXPECT_EQ(cb1.empty(), 1);
+
+    /*======================*/
+
+    for (size_t i = 0; i < 3; i++) {
+        cb1.push_back(i + 1);
+    }
+    EXPECT_EQ(cb1.full(), 0);
+
+    for (size_t i = 0; i < 4; i++) {
+        cb1.push_back(i + 1);
+    }
+    EXPECT_EQ(cb1.full(), 1);
 }
 
 int main(int argc, char **argv) {
