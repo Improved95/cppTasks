@@ -1,26 +1,37 @@
+#ifndef LIFE_H
+#define LIFE_H
+
 #include <iostream>
-
+#include "GameMessages.h"
 using std::string;
-
-class Life {
-public:
-    void initialGame();
-
-private:
-    string gameName;
-
-};
-
-class GameMessages {
-
-};
-
-class File {
-
-};
+using std::cout;
+using std::endl;
 
 class Field {
 private:
-    size_t a;
+    size_t rows;
+    size_t colums;
+//    string birth;
+//    string survival;
 
+public:
+    void statusChange();
+
+    void setRows(const size_t valueRows) { this->rows = valueRows; }
+    void setColums(const size_t valueColums) { this->colums = valueColums; }
 };
+
+class Life {
+private:
+    string gameName;
+
+    void gameMode(size_t argc, char **argv);
+    void gameWithoutInitialData(GameMessages messages);
+    void gameWithInitialData(GameMessages messages, char **argv);
+    void offlineGame(GameMessages messages, char **argv);
+
+public:
+    void initialGame(size_t argc, char **argv);
+};
+
+#endif
