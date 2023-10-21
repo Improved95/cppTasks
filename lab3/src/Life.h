@@ -11,16 +11,14 @@ class Cell {
 private:
     size_t x;
     size_t y;
-    bool status;
-//    string birth;
-//    string survival;
 };
 
 class Field {
 private:
     size_t rows;
     size_t colums;
-
+    string birth;
+    string survival;
     Cell *cellArrays;
 
 public:
@@ -35,12 +33,14 @@ private:
     string gameName;
 
     void gameMode(size_t argc, char **argv);
+
     void gameWithoutInitialData(GameMessages messages);
     void gameWithInitialData(GameMessages messages, char **argv);
     void offlineGame(GameMessages messages, char **argv);
 
 public:
     void initialGame(size_t argc, char **argv);
+    void initialGame();
 };
 
 #endif

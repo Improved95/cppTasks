@@ -27,15 +27,12 @@ void Life::gameMode(size_t argc, char **argv) {
     GameMessages messages;
     switch (argc) {
         case 1:
-            // игра без начальных данных
             gameWithoutInitialData(messages);
             break;
         case 2:
-            // игра со считыванием по файлу
             gameWithInitialData(messages, argv);
             break;
         case 4:
-            // оффлайн режим
             offlineGame(messages, argv);
             break;
         default:
@@ -48,5 +45,8 @@ void Life::initialGame(size_t argc, char **argv) {
     gameMode(argc, argv);
 }
 
-
+void Life::initialGame() {
+    char** a;
+    gameMode(1, a);
+}
 
