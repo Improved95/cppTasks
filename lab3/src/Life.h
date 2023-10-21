@@ -7,12 +7,21 @@ using std::string;
 using std::cout;
 using std::endl;
 
+class Cell {
+private:
+    size_t x;
+    size_t y;
+    bool status;
+//    string birth;
+//    string survival;
+};
+
 class Field {
 private:
     size_t rows;
     size_t colums;
-//    string birth;
-//    string survival;
+
+    Cell *cellArrays;
 
 public:
     void statusChange();
