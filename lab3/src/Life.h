@@ -2,7 +2,7 @@
 #define LIFE_H
 
 #include <iostream>
-#include "GameMessages.h"
+#include <string>
 using std::string;
 using std::cout;
 using std::endl;
@@ -32,11 +32,11 @@ class Life {
 private:
     string gameName;
 
-    void gameMode(size_t argc, char **argv);
+    void gameMode();
 
-    void gameWithoutInitialData(GameMessages messages);
-    void gameWithInitialData(GameMessages messages, char **argv);
-    void offlineGame(GameMessages messages, char **argv);
+    void gameWithoutInitialData();
+    void gameWithInitialData();
+    void offlineGame();
 
 public:
     void initialGame(size_t argc, char **argv);
