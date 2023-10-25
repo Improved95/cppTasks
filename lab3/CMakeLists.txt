@@ -12,7 +12,7 @@ set(test_name test)
 #    add_compile_options(-Wall -Wextra -pedantic -Werror)
 #endif()
 
-add_library(corelib OBJECT src/Life.cpp)
+add_library(corelib OBJECT src/Life.cpp src/gameLogic.cpp)
 add_executable(${exe_name} src/main.cpp)
 target_link_libraries(${exe_name} corelib)
 

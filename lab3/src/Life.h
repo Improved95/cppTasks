@@ -11,6 +11,11 @@ using std::fstream;
 using std::ifstream;
 using std::ofstream;
 
+class ConsoleArgumentChecker {
+public:
+    int checkInput(char **argv, ifstream &fileIn);
+};
+
 class Cell {
 private:
     size_t x;
