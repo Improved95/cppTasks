@@ -1,6 +1,8 @@
 #include "Life.h"
 using std::cin;
 
+
+
 void Life::gameWithoutInitialData() {
     Field field;
     size_t a, b;
@@ -13,17 +15,34 @@ void Life::gameWithoutInitialData() {
 
 }
 
-void Life::gameWithInitialData() {
+void Life::gameWithInitialData(char **argv) {
 
 }
 
-void Life::offlineGame() {
+void Life::offlineGame(char **argv) {
 
-}
-
-void Life::gameMode() {
 }
 
 void Life::initialGame() {
 
+}
+
+void Life::initialGameWithConsoleParameters(int argc, char **argv) {
+    switch(argc) {
+        case 1:
+            // игра без начальных данных
+            gameWithoutInitialData();
+            break;
+        case 2:
+            // игра со считыванием по файлу
+            gameWithInitialData(argv);
+            break;
+        case 4:
+            // оффлайн режим
+
+            break;
+        default:
+            //ошибка
+            break;
+    }
 }

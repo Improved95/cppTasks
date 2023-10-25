@@ -3,9 +3,13 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
 using std::string;
 using std::cout;
 using std::endl;
+using std::fstream;
+using std::ifstream;
+using std::ofstream;
 
 class Cell {
 private:
@@ -32,15 +36,13 @@ class Life {
 private:
     string gameName;
 
-    void gameMode();
-
     void gameWithoutInitialData();
-    void gameWithInitialData();
-    void offlineGame();
+    void gameWithInitialData(char **argv);
+    void offlineGame(char **argv);
 
 public:
-    void initialGame(size_t argc, char **argv);
     void initialGame();
+    void initialGameWithConsoleParameters(int argc, char **argv);
 };
 
 #endif
