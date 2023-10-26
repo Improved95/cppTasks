@@ -1,8 +1,8 @@
 #include "Life.h"
 
-void Life::initialGameWithConsoleParameters(int argc, char **argv) {
+void Life::initialFieldWithConsoleParameters(int argc, char **argv) {
     if (argc == 1) {
-        initilizedDataFromConsole();
+        initialField();
     } else {
         ParserConsoleParametersAndInitialGame parser;
         parser.parseAndInitial(argc, argv, this);
@@ -10,7 +10,6 @@ void Life::initialGameWithConsoleParameters(int argc, char **argv) {
 }
 
 void Life::initilizedDataFromConsole() {
-    Field field;
     ExceptionHandling exceptionHandling;
     size_t rows, columns;
     string input;
@@ -22,31 +21,37 @@ void Life::initilizedDataFromConsole() {
     do {
         cin >> input;
     } while (exceptionHandling.strtoullCheck(rows, input, "Incorrect input rows. You need enter unsigned integer value."));
-    field.setRows(rows);
+    this->field.setRows(rows);
 
     cout << "Enter quantity columns: ";
     do {
         cin >> input;
     } while (exceptionHandling.strtoullCheck(columns, input, "Incorrect input columns. You need enter unsigned integer value."));
-    field.setColums(columns);
+    this->field.setColums(columns);
 }
 
 void Life::initilizedDataFromFile(ifstream &inputData) {
-
+    InputFileParser fileParser;
+    fileParser.inputFileParser(this->field);
 }
 
-void Life::initialGame() {
-
+void Life::initialField() {
+    Field fieldObj;
+    this->field = fieldObj;
+    initilizedDataFromConsole();
+    runningStandartGame();
 }
 
-void Life::initialGame(ifstream &inputData) {
-
+void Life::initialField(ifstream &inputData) {
+    Field fieldObj;
+    this->field = fieldObj;
+    initilizedDataFromFile(inputData);
+    runningStandartGame();
 }
 
-void Life::initialGame(ifstream &inputData, size_t ticks, ofstream &outputData) {
-
-}
-
-void Field::randomFieldInitial() {
-
+void Life::initialField(ifstream &inputData, size_t ticks, ofstream &outputData) {
+    Field fieldObj;
+    this->field = fieldObj;
+    initilizedDataFromFile(inputData);
+    runningOfflineGame();
 }

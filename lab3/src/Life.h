@@ -14,9 +14,11 @@ using std::exception;
 using std::cin;
 
 class Life;
+class Field;
 
-class FileParser {
-    void inputFileParser();
+class InputFileParser {
+public:
+    void inputFileParser(Field &field);
 };
 
 class ExceptionHandling {
@@ -45,27 +47,26 @@ private:
 
 public:
     void statusChange();
-
     void setRows(const size_t valueRows) { this->rows = valueRows; }
     void setColums(const size_t valueColums) { this->colums = valueColums; }
-
     void randomFieldInitial();
 };
 
 class Life {
 private:
+    Field field;
     string gameName;
 
     void initilizedDataFromConsole();
     void initilizedDataFromFile(ifstream &inputData);
-    void offlineGame(ifstream &inputData, size_t ticks, ofstream &outputData);
 
 public:
-    void initialGame();
-    void initialGame(ifstream &inputData);
-    void initialGame(ifstream &inputData, size_t ticks, ofstream &outputData);
-
-    void initialGameWithConsoleParameters(int argc, char **argv);
+    void initialFieldWithConsoleParameters(int argc, char **argv);
+    void initialField();
+    void initialField(ifstream &inputData);
+    void initialField(ifstream &inputData, size_t ticks, ofstream &outputData);
+    void runningStandartGame();
+    void runningOfflineGame();
 
     friend ParserConsoleParametersAndInitialGame;
 };
