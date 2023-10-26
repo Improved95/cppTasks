@@ -8,7 +8,7 @@ void ParserConsoleParametersAndInitialGame::parseAndInitial(int argc, char **arg
         fileIn.open(argv[1]);
         if (!fileIn.is_open()) {
             cout << "Incorrect output file path. You need enter path to input file, quantity ticks, path to output file. Example: 'fileIn.life' 5 'fileOut.life'" << endl;
-            gameObject->gameWithoutInitialData();
+            gameObject->initialGame();
             goto END_FUNCTIONS_AND_CLOSE_FILES;
         }
     }
@@ -16,7 +16,7 @@ void ParserConsoleParametersAndInitialGame::parseAndInitial(int argc, char **arg
         fileOut.open(argv[3]);
         if (!fileOut.is_open()) {
             cout << "Incorrect output file path. You need enter path to input file, quantity ticks, path to output file. Example: 'fileIn.life' 5 'fileOut.life'" << endl;
-            gameObject->gameWithoutInitialData();
+            gameObject->initialGame();
             goto END_FUNCTIONS_AND_CLOSE_FILES;
         }
         try {
@@ -27,20 +27,20 @@ void ParserConsoleParametersAndInitialGame::parseAndInitial(int argc, char **arg
         } catch (const exception &ex) {
 //            cout << ex.what() << endl;
             cout << "Incorrect output file path. You need enter path to input file, quantity ticks, path to output file. Example: 'fileIn.life' 5 'fileOut.life'" << endl;
-            gameObject->gameWithoutInitialData();
+            gameObject->initilizedDataFromConsole();
             goto END_FUNCTIONS_AND_CLOSE_FILES;
         }
     }
     if (argc != 2 && argc != 4) {
         cout << "Incorrect input. You need enter path to input file, quantity ticks, path to output file. Example: 'fileIn.life' 5 'fileOut.life'" << endl;
-        gameObject->gameWithoutInitialData();
+        gameObject->initialGame();
         goto END_FUNCTIONS_AND_CLOSE_FILES;
     }
 
     if (argc == 2) {
-        gameObject->gameWithInitialData(fileIn);
+        gameObject->initialGame(fileIn);
     } else if (argc == 4) {
-        gameObject->offlineGame(fileIn, tickQuantity, fileOut);
+        gameObject->initialGame(fileIn, tickQuantity, fileOut);
     }
 
     END_FUNCTIONS_AND_CLOSE_FILES:

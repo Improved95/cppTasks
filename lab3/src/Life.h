@@ -11,8 +11,13 @@ using std::fstream;
 using std::ifstream;
 using std::ofstream;
 using std::exception;
+using std::cin;
 
 class Life;
+
+class FileParser {
+    void inputFileParser();
+};
 
 class ExceptionHandling {
 public:
@@ -43,18 +48,23 @@ public:
 
     void setRows(const size_t valueRows) { this->rows = valueRows; }
     void setColums(const size_t valueColums) { this->colums = valueColums; }
+
+    void randomFieldInitial();
 };
 
 class Life {
 private:
     string gameName;
 
-    void gameWithoutInitialData();
-    void gameWithInitialData(ifstream &inputData);
+    void initilizedDataFromConsole();
+    void initilizedDataFromFile(ifstream &inputData);
     void offlineGame(ifstream &inputData, size_t ticks, ofstream &outputData);
 
 public:
     void initialGame();
+    void initialGame(ifstream &inputData);
+    void initialGame(ifstream &inputData, size_t ticks, ofstream &outputData);
+
     void initialGameWithConsoleParameters(int argc, char **argv);
 
     friend ParserConsoleParametersAndInitialGame;
