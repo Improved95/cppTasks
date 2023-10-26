@@ -3,25 +3,27 @@ using std::cin;
 
 void Life::gameWithoutInitialData() {
     Field field;
-    size_t a, b;
-    cin >> a;
-    field.setRows(a);
+    ExceptionHandling exceptionHandling;
+    size_t rows, columns;
+    string input;
 
-    cin >> b;
-    field.setColums(b);
-    // to be continue...
+    cout << "Enter quantity rows: ";
+    do {
+        cin >> input;
+    } while (exceptionHandling.strtoullCheck(rows, input, "Incorrect input rows. You need enter unsigned integer value."));
+    field.setRows(rows);
+
+    cout << "Enter quantity columns: ";
+    do {
+        cin >> input;
+    } while (exceptionHandling.strtoullCheck(columns, input, "Incorrect input columns. You need enter unsigned integer value."));
+    field.setColums(columns);
 }
 
-void Life::gameWithInitialData(char **argv) {
-    ifstream fileIn;
-    ConsoleArgumentChecker checker;
-    if (checker.checkInput(argv, fileIn) == 0) {
+void Life::gameWithInitialData(ifstream &inputData) {
 
-    } else {
-        gameWithoutInitialData();
-    }
 }
 
-void Life::offlineGame(char **argv) {
+void Life::offlineGame(ifstream &inputData, size_t ticks, ofstream &outputData) {
 
 }

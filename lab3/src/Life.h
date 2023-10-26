@@ -10,10 +10,18 @@ using std::endl;
 using std::fstream;
 using std::ifstream;
 using std::ofstream;
+using std::exception;
 
-class ConsoleArgumentChecker {
+class Life;
+
+class ExceptionHandling {
 public:
-    int checkInput(char **argv, ifstream &fileIn);
+    bool strtoullCheck(size_t &rows, const string &input, const char *message);
+};
+
+class ParserConsoleParametersAndInitialGame {
+public:
+    void parseAndInitial(int argc, char **argv, Life *gameObject);
 };
 
 class Cell {
@@ -42,12 +50,14 @@ private:
     string gameName;
 
     void gameWithoutInitialData();
-    void gameWithInitialData(char **argv);
-    void offlineGame(char **argv);
+    void gameWithInitialData(ifstream &inputData);
+    void offlineGame(ifstream &inputData, size_t ticks, ofstream &outputData);
 
 public:
     void initialGame();
     void initialGameWithConsoleParameters(int argc, char **argv);
+
+    friend ParserConsoleParametersAndInitialGame;
 };
 
 #endif
