@@ -15,7 +15,8 @@ void Life::initilizedDataFromConsole() {
     string input;
 
     cout << "Enter field name: ";
-    cin >> this->gameName;
+    cin >> input;
+    this->field.setFieldName(input);
 
     cout << "Enter quantity rows: ";
     do {
@@ -30,9 +31,12 @@ void Life::initilizedDataFromConsole() {
     this->field.setColums(columns);
 }
 
-void Life::initilizedDataFromFile(ifstream &inputData) {
-    InputFileParser fileParser;
-    fileParser.inputFileParser(this->field);
+bool Life::initilizedDataFromFile(ifstream &inputData) {
+    InputDataParser dataParser;
+    if (dataParser.inputDataParsing(this->field, inputData)) {
+        return true;
+    }
+    return false;
 }
 
 void Life::initialField() {
@@ -45,13 +49,14 @@ void Life::initialField() {
 void Life::initialField(ifstream &inputData) {
     Field fieldObj;
     this->field = fieldObj;
-    initilizedDataFromFile(inputData);
-    runningStandartGame();
+    if (initilizedDataFromFile(inputData)) {
+        runningStandartGame();
+    }
 }
 
 void Life::initialField(ifstream &inputData, size_t ticks, ofstream &outputData) {
     Field fieldObj;
     this->field = fieldObj;
-    initilizedDataFromFile(inputData);
-    runningOfflineGame();
+//    initilizedDataFromFile(inputData);
+//    runningOfflineGame();
 }

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <vector>
 using std::string;
 using std::cout;
 using std::endl;
@@ -12,13 +13,14 @@ using std::ifstream;
 using std::ofstream;
 using std::exception;
 using std::cin;
+using std::vector;
 
 class Life;
 class Field;
 
-class InputFileParser {
+class InputDataParser {
 public:
-    void inputFileParser(Field &field);
+    bool inputDataParsing(Field &field, ifstream &inputData);
 };
 
 class ExceptionHandling {
@@ -39,26 +41,29 @@ private:
 
 class Field {
 private:
+    string fieldName;
     size_t rows;
     size_t colums;
-    string birth;
-    string survival;
-    Cell *cellArrays;
+    string birthRule;
+    string survivalRule;
+    vector<Cell> cellsArray;
 
 public:
     void statusChange();
+    void setFieldName(const string valueFieldName) { this->fieldName = valueFieldName; }
     void setRows(const size_t valueRows) { this->rows = valueRows; }
     void setColums(const size_t valueColums) { this->colums = valueColums; }
+    void setBirthRules(const string valueBirthRule) { this->birthRule = valueBirthRule; }
+    void setSurvivalRule(const string valueSurvivalRule) { this->survivalRule = valueSurvivalRule; }
     void randomFieldInitial();
 };
 
 class Life {
 private:
     Field field;
-    string gameName;
 
     void initilizedDataFromConsole();
-    void initilizedDataFromFile(ifstream &inputData);
+    bool initilizedDataFromFile(ifstream &inputData);
 
 public:
     void initialFieldWithConsoleParameters(int argc, char **argv);
