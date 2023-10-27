@@ -41,6 +41,12 @@ class Cell {
 private:
     size_t x;
     size_t y;
+
+public:
+    Cell(size_t xPos, size_t yPos) {
+        this->x = xPos;
+        this->y = yPos;
+    }
 };
 
 class Field {
@@ -59,10 +65,9 @@ public:
     void setColums(const size_t valueColums) { this->colums = valueColums; }
     void setBirthRules(const string valueBirthRule) { this->birthRule = valueBirthRule; }
     void setSurvivalRule(const string valueSurvivalRule) { this->survivalRule = valueSurvivalRule; }
+    vector<Cell> & getCellsArrat() { return this->cellsArray; }
 
     void randomFieldInitial();
-
-    friend InputDataParser;
 };
 
 class Life {

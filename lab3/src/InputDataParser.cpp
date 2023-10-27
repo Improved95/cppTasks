@@ -47,8 +47,11 @@ bool InputDataParser::formatLifeDeathRuleIsCorrect(Field field, string input) {
 bool InputDataParser::checkinputCells(Field &field, ifstream &inputData) {
     string input;
     getline(inputData, input, ' ');
-    Cell cell;
-    field.cellsArray.push_back(cell);
+
+
+
+    Cell cell(1, 2);
+    field.getCellsArrat().push_back(cell);
 
     return true;
 }
