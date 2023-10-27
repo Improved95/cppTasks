@@ -19,6 +19,10 @@ class Life;
 class Field;
 
 class InputDataParser {
+private:
+    bool checkinputCells(Field &field, ifstream &inputData);
+    bool formatLifeDeathRuleIsCorrect(Field field, string input);
+
 public:
     bool inputDataParsing(Field &field, ifstream &inputData);
 };
@@ -55,7 +59,10 @@ public:
     void setColums(const size_t valueColums) { this->colums = valueColums; }
     void setBirthRules(const string valueBirthRule) { this->birthRule = valueBirthRule; }
     void setSurvivalRule(const string valueSurvivalRule) { this->survivalRule = valueSurvivalRule; }
+
     void randomFieldInitial();
+
+    friend InputDataParser;
 };
 
 class Life {

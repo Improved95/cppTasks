@@ -7,7 +7,7 @@ void coutInputExample() {
     cout << "#Life 1.06\n#Base\n#R B3/S23\n0 -1\n1 0\n-1 1\n0 1\n1 1" << endl;
 }
 
-bool formatLifeDeathRuleIsCorrect(Field field, string input) {
+bool InputDataParser::formatLifeDeathRuleIsCorrect(Field field, string input) {
     input = input.substr(2, input.size());
     if (input[0] != 'B') {
         coutInputExample();
@@ -44,10 +44,14 @@ bool formatLifeDeathRuleIsCorrect(Field field, string input) {
     return true;
 }
 
-bool checkCells() {
+bool InputDataParser::checkinputCells(Field &field, ifstream &inputData) {
+    string input;
+    getline(inputData, input, ' ');
+    Cell cell;
+    field.cellsArray.push_back(cell);
+
     return true;
 }
-
 
 bool InputDataParser::inputDataParsing(Field &field, ifstream &inputData) {
     char character;
@@ -87,7 +91,10 @@ bool InputDataParser::inputDataParsing(Field &field, ifstream &inputData) {
                 }
             }
         } else {
-
+            if (!checkinputCells(field, inputData)) {
+                coutInputExample();
+                return false;
+            }
         }
     }
 
