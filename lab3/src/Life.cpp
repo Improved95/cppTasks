@@ -54,9 +54,9 @@ void Life::initialField(ifstream &inputData) {
     }
 }
 
-//void Life::initialField(ifstream &inputData, size_t ticks, ofstream &outputData) {
-//    Field fieldObj;
-//    this->field = fieldObj;
+void Life::initialField(ifstream &inputData, size_t ticks, ofstream &outputData) {
+    Field fieldObj;
+    this->field = fieldObj;
 //    initilizedDataFromFile(inputData);
 //    runningOfflineGame();
-//}
+}
