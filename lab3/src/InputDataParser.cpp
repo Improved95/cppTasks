@@ -78,7 +78,13 @@ bool InputDataParser::isStrokeWithDeathSurvRules(Field &field, ifstream &inputDa
     return true;
 }
 
-bool checkCells() {
+bool InputDataParser::checkInputCells(Field &field, ifstream &inputData) {
+    string input;
+    getline(inputData, input, ' ');
+
+//    Cell cell();
+//    field.getCellsArray().push_back(cell);
+
     return true;
 }
 

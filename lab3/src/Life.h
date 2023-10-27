@@ -24,7 +24,7 @@ private:
     bool formatLifeDeathRuleIsCorrect(Field &field, string input);
     bool isStrokeWithFieldName(Field &field, ifstream &inputData);
     bool isStrokeWithDeathSurvRules(Field &field, ifstream &inputData);
-
+    bool checkInputCells(Field &field, ifstream &inputData);
 public:
     bool inputDataParsing(Field &field, ifstream &inputData);
 };
@@ -43,6 +43,12 @@ class Cell {
 private:
     size_t x;
     size_t y;
+
+public:
+    Cell(const size_t xPos, const size_t yPos) {
+        this->x = xPos;
+        this->y = yPos;
+    }
 };
 
 class Field {
@@ -61,6 +67,8 @@ public:
     void setColums(const size_t valueColums) { this->colums = valueColums; }
     void setBirthRules(const string valueBirthRule) { this->birthRule = valueBirthRule; }
     void setSurvivalRule(const string valueSurvivalRule) { this->survivalRule = valueSurvivalRule; }
+    vector<Cell> & getCellsArray() { return cellsArray; }
+
     void randomFieldInitial();
 };
 
