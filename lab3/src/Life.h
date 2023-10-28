@@ -26,7 +26,7 @@ class Cell;
 
 class ExceptionHandling {
 public:
-    bool strtoullCheck(size_t &rows, const string &input, const char *message);
+    bool strtollIsCorrect(long long &rows, const string &input, const char *message);
 };
 
 class InputDataParser {
@@ -83,11 +83,11 @@ class OfflineGame {
 
 class Cell {
 private:
-    size_t x;
-    size_t y;
+    long long x;
+    long long y;
 
 public:
-    Cell(const size_t xPos, const size_t yPos) {
+    Cell(const long long xPos, const long long yPos) {
         this->x = xPos;
         this->y = yPos;
     }
