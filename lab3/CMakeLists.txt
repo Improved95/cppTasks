@@ -12,7 +12,7 @@ else()
     add_compile_options(-Wall -Wextra -pedantic -Werror -Wno-unused-parameter)
 endif()
 
-add_library(corelib OBJECT src/Life.cpp src/GameLogic.cpp src/ParserConsoleParametersAndInitialGame.cpp src/ExceptionHandling.cpp src/InputDataParser.cpp)
+add_library(corelib OBJECT src/Life.cpp src/GameLogic.cpp src/ParserConsoleParameters.cpp src/ExceptionHandling.cpp src/InputDataParser.cpp)
 add_executable(${exe_name} src/main.cpp)
 target_link_libraries(${exe_name} corelib)
 

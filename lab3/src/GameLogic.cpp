@@ -1,6 +1,6 @@
 #include "Life.h"
 
-void Field::randomFieldInitial() {
+void ChangeFieldStatus::randomFieldInitial() {
 
 }
 

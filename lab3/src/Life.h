@@ -5,15 +5,18 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <sstream>
 using std::string;
 using std::cout;
+using std::cin;
 using std::endl;
 using std::fstream;
 using std::ifstream;
 using std::ofstream;
 using std::exception;
-using std::cin;
+using std::getline;
 using std::vector;
+using std::istringstream;
 
 class Life;
 class Field;
@@ -24,7 +27,7 @@ private:
     bool formatLifeDeathRuleIsCorrect(Field &field, string input);
     bool isStrokeWithFieldName(Field &field, ifstream &inputData);
     bool isStrokeWithDeathSurvRules(Field &field, ifstream &inputData);
-    bool checkInputCells(Field &field, ifstream &inputData);
+    bool checkInputCells(Field &field, string &inputData);
 public:
     bool inputDataParsing(Field &field, ifstream &inputData);
 };
@@ -51,6 +54,19 @@ public:
     }
 };
 
+class ChangeFieldStatus {
+    void statusChange();
+    void randomFieldInitial();
+};
+
+class StandartGame {
+
+};
+
+class OfflineGame {
+
+};
+
 class Field {
 private:
     string fieldName;
@@ -61,15 +77,12 @@ private:
     vector<Cell> cellsArray;
 
 public:
-    void statusChange();
     void setFieldName(const string valueFieldName) { this->fieldName = valueFieldName; }
     void setRows(const size_t valueRows) { this->rows = valueRows; }
     void setColums(const size_t valueColums) { this->colums = valueColums; }
     void setBirthRules(const string valueBirthRule) { this->birthRule = valueBirthRule; }
     void setSurvivalRule(const string valueSurvivalRule) { this->survivalRule = valueSurvivalRule; }
     vector<Cell> & getCellsArray() { return cellsArray; }
-
-    void randomFieldInitial();
 };
 
 class Life {

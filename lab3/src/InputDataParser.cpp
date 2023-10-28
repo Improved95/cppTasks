@@ -1,6 +1,4 @@
 #include "Life.h"
-using std::getline;
-
 void InputDataParser::coutInputExample() {
     cout << "Incorrect format file." << endl;
     cout << "Example input format:" << endl;
@@ -78,13 +76,15 @@ bool InputDataParser::isStrokeWithDeathSurvRules(Field &field, ifstream &inputDa
     return true;
 }
 
-bool InputDataParser::checkInputCells(Field &field, ifstream &inputData) {
-    string input;
-    getline(inputData, input, ' ');
-
-//    Cell cell();
-//    field.getCellsArray().push_back(cell);
-
+bool InputDataParser::checkInputCells(Field &field, string &inputData) {
+    istringstream iss(inputData);
+    size_t a, b;
+    if (iss >> a >> b) {
+        Cell cell(a, b);
+        field.getCellsArray().push_back(cell);
+    } else {
+        return false;
+    }
     return true;
 }
 
@@ -110,6 +110,10 @@ bool InputDataParser::inputDataParsing(Field &field, ifstream &inputData) {
     if (!isStrokeWithDeathSurvRules(field, inputData)) {
         coutInputExample();
         return false;
+    }
+
+    while (getline(inputData, input)) {
+        checkInputCells(field, input);
     }
 
     return true;
