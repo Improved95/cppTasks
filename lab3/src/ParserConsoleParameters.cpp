@@ -1,6 +1,6 @@
 #include "Life.h"
 
-void ParserConsoleParametersAndInitialGame::parseAndInitial(int argc, char **argv, Life *gameObject) {
+void ParserConsoleParameters::parseAndInitial(int argc, char **argv, Life *gameObject) {
     ifstream fileIn;
     ofstream fileOut;
     size_t tickQuantity;

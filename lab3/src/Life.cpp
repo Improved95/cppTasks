@@ -4,7 +4,7 @@ void Life::initialFieldWithConsoleParameters(int argc, char **argv) {
     if (argc == 1) {
         initialField();
     } else {
-        ParserConsoleParametersAndInitialGame parser;
+        ParserConsoleParameters parser;
         parser.parseAndInitial(argc, argv, this);
     }
 }
@@ -15,6 +15,8 @@ void Life::initialField() {
     this->field = fieldObj;
 
     enterParameters.initialFieldParameters(this->field);
+
+
     runningStandartGame();
 }
 
@@ -25,16 +27,18 @@ void Life::initialField(ifstream &inputData) {
     this->field = fieldObj;
 
     vector<Cell> cellsArray;
-    if (dataParser.inputDataParsing(this->field, inputData, cellsArray)) {
-        enterParameters.initialFieldSize(this->field);
-
-
-        runningStandartGame();
-
+    // если файл не прошел проверку на корректность, то игра будет запущена в стандартном режиме с произвольным заполнением.
+    if (!dataParser.inputDataParsing(this->field, inputData, cellsArray)) {
+        fieldObj.~Field();
+        cellsArray.clear();
+        initialField();
         return;
     }
-    fieldObj.~Field();
-    initialField();
+
+    enterParameters.initialFieldSize(this->field);
+    runningStandartGame();
+
+
 }
 
 void Life::initialField(ifstream &inputData, size_t ticks, ofstream &outputData) {

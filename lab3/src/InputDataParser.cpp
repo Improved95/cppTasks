@@ -76,8 +76,8 @@ bool InputDataParser::isStrokeWithDeathSurvRules(Field &field, ifstream &inputDa
     return true;
 }
 
-bool InputDataParser::checkInputCells(Field &field, string &inputData, vector<Cell> &cellsArray) {
-    istringstream iss(inputData);
+bool InputDataParser::checkInputCells(Field &field, string &input, vector<Cell> &cellsArray) {
+    istringstream iss(input);
     size_t a, b;
     if (iss >> a >> b) {
         Cell cell(a, b);
@@ -88,21 +88,8 @@ bool InputDataParser::checkInputCells(Field &field, string &inputData, vector<Ce
     return true;
 }
 
-bool InputDataParser::inputDataParsing(Field &field, ifstream &inputData, vector<Cell> &cellsArray) {
+bool InputDataParser::fileV106Parser(Field &field, ifstream &inputData, vector<Cell> &cellsArray) {
     string input;
-
-    getline(inputData, input, ' ');
-    if (input != "#Life") {
-        cout << "Incorrect format file" << endl;
-        coutInputExample();
-        return false;
-    }
-    getline(inputData, input, '\n');
-    if (input != "1.06") {
-        coutInputExample();
-        return false;
-    }
-
     if (!isStrokeWithFieldName(field, inputData)) {
         coutInputExample();
         return false;
@@ -114,6 +101,26 @@ bool InputDataParser::inputDataParsing(Field &field, ifstream &inputData, vector
 
     while (getline(inputData, input)) {
         checkInputCells(field, input, cellsArray);
+    }
+    return true;
+}
+
+bool InputDataParser::inputDataParsing(Field &field, ifstream &inputData, vector<Cell> &cellsArray) {
+    string input;
+    getline(inputData, input, ' ');
+    if (input != "#Life") {
+        coutInputExample();
+        return false;
+    }
+
+    getline(inputData, input, '\n');
+    if (input == "1.06") {
+        if (!fileV106Parser(field, inputData, cellsArray)) {
+            return false;
+        }
+    } else {
+        coutInputExample();
+        return false;
     }
 
     return true;

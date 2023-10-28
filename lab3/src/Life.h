@@ -36,19 +36,49 @@ private:
     bool isStrokeWithFieldName(Field &field, ifstream &inputData);
     bool isStrokeWithDeathSurvRules(Field &field, ifstream &inputData);
     bool checkInputCells(Field &field, string &inputData, vector<Cell> &cellsArray);
+    bool fileV106Parser(Field &field, ifstream &inputData, vector<Cell> &cellsArray);
 public:
     bool inputDataParsing(Field &field, ifstream &inputData, vector<Cell> &cellsArray);
 };
 
-class ParserConsoleParametersAndInitialGame {
+// ./life.exe (console parameters)
+class ParserConsoleParameters {
 public:
     void parseAndInitial(int argc, char **argv, Life *gameObject);
 };
 
+// when user enter in console some data
 class EnterParametersFromConsole {
 public:
     void initialFieldSize(Field &field);
     void initialFieldParameters(Field &field);
+};
+
+class BlockOfCells {
+private:
+    BlockOfCells *left;
+    BlockOfCells *right;
+    set<BlockOfCells> cellsArray;
+
+public:
+    BlockOfCells() {
+        this->left = nullptr;
+        this->right = nullptr;
+    }
+};
+
+class ChangeFieldStatus {
+public:
+    void statusChange();
+    void randomFieldInitial();
+};
+
+class StandartGame {
+
+};
+
+class OfflineGame {
+
 };
 
 class Cell {
@@ -63,19 +93,6 @@ public:
     }
 };
 
-class ChangeFieldStatus {
-    void statusChange();
-    void randomFieldInitial();
-};
-
-class StandartGame {
-
-};
-
-class OfflineGame {
-
-};
-
 class Field {
 private:
     string fieldName;
@@ -83,7 +100,7 @@ private:
     size_t colums;
     string birthRule;
     string survivalRule;
-    vector<Cell> cellsArray;
+//    vector<Cell> cellsArray;
 
 public:
     void setFieldName(const string valueFieldName) { this->fieldName = valueFieldName; }
@@ -91,7 +108,7 @@ public:
     void setColums(const size_t valueColums) { this->colums = valueColums; }
     void setBirthRules(const string valueBirthRule) { this->birthRule = valueBirthRule; }
     void setSurvivalRule(const string valueSurvivalRule) { this->survivalRule = valueSurvivalRule; }
-    vector<Cell> & getCellsArray() { return cellsArray; }
+//    vector<Cell> & getCellsArray() { return cellsArray; }
 };
 
 class Life {
@@ -106,7 +123,7 @@ public:
     void runningStandartGame();
     void runningOfflineGame();
 
-    friend ParserConsoleParametersAndInitialGame;
+    friend ParserConsoleParameters;
 };
 
 #endif
