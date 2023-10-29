@@ -61,11 +61,7 @@ private:
     set<BlockOfCells> cellsArray;
 
 public:
-    BlockOfCells() {
-        this->left = nullptr;
-        this->right = nullptr;
-
-    }
+    BlockOfCells(const size_t rows, const size_t columns);
     ~BlockOfCells() {
         if (this->left != nullptr) {
             delete this->left;
@@ -120,6 +116,10 @@ private:
     BlockOfCells cellsList;
 
 public:
+    Field() {
+        cellsList =
+    }
+
     void setFieldName(const string valueFieldName) { this->fieldName = valueFieldName; }
     void setRows(const size_t valueRows) { this->rows = valueRows; }
     void setColums(const size_t valueColums) { this->colums = valueColums; }

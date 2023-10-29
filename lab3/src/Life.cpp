@@ -29,7 +29,7 @@ void Life::initialField(ifstream &inputData) {
     InputDataParser dataParser;
     EnterParametersFromConsole enterParameters;
 
-    Field fieldObj;
+    Field fieldObj(1, 2);
     this->field = fieldObj;
 
     vector<Cell> cellsVector;
@@ -41,7 +41,7 @@ void Life::initialField(ifstream &inputData) {
     }
     enterParameters.initialFieldSize(this->field);
 
-    BlockOfCells cellsList;
+    BlockOfCells cellsList(this->field.getRows(), this->field.getColums());
     this->field.getCellsList() = cellsList;
 
     ChangeFieldStatus changeFieldStatus;
