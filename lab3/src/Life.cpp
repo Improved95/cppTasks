@@ -46,8 +46,8 @@ void Life::initialField(ifstream &inputData) {
 
     ChangeFieldStatus changeFieldStatus;
     changeFieldStatus.fromFileFieldFill(this->field, cellsVector);
+    cellsVector.~vector();
 
-    enterParameters.initialFieldSize(this->field);
     runningStandartGame();
 }
 

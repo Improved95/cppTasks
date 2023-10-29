@@ -64,6 +64,7 @@ public:
     BlockOfCells() {
         this->left = nullptr;
         this->right = nullptr;
+
     }
     ~BlockOfCells() {
         if (this->left != nullptr) {
@@ -125,6 +126,12 @@ public:
     void setBirthRules(const string valueBirthRule) { this->birthRule = valueBirthRule; }
     void setSurvivalRule(const string valueSurvivalRule) { this->survivalRule = valueSurvivalRule; }
     void setCellsList(BlockOfCells valueCellsList) { this->cellsList = valueCellsList; }
+
+    string getFieldName() { return this->fieldName; }
+    size_t getRows() { return this->rows; }
+    size_t getColums() { return this->colums; }
+    string getBirthRule() { return this->birthRule; }
+    string getSurvivalRule() { return this->survivalRule; }
     BlockOfCells & getCellsList() { return cellsList; }
 
     friend ChangeFieldStatus;

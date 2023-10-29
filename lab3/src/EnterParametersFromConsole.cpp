@@ -15,13 +15,13 @@ void EnterParametersFromConsole::initialFieldSize(Field &field) {
     long long rows, columns;
     string input;
 
-    cout << "Enter quantity rows: ";
+    cout << "Enter quantity rows:";
     do {
         cin >> input;
     } while (!exceptionHandling.strtollIsCorrect(rows, input, "Incorrect input rows. You need enter unsigned integer value."));
     field.setRows(rows);
 
-    cout << "Enter quantity columns: ";
+    cout << "Enter quantity columns:";
     do {
         cin >> input;
     } while (!exceptionHandling.strtollIsCorrect(columns, input, "Incorrect input columns. You need enter unsigned integer value."));
