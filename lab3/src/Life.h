@@ -113,11 +113,15 @@ private:
     size_t colums;
     string birthRule;
     string survivalRule;
-    BlockOfCells cellsList;
+    BlockOfCells *cellsList;
 
 public:
     Field() {
-        cellsList =
+        cellsList = nullptr;
+    }
+
+    ~Field() {
+
     }
 
     void setFieldName(const string valueFieldName) { this->fieldName = valueFieldName; }
@@ -125,14 +129,14 @@ public:
     void setColums(const size_t valueColums) { this->colums = valueColums; }
     void setBirthRules(const string valueBirthRule) { this->birthRule = valueBirthRule; }
     void setSurvivalRule(const string valueSurvivalRule) { this->survivalRule = valueSurvivalRule; }
-    void setCellsList(BlockOfCells valueCellsList) { this->cellsList = valueCellsList; }
+    void setCellsList(BlockOfCells *valueCellsList) { this->cellsList = valueCellsList; }
 
     string getFieldName() { return this->fieldName; }
     size_t getRows() { return this->rows; }
     size_t getColums() { return this->colums; }
     string getBirthRule() { return this->birthRule; }
     string getSurvivalRule() { return this->survivalRule; }
-    BlockOfCells & getCellsList() { return cellsList; }
+    BlockOfCells * getCellsList() { return cellsList; }
 
     friend ChangeFieldStatus;
 };

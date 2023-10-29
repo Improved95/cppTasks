@@ -29,20 +29,20 @@ void Life::initialField(ifstream &inputData) {
     InputDataParser dataParser;
     EnterParametersFromConsole enterParameters;
 
-    Field fieldObj(1, 2);
+    Field fieldObj;
     this->field = fieldObj;
 
     vector<Cell> cellsVector;
     // если файл не прошел проверку на корректность, то игра будет запущена в стандартном режиме с произвольным заполнением.
     if (!dataParser.inputDataParsing(this->field, inputData, cellsVector)) {
-        fieldObj.~Field();
+        this->field.~Field(); /*(проверить подобные места, где я присваиваю классы полям, но такое вроде только здесь)*/
         initialField();
         return;
     }
     enterParameters.initialFieldSize(this->field);
 
     BlockOfCells cellsList(this->field.getRows(), this->field.getColums());
-    this->field.getCellsList() = cellsList;
+    this->field.setCellsList(&cellsList);
 
     ChangeFieldStatus changeFieldStatus;
     changeFieldStatus.fromFileFieldFill(this->field, cellsVector);
@@ -54,3 +54,5 @@ void Life::initialField(ifstream &inputData) {
 void Life::initialField(ifstream &inputData, size_t ticks, ofstream &outputData) {
 
 }
+
+// написать деструктор для field, там у меня указатель на структуру с клетками, для нее нужно тоже написать деструктор
