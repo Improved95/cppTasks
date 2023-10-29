@@ -10,12 +10,17 @@ void Life::initialFieldWithConsoleParameters(int argc, char **argv) {
 }
 
 void Life::initialField() {
-    EnterParametersFromConsole enterParameters;
-    Field fieldObj;
-    this->field = fieldObj;
+//    EnterParametersFromConsole enterParameters;
 
-    enterParameters.initialFieldParameters(this->field);
-
+//    Field fieldObj;
+//    this->field = fieldObj;
+//    enterParameters.initialFieldParameters(this->field);
+//
+//    BlockOfCells cellsList;
+//    this->field.getCellsList() = cellsList;
+//
+//    ChangeFieldStatus changeFieldStatus;
+//    changeFieldStatus.randomFieldFill();
 
     runningStandartGame();
 }
@@ -23,22 +28,27 @@ void Life::initialField() {
 void Life::initialField(ifstream &inputData) {
     InputDataParser dataParser;
     EnterParametersFromConsole enterParameters;
+
     Field fieldObj;
     this->field = fieldObj;
 
-    vector<Cell> cellsArray;
+    vector<Cell> cellsVector;
     // если файл не прошел проверку на корректность, то игра будет запущена в стандартном режиме с произвольным заполнением.
-    if (!dataParser.inputDataParsing(this->field, inputData, cellsArray)) {
+    if (!dataParser.inputDataParsing(this->field, inputData, cellsVector)) {
         fieldObj.~Field();
-        cellsArray.clear();
         initialField();
         return;
     }
+    enterParameters.initialFieldSize(this->field);
+
+    BlockOfCells cellsList;
+    this->field.getCellsList() = cellsList;
+
+    ChangeFieldStatus changeFieldStatus;
+    changeFieldStatus.fromFileFieldFill(this->field, cellsVector);
 
     enterParameters.initialFieldSize(this->field);
     runningStandartGame();
-
-
 }
 
 void Life::initialField(ifstream &inputData, size_t ticks, ofstream &outputData) {

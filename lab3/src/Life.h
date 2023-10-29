@@ -35,10 +35,10 @@ private:
     bool formatLifeDeathRuleIsCorrect(Field &field, string input);
     bool isStrokeWithFieldName(Field &field, ifstream &inputData);
     bool isStrokeWithDeathSurvRules(Field &field, ifstream &inputData);
-    bool checkInputCells(Field &field, string &inputData, vector<Cell> &cellsArray);
-    bool fileV106Parser(Field &field, ifstream &inputData, vector<Cell> &cellsArray);
+    bool checkInputCells(Field &field, string &inputData, vector<Cell> &cellsVector);
+    bool fileV106Parser(Field &field, ifstream &inputData, vector<Cell> &cellsVector);
 public:
-    bool inputDataParsing(Field &field, ifstream &inputData, vector<Cell> &cellsArray);
+    bool inputDataParsing(Field &field, ifstream &inputData, vector<Cell> &cellsVector);
 };
 
 // ./life.exe (console parameters)
@@ -65,12 +65,26 @@ public:
         this->left = nullptr;
         this->right = nullptr;
     }
+    ~BlockOfCells() {
+        if (this->left != nullptr) {
+            delete this->left;
+            this->left = nullptr;
+        }
+
+        if (this->right != nullptr) {
+            delete this->right;
+            this->right = nullptr;
+        }
+    }
+
+    void addCell(const Cell &cell);
 };
 
 class ChangeFieldStatus {
 public:
     void statusChange();
-    void randomFieldInitial();
+    void randomFieldFill();
+    void fromFileFieldFill(Field &field, vector<Cell> &cellsVector);
 };
 
 class StandartGame {
@@ -91,6 +105,8 @@ public:
         this->x = xPos;
         this->y = yPos;
     }
+    long long getX() const { return this->x; }
+    long long getY() const { return this->y; }
 };
 
 class Field {
@@ -100,7 +116,7 @@ private:
     size_t colums;
     string birthRule;
     string survivalRule;
-//    vector<Cell> cellsArray;
+    BlockOfCells cellsList;
 
 public:
     void setFieldName(const string valueFieldName) { this->fieldName = valueFieldName; }
@@ -108,7 +124,10 @@ public:
     void setColums(const size_t valueColums) { this->colums = valueColums; }
     void setBirthRules(const string valueBirthRule) { this->birthRule = valueBirthRule; }
     void setSurvivalRule(const string valueSurvivalRule) { this->survivalRule = valueSurvivalRule; }
-//    vector<Cell> & getCellsArray() { return cellsArray; }
+    void setCellsList(BlockOfCells valueCellsList) { this->cellsList = valueCellsList; }
+    BlockOfCells & getCellsList() { return cellsList; }
+
+    friend ChangeFieldStatus;
 };
 
 class Life {
