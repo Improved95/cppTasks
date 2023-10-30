@@ -54,29 +54,6 @@ public:
     void initialFieldParameters(Field &field);
 };
 
-class BlockOfCells {
-private:
-    BlockOfCells *left;
-    BlockOfCells *right;
-    set<BlockOfCells> cellsArray;
-
-public:
-    BlockOfCells(const size_t rows, const size_t columns);
-    ~BlockOfCells() {
-        if (this->left != nullptr) {
-            delete this->left;
-            this->left = nullptr;
-        }
-
-        if (this->right != nullptr) {
-            delete this->right;
-            this->right = nullptr;
-        }
-    }
-
-    void addCell(const Cell &cell);
-};
-
 class ChangeFieldStatus {
 public:
     void statusChange();
@@ -90,6 +67,19 @@ class StandartGame {
 
 class OfflineGame {
 
+};
+
+class BlockOfCells {
+private:
+    BlockOfCells *left;
+    BlockOfCells *right;
+    set<BlockOfCells> cellsArray;
+
+public:
+    BlockOfCells(const size_t rows, const size_t columns);
+    ~BlockOfCells();
+
+    void addCell(const Cell &cell);
 };
 
 class Cell {
@@ -120,10 +110,6 @@ public:
         cellsList = nullptr;
     }
 
-    ~Field() {
-
-    }
-
     void setFieldName(const string valueFieldName) { this->fieldName = valueFieldName; }
     void setRows(const size_t valueRows) { this->rows = valueRows; }
     void setColums(const size_t valueColums) { this->colums = valueColums; }
@@ -146,6 +132,10 @@ private:
     Field field;
 
 public:
+    Life() {
+        Field fieldObj;
+        this->field = fieldObj;
+    }
     void initialFieldWithConsoleParameters(int argc, char **argv);
     void initialField();
     void initialField(ifstream &inputData);

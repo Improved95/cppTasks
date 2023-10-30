@@ -8,7 +8,6 @@ void ChangeFieldStatus::fromFileFieldFill(Field &field, vector<Cell> &cellsVecto
     for (size_t i = 0; i < cellsVector.size(); i++) {
         field.cellsList->addCell(cellsVector[i]);
     }
-
 }
 
 void Life::runningStandartGame() {
