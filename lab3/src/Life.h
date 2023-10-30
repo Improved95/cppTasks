@@ -58,7 +58,6 @@ class ChangeFieldStatus {
 public:
     void statusChange();
     void randomFieldFill();
-    void fromFileFieldFill(Field &field);
 };
 
 class StandartGame {
@@ -76,7 +75,7 @@ private:
     set<BlockOfCells> cellsArray;
 
 public:
-    BlockOfCells(const size_t rows, const size_t columns);
+    BlockOfCells(const size_t rows, const size_t columns, const size_t quantCellsInOneRowsInBlock);
     ~BlockOfCells();
 
     void addCell(const Cell &cell);

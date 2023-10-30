@@ -99,7 +99,7 @@ bool InputDataParser::fileV106Parser(Field &field, ifstream &inputData) {
         return false;
     }
 
-    BlockOfCells cellsList(field.getRows(), field.getColums());
+    BlockOfCells cellsList(field.getRows(), field.getColums(), 3);
     field.setCellsList(&cellsList);
 
     while (getline(inputData, input)) {
