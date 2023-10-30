@@ -29,19 +29,12 @@ void Life::initialField(ifstream &inputData) {
     InputDataParser dataParser;
     EnterParametersFromConsole enterParameters;
 
-    vector<Cell> cellsVector;
     // если файл не прошел проверку на корректность, то игра будет запущена в стандартном режиме с произвольным заполнением.
-    if (!dataParser.inputDataParsing(this->field, inputData, cellsVector)) {
+    if (!dataParser.inputDataParsing(this->field, inputData)) {
         initialField();
         return;
     }
     enterParameters.initialFieldSize(this->field);
-
-    BlockOfCells cellsList(this->field.getRows(), this->field.getColums());
-    this->field.setCellsList(&cellsList);
-
-    ChangeFieldStatus changeFieldStatus;
-    changeFieldStatus.fromFileFieldFill(this->field, cellsVector);
 
     runningStandartGame();
 }

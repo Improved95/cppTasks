@@ -76,19 +76,19 @@ bool InputDataParser::isStrokeWithDeathSurvRules(Field &field, ifstream &inputDa
     return true;
 }
 
-bool InputDataParser::checkInputCells(Field &field, string &input, vector<Cell> &cellsVector) {
+bool InputDataParser::checkInputCells(Field &field, string &input) {
     istringstream iss(input);
     size_t a, b;
     if (iss >> a >> b) {
         Cell cell(a, b);
-        cellsVector.push_back(cell);
+        field.getCellsList()->addCell(cell);
     } else {
         return false;
     }
     return true;
 }
 
-bool InputDataParser::fileV106Parser(Field &field, ifstream &inputData, vector<Cell> &cellsVector) {
+bool InputDataParser::fileV106Parser(Field &field, ifstream &inputData) {
     string input;
     if (!isStrokeWithFieldName(field, inputData)) {
         coutInputExample();
@@ -99,13 +99,16 @@ bool InputDataParser::fileV106Parser(Field &field, ifstream &inputData, vector<C
         return false;
     }
 
+    BlockOfCells cellsList(field.getRows(), field.getColums());
+    field.setCellsList(&cellsList);
+
     while (getline(inputData, input)) {
-        checkInputCells(field, input, cellsVector);
+        checkInputCells(field, input);
     }
     return true;
 }
 
-bool InputDataParser::inputDataParsing(Field &field, ifstream &inputData, vector<Cell> &cellsVector) {
+bool InputDataParser::inputDataParsing(Field &field, ifstream &inputData) {
     string input;
     getline(inputData, input, ' ');
     if (input != "#Life") {
@@ -115,7 +118,7 @@ bool InputDataParser::inputDataParsing(Field &field, ifstream &inputData, vector
 
     getline(inputData, input, '\n');
     if (input == "1.06") {
-        if (!fileV106Parser(field, inputData, cellsVector)) {
+        if (!fileV106Parser(field, inputData)) {
             return false;
         }
     } else {

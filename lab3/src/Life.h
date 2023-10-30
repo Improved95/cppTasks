@@ -35,10 +35,10 @@ private:
     bool formatLifeDeathRuleIsCorrect(Field &field, string input);
     bool isStrokeWithFieldName(Field &field, ifstream &inputData);
     bool isStrokeWithDeathSurvRules(Field &field, ifstream &inputData);
-    bool checkInputCells(Field &field, string &inputData, vector<Cell> &cellsVector);
-    bool fileV106Parser(Field &field, ifstream &inputData, vector<Cell> &cellsVector);
+    bool checkInputCells(Field &field, string &inputData);
+    bool fileV106Parser(Field &field, ifstream &inputData);
 public:
-    bool inputDataParsing(Field &field, ifstream &inputData, vector<Cell> &cellsVector);
+    bool inputDataParsing(Field &field, ifstream &inputData);
 };
 
 // ./life.exe (console parameters)
@@ -58,7 +58,7 @@ class ChangeFieldStatus {
 public:
     void statusChange();
     void randomFieldFill();
-    void fromFileFieldFill(Field &field, vector<Cell> &cellsVector);
+    void fromFileFieldFill(Field &field);
 };
 
 class StandartGame {
