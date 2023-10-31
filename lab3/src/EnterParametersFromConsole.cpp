@@ -12,7 +12,7 @@ void EnterParametersFromConsole::initialFieldParameters(Field &field) {
 
 void EnterParametersFromConsole::initialFieldSize(Field &field) {
     ExceptionHandling exceptionHandling;
-    long long rows, columns;
+    size_t rows, columns;
     string input;
 
     cout << "Enter quantity rows:";

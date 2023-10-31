@@ -18,7 +18,7 @@ using std::exception;
 using std::getline;
 using std::vector;
 using std::set;
-using std::istringstream;
+using std::stringstream;
 
 class Life;
 class Field;
@@ -26,7 +26,7 @@ class Cell;
 
 class ExceptionHandling {
 public:
-    bool strtollIsCorrect(long long &rows, const string &input, const char *message);
+    bool strtollIsCorrect(size_t &value, const string &input, const char *message);
 };
 
 class InputDataParser {
@@ -35,7 +35,7 @@ private:
     bool formatLifeDeathRuleIsCorrect(Field &field, string input);
     bool isStrokeWithFieldName(Field &field, ifstream &inputData);
     bool isStrokeWithDeathSurvRules(Field &field, ifstream &inputData);
-    bool checkInputCells(Field &field, string &inputData);
+    bool checkInputCells(Field &field, ifstream &input);
     bool fileV106Parser(Field &field, ifstream &inputData);
 public:
     bool inputDataParsing(Field &field, ifstream &inputData);
@@ -84,16 +84,16 @@ public:
 
 class Cell {
 private:
-    long long x;
-    long long y;
+    size_t x;
+    size_t y;
 
 public:
-    Cell(const long long xPos, const long long yPos) {
+    Cell(const size_t xPos, const size_t yPos) {
         this->x = xPos;
         this->y = yPos;
     }
-    long long getX() const { return this->x; }
-    long long getY() const { return this->y; }
+    size_t getX() const { return this->x; }
+    size_t getY() const { return this->y; }
 };
 
 class Field {

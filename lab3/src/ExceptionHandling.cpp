@@ -1,9 +1,9 @@
 #include "Life.h"
 
-bool ExceptionHandling::strtollIsCorrect(long long &rows, const string &input, const char *message) {
+bool ExceptionHandling::strtollIsCorrect(size_t &value, const string &input, const char *message) {
     try {
-        rows = std::stoll(input);
-        if (rows == 0ULL) {
+        value = std::stoll(input);
+        if (value == 0ULL) {
             throw exception();
         }
     } catch (const exception &ex) {

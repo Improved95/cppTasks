@@ -76,15 +76,27 @@ bool InputDataParser::isStrokeWithDeathSurvRules(Field &field, ifstream &inputDa
     return true;
 }
 
-bool InputDataParser::checkInputCells(Field &field, string &input) {
-    istringstream iss(input);
+bool InputDataParser::checkInputCells(Field &field, ifstream &inputData) {
+    ExceptionHandling exceptionHandling;
+    string input;
     size_t a, b;
-    if (iss >> a >> b) {
-        Cell cell(a, b);
-        field.getCellsList()->addCell(cell);
-    } else {
-        return false;
+    while (getline(inputData, input, ' ')) {
+        if (input[0] == '-') {
+            exceptionHandling.strtollIsCorrect(a, input.substr(0, input.size()), "");
+        } else
+            exceptionHandling.strtollIsCorrect(a, input.substr(0, input.size()), "");
     }
+
+//    istringstream iss(input);
+//    cout << input << endl;
+//    size_t a, b;
+//    if (iss >> a >> b) {
+//        Cell cell(a, b);
+//        field.getCellsList()->addCell(cell);
+//    } else {
+//        return false;
+//    }
+//    return true;
     return true;
 }
 
@@ -106,9 +118,11 @@ bool InputDataParser::fileV106Parser(Field &field, ifstream &inputData) {
     cellsList.constructorOfStruct(field.getRows(), field.getColums(), 3, 0);
     field.setCellsList(&cellsList);
 
-    while (getline(inputData, input)) {
-        checkInputCells(field, input);
+    if (!checkInputCells(field, inputData)) {
+        coutInputExample();
+        return false;
     }
+
     return true;
 }
 
