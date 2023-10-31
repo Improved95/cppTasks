@@ -1,9 +1,17 @@
 #include "Life.h"
 
-bool ExceptionHandling::strtollIsCorrect(size_t &value, const string &input, const char *message) {
+bool ExceptionHandling::strtoullIsCorrect(size_t &value, const string &input, const char *message) {
+    size_t numCharsConverted = 0;
+    string newInput = input;
+
+    size_t newInputSize = newInput.size();
+    if (input[0] == '-') {
+        newInput = input.substr(1, input.size());
+        newInputSize = newInput.size();
+    }
     try {
-        value = std::stoll(input);
-        if (value == 0ULL) {
+        value = std::stoull(newInput, &numCharsConverted);
+        if (numCharsConverted != newInputSize) {
             throw exception();
         }
     } catch (const exception &ex) {

@@ -18,12 +18,12 @@ void EnterParametersFromConsole::initialFieldSize(Field &field) {
     cout << "Enter quantity rows:";
     do {
         cin >> input;
-    } while (!exceptionHandling.strtollIsCorrect(rows, input, "Incorrect input rows. You need enter unsigned integer value."));
+    } while (!exceptionHandling.strtoullIsCorrect(rows, input, "Incorrect input rows. You need enter unsigned integer value."));
     field.setRows(rows);
 
     cout << "Enter quantity columns:";
     do {
         cin >> input;
-    } while (!exceptionHandling.strtollIsCorrect(columns, input, "Incorrect input columns. You need enter unsigned integer value."));
+    } while (!exceptionHandling.strtoullIsCorrect(columns, input, "Incorrect input columns. You need enter unsigned integer value."));
     field.setColums(columns);
 }

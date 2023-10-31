@@ -81,22 +81,19 @@ bool InputDataParser::checkInputCells(Field &field, ifstream &inputData) {
     string input;
     size_t a, b;
     while (getline(inputData, input, ' ')) {
-        if (input[0] == '-') {
-            exceptionHandling.strtollIsCorrect(a, input.substr(0, input.size()), "");
-        } else
-            exceptionHandling.strtollIsCorrect(a, input.substr(0, input.size()), "");
+        if (!exceptionHandling.strtoullIsCorrect(a, input, "")) {
+            return false;
+        }
+
+        getline(inputData, input);
+        if (!exceptionHandling.strtoullIsCorrect(b, input, "")) {
+            return false;
+        }
+
+        Cell cell(a, b);
+        field.getCellsList()->addCell(cell);
     }
 
-//    istringstream iss(input);
-//    cout << input << endl;
-//    size_t a, b;
-//    if (iss >> a >> b) {
-//        Cell cell(a, b);
-//        field.getCellsList()->addCell(cell);
-//    } else {
-//        return false;
-//    }
-//    return true;
     return true;
 }
 

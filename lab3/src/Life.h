@@ -26,7 +26,7 @@ class Cell;
 
 class ExceptionHandling {
 public:
-    bool strtollIsCorrect(size_t &value, const string &input, const char *message);
+    bool strtoullIsCorrect(size_t &value, const string &input, const char *message);
 };
 
 class InputDataParser {
