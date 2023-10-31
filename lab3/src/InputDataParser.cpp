@@ -112,7 +112,7 @@ bool InputDataParser::fileV106Parser(Field &field, ifstream &inputData) {
     enterParameters.initialFieldSize(field);
 
     BlockOfCells cellsList;
-    cellsList.constructorOfStruct(field.getRows(), field.getColums(), 3, 0);
+    cellsList.constructorOfStruct(&cellsList, field.getRows(), field.getColums(), 3, 0);
     field.setCellsList(&cellsList);
 
     if (!checkInputCells(field, inputData)) {

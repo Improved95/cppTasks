@@ -78,7 +78,7 @@ public:
     BlockOfCells();
     ~BlockOfCells();
 
-    BlockOfCells * constructorOfStruct(const size_t rows, const size_t columns, const size_t blockSize, const int mode);
+    void constructorOfStruct(BlockOfCells *block, const size_t rows, const size_t columns, const size_t blockSize, const int mode);
     void addCell(const Cell &cell);
 };
 
