@@ -75,9 +75,10 @@ private:
     set<BlockOfCells> cellsArray;
 
 public:
-    BlockOfCells(const size_t rows, const size_t columns, const size_t quantCellsInOneRowsInBlock);
+    BlockOfCells();
     ~BlockOfCells();
 
+    BlockOfCells * constructorOfStruct(const size_t rows, const size_t columns, const size_t blockSize, const int mode);
     void addCell(const Cell &cell);
 };
 

@@ -27,14 +27,12 @@ void Life::initialField() {
 
 void Life::initialField(ifstream &inputData) {
     InputDataParser dataParser;
-    EnterParametersFromConsole enterParameters;
 
     // если файл не прошел проверку на корректность, то игра будет запущена в стандартном режиме с произвольным заполнением.
     if (!dataParser.inputDataParsing(this->field, inputData)) {
         initialField();
         return;
     }
-    enterParameters.initialFieldSize(this->field);
 
     runningStandartGame();
 }
