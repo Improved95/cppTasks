@@ -91,7 +91,7 @@ bool InputDataParser::checkInputCells(Field &field, ifstream &inputData) {
         }
 
         Cell cell(a, b);
-        field.getCellsList()->addCell(cell);
+        field.getCellsList()->addCell(cell, field.getRows(), field.getColums(), 0);
     }
 
     return true;

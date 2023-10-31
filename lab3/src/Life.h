@@ -72,14 +72,14 @@ class BlockOfCells {
 private:
     BlockOfCells *left;
     BlockOfCells *right;
-    set<BlockOfCells> cellsArray;
+    set<Cell> *cellsSet;
 
 public:
     BlockOfCells();
     ~BlockOfCells();
 
     void constructorOfStruct(BlockOfCells *block, const size_t rows, const size_t columns, const size_t blockSize, const int mode);
-    void addCell(const Cell &cell);
+    void addCell(const Cell &cell, const size_t rows, const size_t columns, const int mode);
 };
 
 class Cell {
@@ -92,6 +92,13 @@ public:
         this->x = xPos;
         this->y = yPos;
     }
+    friend bool operator<(const Cell &a, const Cell &b) {
+        return (a.x < b.x) || (a.y < b.y);
+    }
+    friend bool operator==(const Cell &a, const Cell &b) {
+        return (a.x == b.x && a.y == b.y);
+    }
+
     size_t getX() const { return this->x; }
     size_t getY() const { return this->y; }
 };

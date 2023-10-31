@@ -1,8 +1,10 @@
 #include "Life.h"
 #define DIVIDER 2
+
 BlockOfCells::BlockOfCells() {
-    left = nullptr;
-    right = nullptr;
+    this->left = nullptr;
+    this->right = nullptr;
+    this->cellsSet = nullptr;
 }
 
 void BlockOfCells::constructorOfStruct(BlockOfCells *block, const size_t rows, const size_t columns, const size_t blockSize, const int mode) {
@@ -21,6 +23,9 @@ void BlockOfCells::constructorOfStruct(BlockOfCells *block, const size_t rows, c
             constructorOfStruct(block->right, rows, columns / DIVIDER, blockSize, 0);
         }
     }
+
+    set<Cell> setObj;
+    this->cellsSet = &setObj;
 }
 
 BlockOfCells::~BlockOfCells() {
@@ -32,6 +37,30 @@ BlockOfCells::~BlockOfCells() {
     }
 }
 
-void BlockOfCells::addCell(const Cell &cell) {
+void BlockOfCells::addCell(const Cell &cell, const size_t rows, const size_t columns, const int mode) {
+    if (mode == 0) {
+        if (cell.getX() <= rows / DIVIDER) {
+            if (this->left != nullptr) {
+                this->left->addCell(cell, rows / DIVIDER, columns, 1);
+            } else {
+                (*(*this).cellsSet).insert(cell);
+            }
+        } else {
+            if (this->right != nullptr) {
+                this->right->addCell(cell, rows / DIVIDER, columns, 1);
+            } else {
 
+            }
+        }
+    } else {
+        if (cell.getY() <= columns / DIVIDER) {
+            if (this->left != nullptr) {
+                this->left->addCell(cell, rows, columns / DIVIDER, 0);
+            }
+        } else {
+            if (this->right != nullptr) {
+                this->right->addCell(cell, rows, columns / DIVIDER, 0);
+            }
+        }
+    }
 }
