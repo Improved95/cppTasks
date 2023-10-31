@@ -13,14 +13,14 @@ BlockOfCells * BlockOfCells::constructorOfStruct(const size_t rows, const size_t
 //    const size_t quantBlocksInColums = (columns / binary) + (columns % binary);
 
     if (mode == 0) {
-        if (rows / 2 > blockSize) {
+        if (rows / 2 >= blockSize) {
             this->left = constructorOfStruct(rows / 2, columns, blockSize, 1);
-            this->right = constructorOfStruct(rows / 2 + (rows % 2) , columns, blockSize, 1);
+            this->right = constructorOfStruct(rows / 2, columns, blockSize, 1);
         }
     } else {
-        if (columns / 2 > blockSize) {
+        if (columns / 2 >= blockSize) {
             this->left = constructorOfStruct(rows, columns / 2, blockSize, 0);
-            this->right = constructorOfStruct(rows, columns / 2 + (columns % 2), blockSize, 0);
+            this->right = constructorOfStruct(rows, columns / 2, blockSize, 0);
         }
     }
     BlockOfCells *ptrBlock = new BlockOfCells();
