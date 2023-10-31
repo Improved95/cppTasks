@@ -81,12 +81,12 @@ bool InputDataParser::checkInputCells(Field &field, ifstream &inputData) {
     string input;
     size_t a, b;
     while (getline(inputData, input, ' ')) {
-        if (!exceptionHandling.strtoullIsCorrect(a, input, "")) {
+        if (!exceptionHandling.coordinateIsCorrect(a, field.getRows(), input, "")) {
             return false;
         }
 
         getline(inputData, input);
-        if (!exceptionHandling.strtoullIsCorrect(b, input, "")) {
+        if (!exceptionHandling.coordinateIsCorrect(b, field.getColums(), input, "")) {
             return false;
         }
 

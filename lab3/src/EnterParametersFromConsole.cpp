@@ -1,4 +1,5 @@
 #include "Life.h"
+#include <limits.h>
 
 void EnterParametersFromConsole::initialFieldParameters(Field &field) {
     string input;
@@ -18,12 +19,12 @@ void EnterParametersFromConsole::initialFieldSize(Field &field) {
     cout << "Enter quantity rows:";
     do {
         cin >> input;
-    } while (!exceptionHandling.strtoullIsCorrect(rows, input, "Incorrect input rows. You need enter unsigned integer value."));
+    } while (!exceptionHandling.coordinateIsCorrect(rows, ULONG_LONG_MAX, input, "Incorrect input rows. You need enter unsigned integer value."));
     field.setRows(rows);
 
     cout << "Enter quantity columns:";
     do {
         cin >> input;
-    } while (!exceptionHandling.strtoullIsCorrect(columns, input, "Incorrect input columns. You need enter unsigned integer value."));
+    } while (!exceptionHandling.coordinateIsCorrect(columns, ULONG_LONG_MAX, input, "Incorrect input columns. You need enter unsigned integer value."));
     field.setColums(columns);
 }

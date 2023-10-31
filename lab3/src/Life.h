@@ -26,7 +26,7 @@ class Cell;
 
 class ExceptionHandling {
 public:
-    bool strtoullIsCorrect(size_t &value, const string &input, const char *message);
+    bool coordinateIsCorrect(size_t &value, const size_t maxValue, const string &input, const char *message);
 };
 
 class InputDataParser {

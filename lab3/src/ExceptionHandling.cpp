@@ -1,8 +1,10 @@
 #include "Life.h"
 
-/*выдает модуль числа*/
-bool ExceptionHandling::strtoullIsCorrect(size_t &value, const string &input, const char *message) {
+/*работает только для задачи нахождения координаты точки, те, отрицательное число станет
+ * положительным, но оно будет обратной координатой, те, отсчитывается с конца*/
+bool ExceptionHandling::coordinateIsCorrect(size_t &value, const size_t maxValue, const string &input, const char *message) {
     size_t numCharsConverted = 0;
+    bool reverseCoordinate = false;
     string newInput = input;
 
     // обработка отрицательных чисел
@@ -10,11 +12,15 @@ bool ExceptionHandling::strtoullIsCorrect(size_t &value, const string &input, co
     if (input[0] == '-') {
         newInput = input.substr(1, input.size());
         newInputSize = newInput.size();
-
+        reverseCoordinate = true;
     }
 
     try {
         value = std::stoull(newInput, &numCharsConverted);
+        value = value % maxValue;
+        if (reverseCoordinate) {
+            value = maxValue - value;
+        }
         if (numCharsConverted != newInputSize) {
             throw exception();
         }
