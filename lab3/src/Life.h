@@ -72,13 +72,13 @@ class BlockOfCells {
 private:
     BlockOfCells *left;
     BlockOfCells *right;
-    set<Cell> *cellsSet;
+    set<Cell> *cellsList;
 
 public:
     BlockOfCells();
     ~BlockOfCells();
 
-    void constructorOfStruct(BlockOfCells *block, const size_t rows, const size_t columns, const size_t blockSize, const int mode);
+    BlockOfCells * constructorOfStruct(BlockOfCells *node, const size_t rows, const size_t columns, const size_t blockSize, const int mode);
     void addCell(const Cell &cell, const size_t rows, const size_t columns, const int mode);
 };
 

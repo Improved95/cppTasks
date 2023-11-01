@@ -111,10 +111,8 @@ bool InputDataParser::fileV106Parser(Field &field, ifstream &inputData) {
     EnterParametersFromConsole enterParameters;
     enterParameters.initialFieldSize(field);
 
-    BlockOfCells cellsList;
-    cellsList.constructorOfStruct(&cellsList, field.getRows(), field.getColums(), 3, 0);
-    field.setCellsList(&cellsList);
-
+    BlockOfCells *root = new BlockOfCells();
+    field.setCellsList(root->constructorOfStruct(root, field.getRows(), field.getColums(), 3, 0));
     if (!checkInputCells(field, inputData)) {
         coutInputExample();
         return false;
