@@ -14,6 +14,9 @@ BlockOfCells::~BlockOfCells() {
     if (right != nullptr) {
         right->~BlockOfCells();
     }
+    if (this->left == nullptr && this->right == nullptr) {
+        delete this->cellsList;
+    }
 }
 
 BlockOfCells * BlockOfCells::constructorOfStruct(BlockOfCells *node, const size_t rows, const size_t columns, const size_t blockSize, const int mode) {
@@ -67,7 +70,7 @@ void BlockOfCells::addCell(const Cell &cell, const size_t rows, const size_t col
     }
 }
 
-bool BlockOfCells::cellIsExist() {
+bool BlockOfCells::cellIsExist(const size_t i, const size_t j) {
 
     return true;
 }

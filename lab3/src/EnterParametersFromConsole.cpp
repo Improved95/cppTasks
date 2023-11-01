@@ -4,7 +4,7 @@
 void EnterParametersFromConsole::initialFieldParameters(Field &field) {
     string input;
 
-    cout << "Enter field name: ";
+    cout << "Enter field name:";
     cin >> input;
     field.setFieldName(input);
 

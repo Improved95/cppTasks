@@ -54,10 +54,11 @@ public:
     void initialFieldParameters(Field &field);
 };
 
-class ChangeFieldStatus {
+class ChangeField {
 public:
     void statusChange();
-    void randomFieldFill();
+//    void randomFieldFill();
+    void pulseFieldFill(Field &field);
 };
 
 class StandartGame {
@@ -81,6 +82,8 @@ public:
     BlockOfCells * constructorOfStruct(BlockOfCells *node, const size_t rows, const size_t columns, const size_t blockSize, const int mode);
     void addCell(const Cell &cell, const size_t rows, const size_t columns, const int mode);
     bool cellIsExist();
+
+    friend Field;
 };
 
 class Cell {
@@ -113,6 +116,8 @@ private:
     string survivalRule;
     BlockOfCells *cellsList;
 
+    void recursionDraw(BlockOfCells *node, size_t &i, size_t &j);
+
 public:
     Field() {
         cellsList = nullptr;
@@ -132,7 +137,9 @@ public:
     string getSurvivalRule() { return this->survivalRule; }
     BlockOfCells * getCellsList() { return cellsList; }
 
-    friend ChangeFieldStatus;
+    void drawField();
+
+    friend ChangeField;
 };
 
 class Life {
@@ -151,7 +158,7 @@ public:
     void runningStandartGame();
     void runningOfflineGame();
 
-    friend ParserConsoleParameters;
+//    friend ParserConsoleParameters;
 };
 
 #endif
