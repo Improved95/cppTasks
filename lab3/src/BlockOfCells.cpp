@@ -4,7 +4,7 @@
 BlockOfCells::BlockOfCells() {
     this->left = nullptr;
     this->right = nullptr;
-    this->cellsList = nullptr;
+    this->cellsTree = nullptr;
 }
 
 BlockOfCells::~BlockOfCells() {
@@ -13,9 +13,6 @@ BlockOfCells::~BlockOfCells() {
     }
     if (right != nullptr) {
         right->~BlockOfCells();
-    }
-    if (this->left == nullptr && this->right == nullptr) {
-        delete this->cellsList;
     }
 }
 
@@ -38,7 +35,7 @@ BlockOfCells * BlockOfCells::constructorOfStruct(BlockOfCells *node, const size_
 
     if (node->left == nullptr && node->right == nullptr) {
         set<Cell> *cellListptr = new set<Cell>;
-        node->cellsList = cellListptr;
+        node->cellsTree = cellListptr;
     }
     return node;
 }
@@ -66,11 +63,10 @@ void BlockOfCells::addCell(const Cell &cell, const size_t rows, const size_t col
         }
     }
     if (this->left == nullptr && this->right == nullptr) {
-        this->cellsList->insert(cell);
+        this->cellsTree->insert(cell);
     }
 }
 
-bool BlockOfCells::cellIsExist(const size_t i, const size_t j) {
-
-    return true;
+bool BlockOfCells::cellIsExist() {
+    return false;
 }

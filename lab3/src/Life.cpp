@@ -10,18 +10,17 @@ void Life::initialFieldWithConsoleParameters(int argc, char **argv) {
 }
 
 void Life::initialField() {
-    EnterParametersFromConsole enterParameters;
-    enterParameters.initialFieldParameters(this->field);
+//    EnterParametersFromConsole enterParameters;
 
-    BlockOfCells blockOfCells = BlockOfCells();
-    BlockOfCells *root = blockOfCells.constructorOfStruct(&blockOfCells, this->field.getRows(), this->field.getColums(), 3, 0);
-    this->field.setCellsList(root);
-
-    this->field.setSurvivalRule("23");
-    this->field.setBirthRules("3");
-
-    ChangeField changeFieldStatus;
-    changeFieldStatus.pulseFieldFill(field);
+//    Field fieldObj;
+//    this->field = fieldObj;
+//    enterParameters.initialFieldParameters(this->field);
+//
+//    BlockOfCells cellsList;
+//    this->field.getCellsList() = cellsList;
+//
+//    ChangeFieldStatus changeFieldStatus;
+//    changeFieldStatus.randomFieldFill();
 
     runningStandartGame();
 }

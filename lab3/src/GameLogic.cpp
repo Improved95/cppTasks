@@ -21,19 +21,29 @@ void ChangeField::pulseFieldFill(Field &field) {
     }
 }
 
-void Field::recursionDraw(BlockOfCells *node, size_t &i, size_t &j) {
+void Field::recursionDraw(BlockOfCells *node, set<Cell>::iterator it, size_t &i, size_t &j) {
     if (node->left != nullptr) {
-        recursionDraw(node->left, i, j);
+        recursionDraw(node->left, it, i, j);
     }
     if (node->right != nullptr) {
-        recursionDraw(node->right, i, j);
+        recursionDraw(node->right, it, i, j);
     }
-    for (; i < rows; i++) {
-        for (; j < colums; i++) {
-            if () {
 
+    it = node->cellsTree->begin();
+    for (; i < rows; i++) {
+        for (; j < columns; j++) {
+            if (it == node->cellsTree->end()) {
+                return;
+            }
+            if ((*it).getX() == i && (*it).getY() == j) {
+                cout << "1";
+                it++;
+            } else {
+                cout << "0";
             }
         }
+        j = 0;
+        cout << "\n";
     }
 }
 
@@ -45,7 +55,15 @@ void Field::drawField() {
 //        cout << "\n" << endl;
 //    }
     size_t i = 0, j = 0;
-    recursionDraw(this->cellsList, i, j);
+    set<Cell>::iterator it;
+    recursionDraw(this->cellsList, it, i, j);
+    for (; i < rows; i++) {
+        for (; j < columns; j++) {
+            cout << "0";
+        }
+        j = 0;
+        cout << "\n";
+    }
 }
 
 void Life::runningStandartGame() {

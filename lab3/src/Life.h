@@ -73,7 +73,7 @@ class BlockOfCells {
 private:
     BlockOfCells *left;
     BlockOfCells *right;
-    set<Cell> *cellsList;
+    set<Cell> *cellsTree;
 
 public:
     BlockOfCells();
@@ -97,10 +97,7 @@ public:
         this->y = yPos;
     }
     friend bool operator<(const Cell &a, const Cell &b) {
-        return (a.x < b.x) || (a.y < b.y);
-    }
-    friend bool operator==(const Cell &a, const Cell &b) {
-        return (a.x == b.x && a.y == b.y);
+        return (a.x < b.x || (a.x == b.x && a.y <= b.y));
     }
 
     size_t getX() const { return this->x; }
@@ -111,12 +108,12 @@ class Field {
 private:
     string fieldName;
     size_t rows;
-    size_t colums;
+    size_t columns;
     string birthRule;
     string survivalRule;
     BlockOfCells *cellsList;
 
-    void recursionDraw(BlockOfCells *node, size_t &i, size_t &j);
+    void recursionDraw(BlockOfCells *node, set<Cell>::iterator it, size_t &i, size_t &j);
 
 public:
     Field() {
@@ -125,14 +122,14 @@ public:
 
     void setFieldName(const string valueFieldName) { this->fieldName = valueFieldName; }
     void setRows(const size_t valueRows) { this->rows = valueRows; }
-    void setColums(const size_t valueColums) { this->colums = valueColums; }
+    void setColumns(const size_t valueColumns) { this->columns = valueColumns; }
     void setBirthRules(const string valueBirthRule) { this->birthRule = valueBirthRule; }
     void setSurvivalRule(const string valueSurvivalRule) { this->survivalRule = valueSurvivalRule; }
     void setCellsList(BlockOfCells *valueCellsList) { this->cellsList = valueCellsList; }
 
     string getFieldName() { return this->fieldName; }
     size_t getRows() { return this->rows; }
-    size_t getColums() { return this->colums; }
+    size_t getColums() { return this->columns; }
     string getBirthRule() { return this->birthRule; }
     string getSurvivalRule() { return this->survivalRule; }
     BlockOfCells * getCellsList() { return cellsList; }

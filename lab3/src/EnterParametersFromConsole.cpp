@@ -26,5 +26,5 @@ void EnterParametersFromConsole::initialFieldSize(Field &field) {
     do {
         cin >> input;
     } while (!exceptionHandling.coordinateIsCorrect(columns, ULONG_LONG_MAX, input, "Incorrect input columns. You need enter unsigned integer value."));
-    field.setColums(columns);
+    field.setColumns(columns);
 }
