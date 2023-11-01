@@ -80,6 +80,7 @@ public:
 
     BlockOfCells * constructorOfStruct(BlockOfCells *node, const size_t rows, const size_t columns, const size_t blockSize, const int mode);
     void addCell(const Cell &cell, const size_t rows, const size_t columns, const int mode);
+    bool cellIsExist();
 };
 
 class Cell {
