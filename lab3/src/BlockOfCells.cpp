@@ -14,6 +14,7 @@ BlockOfCells::~BlockOfCells() {
     if (right != nullptr) {
         right->~BlockOfCells();
     }
+    // я не понимаю, удаляется ли то, что лежит по указателю cellsTree
 }
 
 BlockOfCells * BlockOfCells::constructorOfStruct(BlockOfCells *node, const size_t rows, const size_t columns, const size_t blockSize, const int mode) {

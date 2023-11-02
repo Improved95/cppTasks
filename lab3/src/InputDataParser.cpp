@@ -91,7 +91,7 @@ bool InputDataParser::checkInputCells(Field &field, ifstream &inputData) {
         }
 
         Cell cell(a, b);
-        field.getCellsList()->addCell(cell, field.getRows(), field.getColums(), 0);
+        field.getCellsList().addCell(cell, field.getRows(), field.getColums(), 0);
     }
 
     return true;
@@ -113,7 +113,7 @@ bool InputDataParser::fileV106Parser(Field &field, ifstream &inputData) {
 
     BlockOfCells blockOfCells = BlockOfCells();
     BlockOfCells *root = blockOfCells.constructorOfStruct(&blockOfCells, field.getRows(), field.getColums(), 3, 0);
-    field.setCellsList(root);
+    field.setCellsList(*root);
     if (!checkInputCells(field, inputData)) {
         coutInputExample();
         return false;
