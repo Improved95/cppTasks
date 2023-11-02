@@ -19,6 +19,7 @@ using std::getline;
 using std::vector;
 using std::set;
 using std::stringstream;
+using std::pair;
 
 class Life;
 class Field;
@@ -27,6 +28,7 @@ class Cell;
 class ExceptionHandling {
 public:
     bool coordinateIsCorrect(size_t &value, const size_t maxValue, const string &input, const char *message);
+    bool sttoullIsCorrect(size_t &value, const string &input, const char *message);
 };
 
 class InputDataParser {
@@ -52,21 +54,14 @@ class EnterParametersFromConsole {
 public:
     void initialFieldSize(Field &field);
     void initialFieldParameters(Field &field);
+    pair<int, string> parseInGameInput(stringstream &input);
 };
 
 class ChangeField {
 public:
-    void statusChange();
+    void calculateFieldByRules();
 //    void randomFieldFill();
-    void pulseFieldFill(Field &field);
-};
-
-class StandartGame {
-
-};
-
-class OfflineGame {
-
+//    void pulseFieldFill(Field &field);
 };
 
 class BlockOfCells {
@@ -83,7 +78,9 @@ public:
     void addCell(const Cell &cell, const size_t rows, const size_t columns, const int mode);
     bool cellIsExist();
 
-    friend Field;
+    BlockOfCells * getLeftNode() { return left; }
+    BlockOfCells * getRightNode() { return right; }
+    set<Cell> * getCellsTree() { return cellsTree; }
 };
 
 class Cell {
@@ -103,6 +100,16 @@ public:
 
     size_t getX() const { return this->x; }
     size_t getY() const { return this->y; }
+};
+
+class OfflineGame {
+
+};
+
+class StandartGame {
+public:
+    void run(Field &field);
+    void coutHelp();
 };
 
 class Field {
@@ -149,8 +156,6 @@ public:
     void initialField();
     void initialField(ifstream &inputData);
     void initialField(ifstream &inputData, size_t ticks, ofstream &outputData);
-    void runningStandartGame();
-    void runningOfflineGame();
 
 //    friend ParserConsoleParameters;
 };

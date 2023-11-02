@@ -28,3 +28,27 @@ void EnterParametersFromConsole::initialFieldSize(Field &field) {
     } while (!exceptionHandling.coordinateIsCorrect(columns, ULONG_LONG_MAX, input, "Incorrect input columns. You need enter unsigned integer value."));
     field.setColumns(columns);
 }
+
+pair<int, string> EnterParametersFromConsole::parseInGameInput(stringstream &input) {
+    string mode;
+    pair<int, string> output;
+    getline(input, mode , ' ');
+    if (mode == "help") {
+        output.first = 1;
+    } else if (mode == "tick") {
+        output.first = 2;
+        getline(input, mode);
+        output.second = mode/*.substr(1, mode.size())*/;
+    } else if (mode == "dump") {
+        output.first = 3;
+        getline(input, mode);
+        output.second = mode.substr(1, mode.size());
+    } else if (mode == "exit") {
+        output.first = 4;
+    } else {
+        output.first = 1;
+        cout << "Incorrect input." << endl;
+    }
+    return output;
+}
+

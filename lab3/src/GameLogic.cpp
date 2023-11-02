@@ -22,18 +22,18 @@
 //}
 
 void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
-    if (node.right != nullptr) {
-        recursionDraw(*node.right, i, j);
+    if (node.getRightNode() != nullptr) {
+        recursionDraw(*(node.getRightNode()), i, j);
     }
-    if (node.left != nullptr) {
-        recursionDraw(*node.left, i, j);
+    if (node.getLeftNode() != nullptr) {
+        recursionDraw(*(node.getLeftNode()), i, j);
     }
 
-    if (node.left == nullptr && node.right == nullptr) {
-        set<Cell>::iterator it = node.cellsTree->begin();
+    if (node.getLeftNode() == nullptr && node.getRightNode() == nullptr) {
+        set<Cell>::iterator it = node.getCellsTree()->begin();
         for (; i > 0; i--) {
             for (; j < columns; j++) {
-                if (it == node.cellsTree->end()) {
+                if (it == node.getCellsTree()->end()) {
                     return;
                 }
                 if ((*it).getY() + 1 == i && (*it).getX() == j) {
@@ -61,10 +61,40 @@ void Field::drawField() {
     }
 }
 
-void Life::runningStandartGame() {
-    this->field.drawField();
+void StandartGame::coutHelp() {
+//    cout << "You can input this comand:" << endl;
+//    cout << "1) help - output the available commands;" << endl;
+//    cout << "2) tick 'n' - calculate n iterations and display them on the screen;" << endl;
+//    cout << "3) dump 'file' - save field in file;" << endl;
+//    cout << "4) exit - stop game." << endl;
 }
 
-void Life::runningOfflineGame() {
+void StandartGame::run(Field &field) {
+    ChangeField changeField;
+    EnterParametersFromConsole checkInput;
+    ExceptionHandling exceptionHandling;
+    string input;
+    stringstream streamInput;
 
+    cout << "Game has started in Standart mode" << endl;
+    coutHelp();
+
+    size_t ticks = 0;
+
+    bool runningGame = true;
+//    while (runningGame) {
+//        cout << "Enter command:";
+//        cin >> input;
+//        streamInput << input;
+//        pair<int, string> output = checkInput.parseInGameInput(streamInput);
+//        switch(output.first) {
+//            case 1:
+//                coutHelp();
+//                break;
+//            case 2:
+//                exceptionHandling.sttoullIsCorrect(ticks, output.second, "Incorrect n");
+//                break;
+//        }
+//    }
+    field.drawField();
 }

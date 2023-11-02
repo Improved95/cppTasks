@@ -21,8 +21,6 @@ void Life::initialField() {
 //
 //    ChangeFieldStatus changeFieldStatus;
 //    changeFieldStatus.randomFieldFill();
-
-    runningStandartGame();
 }
 
 void Life::initialField(ifstream &inputData) {
@@ -35,7 +33,8 @@ void Life::initialField(ifstream &inputData) {
         return;
     }
 
-    runningStandartGame();
+    StandartGame game;
+    game.run(this->field);
 }
 
 void Life::initialField(ifstream &inputData, size_t ticks, ofstream &outputData) {
