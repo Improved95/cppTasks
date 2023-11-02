@@ -21,34 +21,6 @@
 //    }
 //}
 
-/*void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
-    if (node.left != nullptr) {
-        recursionDraw(*node.left, i, j);
-    }
-    if (node.right != nullptr) {
-        recursionDraw(*node.right, i, j);
-    }
-
-    if (node.left == nullptr && node.right == nullptr) {
-        set<Cell>::iterator it = node.cellsTree->begin();
-        for (; i < rows; i++) {
-            for (; j < columns; j++) {
-                if (it == node.cellsTree->end()) {
-                    return;
-                }
-                if ((*it).getX() == i && (*it).getY() == j) {
-                    cout << "1";
-                    it++;
-                } else {
-                    cout << "_";
-                }
-            }
-            j = 0;
-            cout << "\n";
-        }
-    }
-}*/
-
 void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
     if (node.right != nullptr) {
         recursionDraw(*node.right, i, j);
@@ -64,7 +36,6 @@ void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
                 if (it == node.cellsTree->end()) {
                     return;
                 }
-//                cout << (*it).getX() << " " << (*it).getY() << " " << endl;
                 if ((*it).getY() + 1 == i && (*it).getX() == j) {
                     cout << "1";
                     it++;
@@ -81,7 +52,6 @@ void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
 void Field::drawField() {
     size_t i = rows, j = 0;
     recursionDraw(cellsList, i, j);
-
     for (; i > 0; i--) {
         for (; j < columns; j++) {
             cout << "_";
