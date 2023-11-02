@@ -21,28 +21,26 @@ void ChangeField::pulseFieldFill(Field &field) {
     }
 }
 
-void Field::recursionDraw(BlockOfCells *node, size_t &i, size_t &j) {
-    if ((*node).getLeftNode() != nullptr) {
-        cout << (*node).getLeftNode() << endl;
-        recursionDraw((*node).getLeftNode(), i, j);
-        cout << (*node).getLeftNode() << endl;
+void Field::recursionDraw(BlockOfCells *node, set<Cell>::iterator it, size_t &i, size_t &j) {
+    if (node->left != nullptr) {
+        recursionDraw(node->left, it, i, j);
     }
-    if ((*node).getRightNode() != nullptr) {
-        recursionDraw((*node).getRightNode(), i, j);
+    if (node->right != nullptr) {
+        recursionDraw(node->right, it, i, j);
     }
 
-//    set<Cell>::iterator it = node->getCellsTree()->begin();
+    it = node->cellsTree->begin();
     for (; i < rows; i++) {
         for (; j < columns; j++) {
-//            if (it == node->getCellsTree()->end()) {
-//                return;
-//            }
-//            if ((*it).getX() == i && (*it).getY() == j) {
-//                cout << "1";
-//                it++;
-//            } else {
-//                cout << "0";
-//            }
+            if (it == node->cellsTree->end()) {
+                return;
+            }
+            if ((*it).getX() == i && (*it).getY() == j) {
+                cout << "1";
+                it++;
+            } else {
+                cout << "0";
+            }
         }
         j = 0;
         cout << "\n";
@@ -50,9 +48,15 @@ void Field::recursionDraw(BlockOfCells *node, size_t &i, size_t &j) {
 }
 
 void Field::drawField() {
+//    for (size_t i = 0; i < field.getRows(); i++) {
+//        for (size_t j = 0; j < field.getColums(); j++) {
+//            field.cellsList->cellIsExist(i, j);
+//        }
+//        cout << "\n" << endl;
+//    }
     size_t i = 0, j = 0;
-    recursionDraw(this->cellsList, i, j);
-
+    set<Cell>::iterator it;
+    recursionDraw(this->cellsList, it, i, j);
     for (; i < rows; i++) {
         for (; j < columns; j++) {
             cout << "0";

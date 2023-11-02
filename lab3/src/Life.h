@@ -79,13 +79,11 @@ public:
     BlockOfCells();
     ~BlockOfCells();
 
-    BlockOfCells * getLeftNode() { return left; }
-    BlockOfCells * getRightNode() { return right; }
-    set<Cell> * getCellsTree() { return cellsTree; }
-
     BlockOfCells * constructorOfStruct(BlockOfCells *node, const size_t rows, const size_t columns, const size_t blockSize, const int mode);
     void addCell(const Cell &cell, const size_t rows, const size_t columns, const int mode);
     bool cellIsExist();
+
+    friend Field;
 };
 
 class Cell {
@@ -115,7 +113,7 @@ private:
     string survivalRule;
     BlockOfCells *cellsList;
 
-    void recursionDraw(BlockOfCells *node, size_t &i, size_t &j);
+    void recursionDraw(BlockOfCells *node, set<Cell>::iterator it, size_t &i, size_t &j);
 
 public:
     Field() {
