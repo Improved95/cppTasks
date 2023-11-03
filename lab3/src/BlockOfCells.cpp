@@ -90,3 +90,29 @@ BlockOfCells::BlockOfCells(const BlockOfCells &tree) {
     copyConstructor(&tree, this);
 }
 
+bool BlockOfCells::cellIsExist(const Cell &cell, const size_t rows, const size_t columns, const int mode) const {
+    if (mode == 0) {
+        if (cell.getX() <= rows / DIVIDER) {
+            if (this->left != nullptr) {
+                return this->left->cellIsExist(cell, rows / DIVIDER, columns, 1);
+            }
+        } else {
+            if (this->right != nullptr) {
+                return this->right->cellIsExist(cell, rows / DIVIDER, columns, 1);
+            }
+        }
+    } else {
+        if (cell.getY() <= columns / DIVIDER) {
+            if (this->left != nullptr) {
+                return this->left->cellIsExist(cell, rows, columns / DIVIDER, 0);
+            }
+        } else {
+            if (this->right != nullptr) {
+                return this->right->cellIsExist(cell, rows, columns / DIVIDER, 0);
+            }
+        }
+    }
+//    if (this->left == nullptr && this->right == nullptr) {
+        return (this->cellsList->find(cell) != this->cellsList->end());
+//    }
+}

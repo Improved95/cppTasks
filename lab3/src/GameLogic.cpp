@@ -73,7 +73,7 @@ void StandartGame::writeFieldInFile(Field &field, string &filePath) {
 
 }
 
-void StandartGame::calculateNIterations(Field &field, const size_t ticks) {
+void StandartGame::calculateNIterations(Field &field, size_t ticks) {
     ChangeField changeField;
     for (size_t i = 0; i < ticks; i++) {
         changeField.calculateFieldByRules(field);
