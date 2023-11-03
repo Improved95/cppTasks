@@ -4,7 +4,7 @@
 BlockOfCells::BlockOfCells() {
     this->left = nullptr;
     this->right = nullptr;
-    this->cellsTree = nullptr;
+    this->cellsList = nullptr;
 }
 
 BlockOfCells::~BlockOfCells() {
@@ -36,7 +36,7 @@ BlockOfCells * BlockOfCells::constructorOfStruct(BlockOfCells *node, const size_
 
     if (node->left == nullptr && node->right == nullptr) {
         set<Cell> *cellListptr = new set<Cell>;
-        node->cellsTree = cellListptr;
+        node->cellsList = cellListptr;
     }
     return node;
 }
@@ -64,10 +64,29 @@ void BlockOfCells::addCell(const Cell &cell, const size_t rows, const size_t col
         }
     }
     if (this->left == nullptr && this->right == nullptr) {
-        this->cellsTree->insert(cell);
+        this->cellsList->insert(cell);
     }
 }
 
-bool BlockOfCells::cellIsExist() {
-    return false;
+void BlockOfCells::copyConstructor(const BlockOfCells &example, BlockOfCells *node) {
+    if (example.left != nullptr) {
+        node->left = new BlockOfCells();
+        copyConstructor(*example.left, node->left);
+    }
+    if (example.right != nullptr) {
+        node->right = new BlockOfCells();
+        copyConstructor(*example.right, node->right);
+    }
+    if (example.left == nullptr && example.right == nullptr) {
+        node->cellsList = new set<Cell>;
+        *(node->cellsList) = *(example.cellsList);
+    }
 }
+
+BlockOfCells::BlockOfCells(const BlockOfCells &tree) {
+    this->left = nullptr;
+    this->right = nullptr;
+    this->cellsList = nullptr;
+    copyConstructor(tree, this);
+}
+

@@ -14,7 +14,7 @@ endif()
 
 add_library(corelib OBJECT src/Life.cpp src/GameLogic.cpp src/ParserConsoleParameters.cpp
         src/EnterParametersFromConsole.cpp src/InputDataParser.cpp src/ExceptionHandling.cpp
-        src/BlockOfCells.cpp)
+        src/BlockOfCells.cpp src/ChangeField.cpp)
 add_executable(${exe_name} src/main.cpp)
 target_link_libraries(${exe_name} corelib)
 

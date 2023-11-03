@@ -51,7 +51,7 @@ void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
 
 void Field::drawField() {
     size_t i = rows, j = 0;
-    recursionDraw(cellsList, i, j);
+    recursionDraw(cellsTree, i, j);
     for (; i > 0; i--) {
         for (; j < columns; j++) {
             cout << "_";
@@ -64,37 +64,60 @@ void Field::drawField() {
 void StandartGame::coutHelp() {
 //    cout << "You can input this comand:" << endl;
 //    cout << "1) help - output the available commands;" << endl;
-//    cout << "2) tick 'n' - calculate n iterations and display them on the screen;" << endl;
-//    cout << "3) dump 'file' - save field in file;" << endl;
+//    cout << "2) tick<n> - calculate n iterations and display them on the screen;" << endl;
+//    cout << "3) dump<filePath> - save field in file;" << endl;
 //    cout << "4) exit - stop game." << endl;
 }
 
-void StandartGame::run(Field &field) {
+void StandartGame::writeFieldInFile(Field &field, string &filePath) {
+
+}
+
+void StandartGame::calculateNIterations(Field &field, const size_t ticks) {
     ChangeField changeField;
+    for (size_t i = 0; i < ticks; i++) {
+        changeField.calculateFieldByRules(field);
+    }
+}
+
+void StandartGame::run(Field &field) {
     EnterParametersFromConsole checkInput;
     ExceptionHandling exceptionHandling;
     string input;
     stringstream streamInput;
+    pair<int, string> output;
 
-    cout << "Game has started in Standart mode" << endl;
+//    cout << "Game started in Standart mode." << endl;
     coutHelp();
 
     size_t ticks = 0;
+    string filePath;
 
     bool runningGame = true;
-//    while (runningGame) {
-//        cout << "Enter command:";
-//        cin >> input;
-//        streamInput << input;
-//        pair<int, string> output = checkInput.parseInGameInput(streamInput);
-//        switch(output.first) {
-//            case 1:
-//                coutHelp();
-//                break;
-//            case 2:
-//                exceptionHandling.sttoullIsCorrect(ticks, output.second, "Incorrect n");
-//                break;
-//        }
-//    }
-    field.drawField();
+    calculateNIterations(field, 5);
+    /*while (runningGame) {
+        cout << "Enter command:";
+        cin >> input;
+        streamInput << input;
+        output = checkInput.parseInGameInput(streamInput);
+        switch(output.first) {
+            case 1:
+                coutHelp();
+                break;
+            case 2:
+                if (!exceptionHandling.sttoullIsCorrect(ticks, output.second, "Incorrect n")) {
+                    break;
+                }
+                calculateNIterations(field, ticks);
+                field.drawField();
+                break;
+            case 3:
+                writeFieldInFile(field, output.second);
+                break;
+            case 4:
+                return;
+        }
+        streamInput.clear();
+        field.drawField();
+    }*/
 }

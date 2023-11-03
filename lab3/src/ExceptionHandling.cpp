@@ -34,7 +34,7 @@ bool ExceptionHandling::coordinateIsCorrect(size_t &value, const size_t maxValue
 bool ExceptionHandling::sttoullIsCorrect(size_t &value, const string &input, const char *message) {
     size_t numCharsConverted = 0;
     try {
-        size_t value = stoull(input, &numCharsConverted);
+        value = stoull(input, &numCharsConverted);
         if (numCharsConverted != input.size()) {
             throw exception();
         }

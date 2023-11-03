@@ -57,30 +57,24 @@ public:
     pair<int, string> parseInGameInput(stringstream &input);
 };
 
-class ChangeField {
-public:
-    void calculateFieldByRules();
-//    void randomFieldFill();
-//    void pulseFieldFill(Field &field);
-};
-
 class BlockOfCells {
 private:
     BlockOfCells *left;
     BlockOfCells *right;
-    set<Cell> *cellsTree;
+    set<Cell> *cellsList;
 
 public:
     BlockOfCells();
     ~BlockOfCells();
+    BlockOfCells(const BlockOfCells &tree);
+    void copyConstructor(const BlockOfCells &example, BlockOfCells *node);
 
     BlockOfCells * constructorOfStruct(BlockOfCells *node, const size_t rows, const size_t columns, const size_t blockSize, const int mode);
     void addCell(const Cell &cell, const size_t rows, const size_t columns, const int mode);
-    bool cellIsExist();
 
     BlockOfCells * getLeftNode() { return left; }
     BlockOfCells * getRightNode() { return right; }
-    set<Cell> * getCellsTree() { return cellsTree; }
+    set<Cell> * getCellsTree() { return cellsList; }
 };
 
 class Cell {
@@ -108,9 +102,19 @@ class OfflineGame {
 
 class StandartGame {
 public:
+    void writeFieldInFile(Field &field, string &filePath);
+    void calculateNIterations(Field &field, const size_t ticks);
     void run(Field &field);
     void coutHelp();
 };
+
+class ChangeField {
+public:
+    void calculateFieldByRules(Field &field);
+//    void randomFieldFill();
+//    void pulseFieldFill(Field &field);
+};
+
 
 class Field {
 private:
@@ -119,24 +123,29 @@ private:
     size_t columns;
     string birthRule;
     string survivalRule;
-    BlockOfCells cellsList;
+    BlockOfCells cellsTree;
 
     void recursionDraw(BlockOfCells &node, size_t &i, size_t &j);
 
 public:
+    Field() {
+        this->columns = 7;
+        this->rows = 7;
+    }
+
     void setFieldName(const string valueFieldName) { this->fieldName = valueFieldName; }
     void setRows(const size_t valueRows) { this->rows = valueRows; }
     void setColumns(const size_t valueColumns) { this->columns = valueColumns; }
     void setBirthRules(const string valueBirthRule) { this->birthRule = valueBirthRule; }
     void setSurvivalRule(const string valueSurvivalRule) { this->survivalRule = valueSurvivalRule; }
-    void setCellsList(BlockOfCells &valueCellsList) { this->cellsList = valueCellsList; }
+    void setCellsList(BlockOfCells &valueCellsList) { this->cellsTree = valueCellsList; }
 
     string getFieldName() { return this->fieldName; }
     size_t getRows() { return this->rows; }
     size_t getColums() { return this->columns; }
     string getBirthRule() { return this->birthRule; }
     string getSurvivalRule() { return this->survivalRule; }
-    BlockOfCells getCellsList() { return cellsList; }
+    BlockOfCells & getCellsList() { return cellsTree; }
 
     void drawField();
 
