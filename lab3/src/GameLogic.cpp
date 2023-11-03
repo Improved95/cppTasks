@@ -94,7 +94,7 @@ void StandartGame::run(Field &field) {
     string filePath;
 
     bool runningGame = true;
-    calculateNIterations(field, 5);
+    calculateNIterations(field, 1);
     /*while (runningGame) {
         cout << "Enter command:";
         cin >> input;

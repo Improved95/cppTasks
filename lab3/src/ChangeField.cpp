@@ -2,10 +2,12 @@
 
 void ChangeField::calculateFieldByRules(Field &field) {
     BlockOfCells copyTree = BlockOfCells(field.getCellsList());
+//    ChangeField::recursionCalcField(&field.getCellsList(), &copyTree);
+field.drawField();
+}
 
-    for(size_t i = 0; i < field.rows; i++) {
-        for(size_t j = 0; j < field.columns; j++) {
-
-        }
+void ChangeField::recursionCalcField(BlockOfCells *original, BlockOfCells *copy) {
+    if (copy->getLeftNode() != nullptr) {
+        recursionCalcField(original->getLeftNode(), copy->getLeftNode());
     }
 }

@@ -67,7 +67,7 @@ public:
     BlockOfCells();
     ~BlockOfCells();
     BlockOfCells(const BlockOfCells &tree);
-    void copyConstructor(const BlockOfCells &example, BlockOfCells *node);
+    void copyConstructor(const BlockOfCells *example, BlockOfCells *node);
 
     BlockOfCells * constructorOfStruct(BlockOfCells *node, const size_t rows, const size_t columns, const size_t blockSize, const int mode);
     void addCell(const Cell &cell, const size_t rows, const size_t columns, const int mode);
@@ -111,6 +111,7 @@ public:
 class ChangeField {
 public:
     void calculateFieldByRules(Field &field);
+    void recursionCalcField(BlockOfCells *original, BlockOfCells *copy);
 //    void randomFieldFill();
 //    void pulseFieldFill(Field &field);
 };
@@ -158,15 +159,13 @@ private:
 
 public:
     Life() {
-        Field fieldObj;
-        this->field = fieldObj;
+//        Field fieldObj;
+        this->field = *(new Field());
     }
     void initialFieldWithConsoleParameters(int argc, char **argv);
     void initialField();
     void initialField(ifstream &inputData);
     void initialField(ifstream &inputData, size_t ticks, ofstream &outputData);
-
-//    friend ParserConsoleParameters;
 };
 
 #endif
