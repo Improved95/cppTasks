@@ -25,6 +25,7 @@ using std::pair;
 class Life;
 class Field;
 class Cell;
+class StandartGame;
 
 class ExceptionHandling {
 public:
@@ -114,7 +115,7 @@ private:
     void coutHelp();
     void writeFieldInFile(Field &field, string &filePath);
     void calculateNIterations(Field &field, size_t ticks);
-    void cinFromConsole();
+    pair<int, string> cinFromConsole();
 public:
     void run(Field &field);
 };
@@ -146,8 +147,8 @@ private:
 
 public:
     Field() {
-        this->columns = 5;
-        this->rows = 5;
+        this->columns = 10;
+        this->rows = 10;
     }
     void operator=(const Field &field) {
         this->fieldName = field.fieldName;

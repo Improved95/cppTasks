@@ -50,6 +50,7 @@ void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
 }
 
 void Field::drawField() {
+    cout << fieldName << endl;
     size_t i = rows, j = 0;
     recursionDraw(cellsTree, i, j);
     for (; i > 0; i--) {
@@ -69,11 +70,7 @@ void StandartGame::coutHelp() {
 //    cout << "4) exit - stop game." << endl;
 }
 
-//void StandartGame::writeFieldInFile(Field &field, string &filePath) {
-//
-//}
-
-void StandartGame::cinFromConsole() {
+pair<int, string> StandartGame::cinFromConsole() {
     EnterParametersFromConsole checkInput;
     string input;
     stringstream streamInput;
@@ -81,7 +78,7 @@ void StandartGame::cinFromConsole() {
     cout << "Enter command:";
     cin >> input;
     streamInput << input;
-    pair<int, string> output = checkInput.parseInGameInput(streamInput);
+    return checkInput.parseInGameInput(streamInput);
 }
 
 void StandartGame::calculateNIterations(Field &field, size_t ticks) {
@@ -91,48 +88,43 @@ void StandartGame::calculateNIterations(Field &field, size_t ticks) {
     }
 }
 
+//void StandartGame::writeFieldInFile(Field &field, string &filePath) {
+//
+//}
+
 void StandartGame::run(Field &field) {
-    ExceptionHandling exceptionHandling;
+
 
 //    cout << "Game started in Standart mode." << endl;
 //    coutHelp();
-
-    size_t ticks = 0;
-    string filePath;
-
-//    bool runningGame = true;
-    field.drawField();
-    cout << endl;
-    calculateNIterations(field, 4);
-    field.drawField();
-//    while (runningGame) {
-//        cinFromConsole();
+//    ExceptionHandling exceptionHandling;
 //
+//    size_t ticks = 0;
+//    bool runningGame = true;
+//    while (runningGame) {
+//        pair<int, string> input = cinFromConsole();
+//        switch(input.first) {
+//            case 1:
+//                coutHelp();
+//                break;
+//            case 2:
+//                if (!exceptionHandling.sttoullIsCorrect(ticks, input.second, "Incorrect n")) {
+//                    break;
+//                }
+//                calculateNIterations(field, ticks);
+//                field.drawField();
+//                break;
+//            case 3:
+//                writeFieldInFile(field, input.second);
+//                break;
+//            case 4:
+//                return;
+//        }
 //    }
-
-    /*while (runningGame) {
-        cout << "Enter command:";
-        cin >> input;
-        streamInput << input;
-        output = checkInput.parseInGameInput(streamInput);
-        switch(output.first) {
-            case 1:
-                coutHelp();
-                break;
-            case 2:
-                if (!exceptionHandling.sttoullIsCorrect(ticks, output.second, "Incorrect n")) {
-                    break;
-                }
-                calculateNIterations(field, ticks);
-                field.drawField();
-                break;
-            case 3:
-                writeFieldInFile(field, output.second);
-                break;
-            case 4:
-                return;
-        }
-        streamInput.clear();
-        field.drawField();
-    }*/
 }
+
+/*
+field.drawField();
+calculateNIterations(field, 1);
+
+runningGame = false;*/
