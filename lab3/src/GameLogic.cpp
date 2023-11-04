@@ -101,7 +101,10 @@ void StandartGame::run(Field &field) {
     string filePath;
 
 //    bool runningGame = true;
-    calculateNIterations(field, 1);
+    field.drawField();
+    cout << endl;
+    calculateNIterations(field, 4);
+    field.drawField();
 //    while (runningGame) {
 //        cinFromConsole();
 //

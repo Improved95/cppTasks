@@ -7,6 +7,7 @@
 #include <vector>
 #include <set>
 #include <sstream>
+#include <algorithm>
 using std::string;
 using std::cout;
 using std::cin;
@@ -97,10 +98,7 @@ public:
     }
     friend bool operator<(const Cell &a, const Cell &b) {
 //        return (a.x < b.x || (a.x == b.x && a.y <= b.y));
-        return (a.y > b.y || (a.y == b.y && a.x <= b.x));
-    }
-    friend bool operator==(const Cell &a, const Cell &b) {
-        return (a.x == b.x && a.y == b.y);
+        return (a.y > b.y || (a.y == b.y && a.x < b.x));
     }
 
     size_t getX() const { return this->x; }
@@ -123,10 +121,11 @@ public:
 
 class ChangeField {
 private:
-    void bypassingExistCells(BlockOfCells *original, const BlockOfCells *copyRoot, const Field &field);
+    void bypassingExistCells(BlockOfCells *original, const BlockOfCells *copy, const BlockOfCells *copyRoot, const Field &field);
     void recursionCalcField(BlockOfCells *original, const BlockOfCells *copy, const BlockOfCells *copyRoot, const Field &field);
-    size_t countNeighborsForCell(const Cell &cell, const BlockOfCells *copyRoot, const Field &field) const;
+    size_t countNeighborsForCellByCoordinate(const size_t posX, const size_t posY, const BlockOfCells *copyRoot, const Field &field) const;
     size_t getRealCoord(long long coord, const size_t maxCoord) const;
+    void bypassingNoExistCells(Cell &cell, BlockOfCells *original, const BlockOfCells *copyRoot, const Field &field);
 public:
     void calculateFieldByRules(Field &field);
 //    void randomFieldFill();
@@ -147,8 +146,8 @@ private:
 
 public:
     Field() {
-        this->columns = 7;
-        this->rows = 7;
+        this->columns = 5;
+        this->rows = 5;
     }
     void operator=(const Field &field) {
         this->fieldName = field.fieldName;

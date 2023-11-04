@@ -1,5 +1,4 @@
 #include "Life.h"
-#include <algorithm>
 #define DIVIDER 2
 
 BlockOfCells::BlockOfCells() {
