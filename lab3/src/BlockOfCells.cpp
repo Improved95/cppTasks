@@ -47,7 +47,7 @@ BlockOfCells * BlockOfCells::constructorOfStruct(BlockOfCells *node, const size_
 
 void BlockOfCells::addCell(const Cell &cell, const size_t rows, const size_t columns, const int mode) {
     if (mode == 0) {
-        if (cell.getX() <= rows / DIVIDER) {
+        if (cell.getX() < rows / DIVIDER) {
             if (this->left != nullptr) {
                 this->left->addCell(cell, rows / DIVIDER, columns, 1);
             }
@@ -57,7 +57,7 @@ void BlockOfCells::addCell(const Cell &cell, const size_t rows, const size_t col
             }
         }
     } else {
-        if (cell.getY() <= columns / DIVIDER) {
+        if (cell.getY() < columns / DIVIDER) {
             if (this->left != nullptr) {
                 this->left->addCell(cell, rows, columns / DIVIDER, 0);
             }

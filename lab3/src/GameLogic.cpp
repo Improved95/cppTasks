@@ -22,11 +22,11 @@
 //}
 
 void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
-    if (node.getRightNode() != nullptr) {
-        recursionDraw(*(node.getRightNode()), i, j);
-    }
     if (node.getLeftNode() != nullptr) {
         recursionDraw(*(node.getLeftNode()), i, j);
+    }
+    if (node.getRightNode() != nullptr) {
+        recursionDraw(*(node.getRightNode()), i, j);
     }
 
     if (node.getLeftNode() == nullptr && node.getRightNode() == nullptr) {
@@ -37,7 +37,7 @@ void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
                     return;
                 }
                 if ((*it).getY() + 1 == i && (*it).getX() == j) {
-                    cout << "1";
+                    cout << (char)254;
                     it++;
                 } else {
                     cout << "_";
@@ -50,7 +50,7 @@ void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
 }
 
 void Field::drawField() {
-    cout << fieldName << endl;
+    cout << "University name: " << fieldName << endl;
     size_t i = rows, j = 0;
     recursionDraw(cellsTree, i, j);
     for (; i > 0; i--) {
@@ -63,11 +63,11 @@ void Field::drawField() {
 }
 
 void StandartGame::coutHelp() {
-//    cout << "You can input this comand:" << endl;
-//    cout << "1) help - output the available commands;" << endl;
-//    cout << "2) tick<n> - calculate n iterations and display them on the screen;" << endl;
-//    cout << "3) dump<filePath> - save field in file;" << endl;
-//    cout << "4) exit - stop game." << endl;
+    cout << "You can input this comand:" << endl;
+    cout << "1) help - output the available commands;" << endl;
+    cout << "2) tick<n> - calculate n iterations and display them on the screen;" << endl;
+    cout << "3) dump<filePath> - save field in file;" << endl;
+    cout << "4) exit - stop game." << endl;
 }
 
 pair<int, string> StandartGame::cinFromConsole() {
@@ -92,8 +92,39 @@ void StandartGame::calculateNIterations(Field &field, size_t ticks) {
 //
 //}
 
-void StandartGame::run(Field &field) {
+void generate(Field &field, int x, int y) {
+    Cell c1(x, y);
+    Cell c2(x + 1, y);
+    Cell c3(x + 2, y);
+    Cell c4(x + 2, y + 1);
+    Cell c5(x + 1, y + 2);
+    field.getCellsList().addCell(c1, field.getRows(), field.getColums(), 0);
+    field.getCellsList().addCell(c2, field.getRows(), field.getColums(), 0);
+    field.getCellsList().addCell(c3, field.getRows(), field.getColums(), 0);
+    field.getCellsList().addCell(c4, field.getRows(), field.getColums(), 0);
+    field.getCellsList().addCell(c5, field.getRows(), field.getColums(), 0);
+}
 
+void clearTree(BlockOfCells *bl) {
+    if (bl->getLeftNode() == nullptr && bl->getRightNode() == nullptr) {
+        bl->getCellsList()->clear();
+        return;
+    }
+    clearTree(bl->getLeftNode());
+    clearTree(bl->getRightNode());
+}
+
+void StandartGame::run(Field &field) {
+    generate(field, 4, 0);
+//    for (int i = 0 ; i < 8; i++) {
+//        for (int j = 0; j < 8; j++) {
+//            generate(field, j, i);
+            field.drawField();
+            clearTree(&field.getCellsList());
+//        }
+//    }
+//    calculateNIterations(field, 1);
+//    field.drawField();
 
 //    cout << "Game started in Standart mode." << endl;
 //    coutHelp();
@@ -122,9 +153,3 @@ void StandartGame::run(Field &field) {
 //        }
 //    }
 }
-
-/*
-field.drawField();
-calculateNIterations(field, 1);
-
-runningGame = false;*/
