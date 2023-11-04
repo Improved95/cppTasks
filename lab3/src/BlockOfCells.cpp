@@ -145,8 +145,7 @@ bool BlockOfCells::cellIsExistByCoordinate(const size_t posX, const size_t posY,
         }
     }
 
-    auto res = std::find_if(this->cellsList->begin(), this->cellsList->end(), [posX, posY](const Cell &cell) {
+    return (std::find_if(this->cellsList->begin(), this->cellsList->end(), [posX, posY](const Cell &cell) {
         return (cell.getX() == posX && cell.getY() == posY);
-    });
-    return false;
+    }) != this->cellsList->end());
 }
