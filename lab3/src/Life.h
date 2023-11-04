@@ -123,7 +123,7 @@ public:
 
 class ChangeField {
 private:
-    void bypassingExistCells(BlockOfCells *original, const BlockOfCells *copy, const BlockOfCells *copyRoot, const Field &field);
+    void bypassingExistCells(BlockOfCells *original, const BlockOfCells *copyRoot, const Field &field);
     void recursionCalcField(BlockOfCells *original, const BlockOfCells *copy, const BlockOfCells *copyRoot, const Field &field);
     size_t countNeighborsForCell(const Cell &cell, const BlockOfCells *copyRoot, const Field &field) const;
     size_t getRealCoord(long long coord, const size_t maxCoord) const;

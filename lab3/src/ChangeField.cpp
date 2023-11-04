@@ -41,7 +41,7 @@ size_t ChangeField::countNeighborsForCell(const Cell &cell, const BlockOfCells *
     return neighbors;
 }
 
-void ChangeField::bypassingExistCells(BlockOfCells *original, const BlockOfCells *copy, const BlockOfCells *copyRoot, const Field &field) {
+void ChangeField::bypassingExistCells(BlockOfCells *original, const BlockOfCells *copyRoot, const Field &field) {
     size_t neighbors;
     for (auto it = original->getCellsList()->begin(); it != original->getCellsList()->end(); it++) {
         neighbors = countNeighborsForCell(*it, copyRoot, field);
@@ -61,7 +61,7 @@ void ChangeField::recursionCalcField(BlockOfCells *original, const BlockOfCells 
         recursionCalcField(original->getRightNode(), copy->getRightNode(), copyRoot, field);
     }
     if (copy->getLeftNode() == nullptr && copy->getRightNode() == nullptr) {
-        bypassingExistCells(original, copy, copyRoot, field);
+        bypassingExistCells(original, copyRoot, field);
     }
 }
 
