@@ -14,6 +14,10 @@ BlockOfCells::~BlockOfCells() {
     if (right != nullptr) {
         right->~BlockOfCells();
     }
+//    if (left == nullptr && right == nullptr) {
+//        delete cellsList;
+//        cellsList = nullptr;
+//    }
     // я не понимаю, удаляется ли то, что лежит по указателю cellsTree
 }
 
@@ -115,4 +119,37 @@ bool BlockOfCells::cellIsExist(const Cell &cell, const size_t rows, const size_t
 //    if (this->left == nullptr && this->right == nullptr) {
         return (this->cellsList->find(cell) != this->cellsList->end());
 //    }
+}
+
+bool BlockOfCells::cellIsExistByCoordinate(const size_t posX, const size_t posY, const size_t rows, const size_t columns, const int mode) const {
+    if (mode == 0) {
+        if (posX <= rows / DIVIDER) {
+            if (this->left != nullptr) {
+                return this->left->cellIsExistByCoordinate(posX, posY, rows / DIVIDER, columns, 1);
+            }
+        } else {
+            if (this->right != nullptr) {
+                return this->right->cellIsExistByCoordinate(posX, posY, rows / DIVIDER, columns, 1);
+            }
+        }
+    } else {
+        if (posY <= columns / DIVIDER) {
+            if (this->left != nullptr) {
+                return this->left->cellIsExistByCoordinate(posX, posY, rows, columns / DIVIDER, 0);
+            }
+        } else {
+            if (this->right != nullptr) {
+                return this->right->cellIsExistByCoordinate(posX, posY, rows, columns / DIVIDER, 0);
+            }
+        }
+    }
+
+//    Cell cell(posX, posY);
+    for (auto &it : *(this->cellsList)) {
+        if (it.getX() == posX && it.getY() == posY) {
+            return true;
+        }
+    }
+    return false;
+//    return (this->cellsList->find(cell) != this->cellsList->end());
 }

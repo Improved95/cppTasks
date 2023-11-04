@@ -71,12 +71,12 @@ public:
 
     BlockOfCells * getLeftNode() const { return left; }
     BlockOfCells * getRightNode() const { return right; }
-    set<Cell> * getCellsTree() const { return cellsList; }
+    set<Cell> * getCellsList() const { return cellsList; }
 
     BlockOfCells * constructorOfStruct(BlockOfCells *node, const size_t rows, const size_t columns, const size_t blockSize, const int mode);
     void addCell(const Cell &cell, const size_t rows, const size_t columns, const int mode);
     bool cellIsExist(const Cell &cell, const size_t rows, const size_t columns, const int mode) const;
-
+    bool cellIsExistByCoordinate(const size_t posX, const size_t posY, const size_t rows, const size_t columns, const int mode) const;
 };
 
 class Cell {
@@ -93,6 +93,9 @@ public:
 //        return (a.x < b.x || (a.x == b.x && a.y <= b.y));
         return (a.y > b.y || (a.y == b.y && a.x <= b.x));
     }
+    friend bool operator==(const Cell &a, const Cell &b) {
+        return (a.x == b.x && a.y == b.y);
+    }
 
     size_t getX() const { return this->x; }
     size_t getY() const { return this->y; }
@@ -103,18 +106,23 @@ class OfflineGame {
 };
 
 class StandartGame {
-public:
+private:
+    void coutHelp();
     void writeFieldInFile(Field &field, string &filePath);
     void calculateNIterations(Field &field, size_t ticks);
+
+public:
     void run(Field &field);
-    void coutHelp();
 };
 
 class ChangeField {
-public:
-    void calculateFieldByRules(Field &field);
+private:
     void bypassingExistCells(BlockOfCells *original, const BlockOfCells *copy, const BlockOfCells *copyRoot, const Field &field);
     void recursionCalcField(BlockOfCells *original, const BlockOfCells *copy, const BlockOfCells *copyRoot, const Field &field);
+    size_t countNeighborsForCell(const Cell &cell, const BlockOfCells *copyRoot, const Field &field) const;
+    size_t getRealCoord(long long coord, const size_t maxCoord) const;
+public:
+    void calculateFieldByRules(Field &field);
 //    void randomFieldFill();
 //    void pulseFieldFill(Field &field);
 };

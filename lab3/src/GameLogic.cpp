@@ -30,10 +30,10 @@ void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
     }
 
     if (node.getLeftNode() == nullptr && node.getRightNode() == nullptr) {
-        set<Cell>::iterator it = node.getCellsTree()->begin();
+        set<Cell>::iterator it = node.getCellsList()->begin();
         for (; i > 0; i--) {
             for (; j < columns; j++) {
-                if (it == node.getCellsTree()->end()) {
+                if (it == node.getCellsList()->end()) {
                     return;
                 }
                 if ((*it).getY() + 1 == i && (*it).getX() == j) {
