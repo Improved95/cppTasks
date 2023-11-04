@@ -116,7 +116,7 @@ private:
     void coutHelp();
     void writeFieldInFile(Field &field, string &filePath);
     void calculateNIterations(Field &field, size_t ticks);
-
+    void cinFromConsole();
 public:
     void run(Field &field);
 };
@@ -184,8 +184,7 @@ private:
 
 public:
     Life() {
-//        Field fieldObj;
-        this->field = *(new Field());
+        this->field = Field();
     }
     void initialFieldWithConsoleParameters(int argc, char **argv);
     void initialField();

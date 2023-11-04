@@ -1,4 +1,5 @@
 #include "Life.h"
+#include <algorithm>
 #define DIVIDER 2
 
 BlockOfCells::BlockOfCells() {
@@ -144,12 +145,8 @@ bool BlockOfCells::cellIsExistByCoordinate(const size_t posX, const size_t posY,
         }
     }
 
-//    Cell cell(posX, posY);
-    for (auto &it : *(this->cellsList)) {
-        if (it.getX() == posX && it.getY() == posY) {
-            return true;
-        }
-    }
+    auto res = std::find_if(this->cellsList->begin(), this->cellsList->end(), [posX, posY](const Cell &cell) {
+        return (cell.getX() == posX && cell.getY() == posY);
+    });
     return false;
-//    return (this->cellsList->find(cell) != this->cellsList->end());
 }

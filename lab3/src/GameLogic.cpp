@@ -73,6 +73,17 @@ void StandartGame::coutHelp() {
 //
 //}
 
+void StandartGame::cinFromConsole() {
+    EnterParametersFromConsole checkInput;
+    string input;
+    stringstream streamInput;
+
+    cout << "Enter command:";
+    cin >> input;
+    streamInput << input;
+    pair<int, string> output = checkInput.parseInGameInput(streamInput);
+}
+
 void StandartGame::calculateNIterations(Field &field, size_t ticks) {
     ChangeField changeField;
     for (size_t i = 0; i < ticks; i++) {
@@ -81,20 +92,21 @@ void StandartGame::calculateNIterations(Field &field, size_t ticks) {
 }
 
 void StandartGame::run(Field &field) {
-    EnterParametersFromConsole checkInput;
     ExceptionHandling exceptionHandling;
-    string input;
-    stringstream streamInput;
-    pair<int, string> output;
 
 //    cout << "Game started in Standart mode." << endl;
-    coutHelp();
+//    coutHelp();
 
     size_t ticks = 0;
     string filePath;
 
-    bool runningGame = true;
+//    bool runningGame = true;
     calculateNIterations(field, 1);
+//    while (runningGame) {
+//        cinFromConsole();
+//
+//    }
+
     /*while (runningGame) {
         cout << "Enter command:";
         cin >> input;
