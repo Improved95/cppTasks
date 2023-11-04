@@ -69,9 +69,9 @@ void StandartGame::coutHelp() {
 //    cout << "4) exit - stop game." << endl;
 }
 
-void StandartGame::writeFieldInFile(Field &field, string &filePath) {
-
-}
+//void StandartGame::writeFieldInFile(Field &field, string &filePath) {
+//
+//}
 
 void StandartGame::calculateNIterations(Field &field, size_t ticks) {
     ChangeField changeField;

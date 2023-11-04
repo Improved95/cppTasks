@@ -43,11 +43,13 @@ size_t ChangeField::countNeighborsForCell(const Cell &cell, const BlockOfCells *
 
 void ChangeField::bypassingExistCells(BlockOfCells *original, const BlockOfCells *copy, const BlockOfCells *copyRoot, const Field &field) {
     size_t neighbors;
-    for(auto &cell : *(copy->getCellsList())) {
-        neighbors = countNeighborsForCell(cell, copyRoot, field);
-        if (field.survivalRule.find(std::to_string(neighbors)) ==  std::string::npos) {
-            (original->getCellsList())->erase(cell);
+    for (auto it = original->getCellsList()->begin(); it != original->getCellsList()->end(); it++) {
+        neighbors = countNeighborsForCell(*it, copyRoot, field);
+        if (field.survivalRule.find(std::to_string(neighbors)) == std::string::npos) {
+            original->getCellsList()->erase(it);
         }
+
+        // для каждой существующей клетки прове
     }
 }
 

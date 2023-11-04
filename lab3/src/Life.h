@@ -69,6 +69,12 @@ public:
     BlockOfCells(const BlockOfCells &tree);
     void copyConstructor(const BlockOfCells *example, BlockOfCells *node);
 
+    void operator=(const BlockOfCells &blockOfCells) {
+        this->left = blockOfCells.left;
+        this->right = blockOfCells.right;
+        this->cellsList = blockOfCells.cellsList;
+    }
+
     BlockOfCells * getLeftNode() const { return left; }
     BlockOfCells * getRightNode() const { return right; }
     set<Cell> * getCellsList() const { return cellsList; }
@@ -143,6 +149,14 @@ public:
     Field() {
         this->columns = 7;
         this->rows = 7;
+    }
+    void operator=(const Field &field) {
+        this->fieldName = field.fieldName;
+        this->rows = field.rows;
+        this->columns = field.columns;
+        this->birthRule = field.birthRule;
+        this->survivalRule = field.survivalRule;
+        this->cellsTree = field.cellsTree;
     }
 
     void setFieldName(const string valueFieldName) { this->fieldName = valueFieldName; }

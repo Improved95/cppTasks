@@ -37,6 +37,6 @@ void Life::initialField(ifstream &inputData) {
     game.run(this->field);
 }
 
-void Life::initialField(ifstream &inputData, size_t ticks, ofstream &outputData) {
-
-}
+//void Life::initialField(ifstream &inputData, size_t ticks, ofstream &outputData) {
+//
+//}
