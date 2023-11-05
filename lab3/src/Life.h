@@ -98,8 +98,8 @@ public:
         this->y = yPos;
     }
     friend bool operator<(const Cell &a, const Cell &b) {
-//        return (a.x < b.x || (a.x == b.x && a.y <= b.y));
-        return (a.y > b.y || (a.y == b.y && a.x < b.x));
+        return (a.x < b.x || (a.x == b.x && a.y <= b.y));
+//        return (a.y > b.y || (a.y == b.y && a.x < b.x));
     }
 
     size_t getX() const { return this->x; }

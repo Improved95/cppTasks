@@ -23,6 +23,33 @@
 
 void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
     if (node.getLeftNode() != nullptr) {
+        recursionDraw(*node.getLeftNode(), i, j);
+    }
+    if (node.getRightNode() != nullptr) {
+        recursionDraw(*node.getRightNode(), i, j);
+    }
+    if (node.getLeftNode() == nullptr && node.getRightNode() == nullptr) {
+        set<Cell>::iterator it = node.getCellsList()->begin();
+        for (; i < rows; i++) {
+            for (; j < columns; j++) {
+                if (it == node.getCellsList()->end()) {
+                    return;
+                }
+                if ((*it).getX() == i && (*it).getY() == j) {
+                    cout << "1";
+                    it++;
+                } else {
+                    cout << "_";
+                }
+            }
+            j = 0;
+            cout << "\n";
+        }
+    }
+}
+
+/*void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
+    if (node.getLeftNode() != nullptr) {
         recursionDraw(*(node.getLeftNode()), i, j);
     }
     if (node.getRightNode() != nullptr) {
@@ -47,7 +74,7 @@ void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
             cout << "\n";
         }
     }
-}
+}*/
 
 void Field::drawField() {
     cout << "University name: " << fieldName << endl;
