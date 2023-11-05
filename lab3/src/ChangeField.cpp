@@ -7,7 +7,7 @@ size_t ChangeField::getRealCoord(long long coord, const size_t maxCoord) const {
     return coord % maxCoord;
 }
 
-size_t ChangeField::countNeighborsForCellByCoordinate(const size_t posX, const size_t posY, const BlockOfCells *copyRoot, const Field &field) const {
+size_t ChangeField:: countNeighborsForCellByCoordinate(const size_t posX, const size_t posY, const BlockOfCells *copyRoot, const Field &field) const {
     size_t neighbors = 0;
     size_t newPosX = 0, newPosY = 0;
     // проверяю три клетки, которые сверху той, для которой считаем соседей
@@ -78,7 +78,7 @@ void ChangeField::bypassingNoExistCells(Cell &cell, BlockOfCells *original, cons
 }
 
 void ChangeField::bypassingExistCells(BlockOfCells *original, const BlockOfCells *copy, const BlockOfCells *copyRoot, const Field &field) {
-    size_t neighbors;
+    size_t neighbors = 0;
     set<Cell> *originalList = original->getCellsList();
     set<Cell> *copyList = copy->getCellsList();
 

@@ -23,14 +23,14 @@ BlockOfCells::~BlockOfCells() {
 
 BlockOfCells * BlockOfCells::constructorOfStruct(BlockOfCells *node, const size_t rows, const size_t columns, const size_t blockSize, const int mode) {
     if (mode == 0) {
-        if (rows / DIVIDER >= blockSize) {
+        if (rows / DIVIDER > blockSize) {
             BlockOfCells *leftNode = new BlockOfCells();
             node->left = constructorOfStruct(leftNode, rows / DIVIDER, columns, blockSize, 1);
             BlockOfCells *rightNode = new BlockOfCells();
             node->right = constructorOfStruct(rightNode, rows / DIVIDER, columns, blockSize, 1);
         }
     } else {
-        if (columns / DIVIDER >= blockSize) {
+        if (columns / DIVIDER > blockSize) {
             BlockOfCells *leftNode = new BlockOfCells();
             node->left = constructorOfStruct(leftNode, rows, columns / DIVIDER, blockSize, 1);
             BlockOfCells *rightNode = new BlockOfCells();
@@ -96,7 +96,7 @@ BlockOfCells::BlockOfCells(const BlockOfCells &tree) {
 
 bool BlockOfCells::cellIsExist(const Cell &cell, const size_t rows, const size_t columns, const int mode) const {
     if (mode == 0) {
-        if (cell.getX() <= rows / DIVIDER) {
+        if (cell.getX() < rows / DIVIDER) {
             if (this->left != nullptr) {
                 return this->left->cellIsExist(cell, rows / DIVIDER, columns, 1);
             }
@@ -106,7 +106,7 @@ bool BlockOfCells::cellIsExist(const Cell &cell, const size_t rows, const size_t
             }
         }
     } else {
-        if (cell.getY() <= columns / DIVIDER) {
+        if (cell.getY() < columns / DIVIDER) {
             if (this->left != nullptr) {
                 return this->left->cellIsExist(cell, rows, columns / DIVIDER, 0);
             }
@@ -123,7 +123,7 @@ bool BlockOfCells::cellIsExist(const Cell &cell, const size_t rows, const size_t
 
 bool BlockOfCells::cellIsExistByCoordinate(const size_t posX, const size_t posY, const size_t rows, const size_t columns, const int mode) const {
     if (mode == 0) {
-        if (posX <= rows / DIVIDER) {
+        if (posX < rows / DIVIDER) {
             if (this->left != nullptr) {
                 return this->left->cellIsExistByCoordinate(posX, posY, rows / DIVIDER, columns, 1);
             }
@@ -133,7 +133,7 @@ bool BlockOfCells::cellIsExistByCoordinate(const size_t posX, const size_t posY,
             }
         }
     } else {
-        if (posY <= columns / DIVIDER) {
+        if (posY < columns / DIVIDER) {
             if (this->left != nullptr) {
                 return this->left->cellIsExistByCoordinate(posX, posY, rows, columns / DIVIDER, 0);
             }
@@ -147,4 +147,18 @@ bool BlockOfCells::cellIsExistByCoordinate(const size_t posX, const size_t posY,
     return (std::find_if(this->cellsList->begin(), this->cellsList->end(), [posX, posY](const Cell &cell) {
         return (cell.getX() == posX && cell.getY() == posY);
     }) != this->cellsList->end());
+}
+
+void BlockOfCells::getAllCells(set<Cell> &allCellsList) {
+    if (this->left != nullptr) {
+        this->left->getAllCells(allCellsList);
+    }
+    if (this->right != nullptr) {
+        this->right->getAllCells(allCellsList);
+    }
+    if (this->left == nullptr && this->right == nullptr) {
+        for (auto &cell : *(this->cellsList)) {
+            allCellsList.insert(cell);
+        }
+    }
 }

@@ -21,71 +21,26 @@
 //    }
 //}
 
-void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
-    if (node.getLeftNode() != nullptr) {
-        recursionDraw(*node.getLeftNode(), i, j);
-    }
-    if (node.getRightNode() != nullptr) {
-        recursionDraw(*node.getRightNode(), i, j);
-    }
-    if (node.getLeftNode() == nullptr && node.getRightNode() == nullptr) {
-        set<Cell>::iterator it = node.getCellsList()->begin();
-        for (; i < rows; i++) {
-            for (; j < columns; j++) {
-                if (it == node.getCellsList()->end()) {
-                    return;
-                }
-                if ((*it).getX() == i && (*it).getY() == j) {
-                    cout << "1";
-                    it++;
-                } else {
-                    cout << "_";
-                }
-            }
-            j = 0;
-            cout << "\n";
-        }
-    }
-}
-
-/*void Field::recursionDraw(BlockOfCells &node, size_t &i, size_t &j) {
-    if (node.getLeftNode() != nullptr) {
-        recursionDraw(*(node.getLeftNode()), i, j);
-    }
-    if (node.getRightNode() != nullptr) {
-        recursionDraw(*(node.getRightNode()), i, j);
-    }
-
-    if (node.getLeftNode() == nullptr && node.getRightNode() == nullptr) {
-        set<Cell>::iterator it = node.getCellsList()->begin();
-        for (; i > 0; i--) {
-            for (; j < columns; j++) {
-                if (it == node.getCellsList()->end()) {
-                    return;
-                }
-                if ((*it).getY() + 1 == i && (*it).getX() == j) {
-                    cout << (char)254;
-                    it++;
-                } else {
-                    cout << "_";
-                }
-            }
-            j = 0;
-            cout << "\n";
-        }
-    }
-}*/
-
 void Field::drawField() {
     cout << "University name: " << fieldName << endl;
     size_t i = rows, j = 0;
-    recursionDraw(cellsTree, i, j);
+    set<Cell> allCellsList;
+    this->cellsTree.getAllCells(allCellsList);
+    auto it = allCellsList.begin();
     for (; i > 0; i--) {
         for (; j < columns; j++) {
-            cout << "_";
+            if (i == it->getY() + 1 && j == it->getX()) {
+                cout << (char)254;
+                it++;
+            } else {
+                cout << "_";
+            }
         }
         j = 0;
         cout << "\n";
+        if (it == allCellsList.end()) {
+            break;
+        }
     }
 }
 
@@ -115,43 +70,18 @@ void StandartGame::calculateNIterations(Field &field, size_t ticks) {
     }
 }
 
-//void StandartGame::writeFieldInFile(Field &field, string &filePath) {
-//
-//}
-
-void generate(Field &field, int x, int y) {
-    Cell c1(x, y);
-    Cell c2(x + 1, y);
-    Cell c3(x + 2, y);
-    Cell c4(x + 2, y + 1);
-    Cell c5(x + 1, y + 2);
-    field.getCellsList().addCell(c1, field.getRows(), field.getColums(), 0);
-    field.getCellsList().addCell(c2, field.getRows(), field.getColums(), 0);
-    field.getCellsList().addCell(c3, field.getRows(), field.getColums(), 0);
-    field.getCellsList().addCell(c4, field.getRows(), field.getColums(), 0);
-    field.getCellsList().addCell(c5, field.getRows(), field.getColums(), 0);
-}
-
-void clearTree(BlockOfCells *bl) {
-    if (bl->getLeftNode() == nullptr && bl->getRightNode() == nullptr) {
-        bl->getCellsList()->clear();
-        return;
-    }
-    clearTree(bl->getLeftNode());
-    clearTree(bl->getRightNode());
-}
-
 void StandartGame::run(Field &field) {
-    generate(field, 4, 0);
-//    for (int i = 0 ; i < 8; i++) {
-//        for (int j = 0; j < 8; j++) {
-//            generate(field, j, i);
+    /*generate(field, 1, -1);
+    for (int i = 0 ; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            generate(field, j, i);
             field.drawField();
             clearTree(&field.getCellsList());
-//        }
-//    }
-//    calculateNIterations(field, 1);
-//    field.drawField();
+        }
+    }*/
+    calculateNIterations(field, 1);
+//    field.getCellsList().addCell(Cell(4, 9), 10, 10, 0);
+    field.drawField();
 
 //    cout << "Game started in Standart mode." << endl;
 //    coutHelp();
