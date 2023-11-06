@@ -10,20 +10,24 @@ void Life::initialFieldWithConsoleParameters(int argc, char **argv) {
 }
 
 void Life::initialField() {
-//    EnterParametersFromConsole enterParameters;
+    cout << "Welcome to Conway's Game of Life!" << endl;
+    EnterParametersFromConsole enterParameters;
 
-//    Field fieldObj;
-//    this->field = fieldObj;
-//    enterParameters.initialFieldParameters(this->field);
-//
-//    BlockOfCells cellsList;
-//    this->field.getCellsList() = cellsList;
-//
-//    ChangeFieldStatus changeFieldStatus;
-//    changeFieldStatus.randomFieldFill();
+    enterParameters.initialFieldParameters(this->field);
+
+    BlockOfCells blockOfCells = BlockOfCells();
+    BlockOfCells *root = blockOfCells.constructorOfStruct(&blockOfCells, field.getRows(), field.getColums(), 3, 0);
+    field.setCellsList(*root);
+
+    ChangeField changeField;
+    changeField.pulseFieldFill(this->field);
+
+    StandartGame game;
+    game.run(this->field);
 }
 
 void Life::initialField(ifstream &inputData) {
+    cout << "Welcome to Conway's Game of Life!" << endl;
     InputDataParser dataParser;
 
     /*если файл не прошел проверку на корректность,

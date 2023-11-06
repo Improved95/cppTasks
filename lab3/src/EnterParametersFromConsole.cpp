@@ -1,12 +1,29 @@
 #include "Life.h"
 #include <limits.h>
 
+bool EnterParametersFromConsole::rulesIsCorrect(string &input) {
+    if (input.size() > 9) {
+        return false;
+    }
+    for (char s : input) {
+        if (!isdigit(s)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void EnterParametersFromConsole::initialFieldParameters(Field &field) {
     string input;
 
     cout << "Enter field name:";
     cin >> input;
     field.setFieldName(input);
+
+    cout << "Enter birth rule: ";
+    do {
+        cin >> input;
+    } while (!rulesIsCorrect(input));
 
     initialFieldSize(field);
 }

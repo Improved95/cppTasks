@@ -53,7 +53,10 @@ public:
 
 // when user enter in console some data
 class EnterParametersFromConsole {
+private:
+
 public:
+    bool rulesIsCorrect(string &input);
     void initialFieldSize(Field &field);
     void initialFieldParameters(Field &field);
     pair<int, string> parseInGameInput(stringstream &input);
@@ -129,8 +132,7 @@ private:
     void bypassingNoExistCells(Cell &cell, BlockOfCells *original, const BlockOfCells *copyRoot, const Field &field);
 public:
     void calculateFieldByRules(Field &field);
-//    void randomFieldFill();
-//    void pulseFieldFill(Field &field);
+    void pulseFieldFill(Field &field);
 };
 
 
