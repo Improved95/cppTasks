@@ -93,7 +93,7 @@ void StandartGame::calculateNIterations(Field &field, size_t ticks) {
     }
 }
 
-void StandartGame::writeFieldInFile(Field &field, std::string &filePath) {
+void FunctionalityGame::writeFieldInFile(Field &field, std::string &filePath) {
     ofstream fileOut;
     fileOut.open(filePath);
     if (!fileOut.is_open()) {

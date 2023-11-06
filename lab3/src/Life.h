@@ -97,18 +97,21 @@ public:
     size_t getY() const { return this->y; }
 };
 
+class FunctionalityGame {
+public:
+    void run();
+    void writeFieldInFile(Field &field, string &filePath);
+};
 
-
-class OfflineGame {
+class OfflineGame : public FunctionalityGame {
 private:
 public:
     void run(Field &field, size_t ticks, ofstream &outputData);
 };
 
-class StandartGame {
+class StandartGame : public FunctionalityGame {
 private:
     void coutHelp();
-    void writeFieldInFile(Field &field, string &filePath);
     void calculateNIterations(Field &field, size_t ticks);
     pair<int, string> cinFromConsole();
 public:
