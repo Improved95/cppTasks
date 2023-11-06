@@ -30,7 +30,7 @@ void Field::drawField() {
     for (; i > 0; i--) {
         for (; j < columns; j++) {
             if (i == it->getY() + 1 && j == it->getX()) {
-                cout << (char)254;
+                cout << "1";
                 it++;
             } else {
                 cout << "_";
@@ -41,6 +41,13 @@ void Field::drawField() {
         if (it == allCellsList.end()) {
             break;
         }
+    }
+    for (; i > 1; i--) {
+        for (; j < columns; j++) {
+            cout << "_";
+        }
+        j = 0;
+        cout << "\n";
     }
 }
 
@@ -79,7 +86,7 @@ void StandartGame::run(Field &field) {
             clearTree(&field.getCellsList());
         }
     }*/
-    calculateNIterations(field, 1);
+    calculateNIterations(field, 28);
 //    field.getCellsList().addCell(Cell(4, 9), 10, 10, 0);
     field.drawField();
 
