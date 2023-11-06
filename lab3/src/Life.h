@@ -44,7 +44,7 @@ class EnterParametersFromConsole {
 private:
 
 public:
-    bool rulesIsCorrect(string &input);
+    bool rulesIsCorrect(string &input, string message);
     void initialFieldSize(Field &field);
     void initialFieldParameters(Field &field);
     pair<int, string> parseInGameInput(stringstream &input);
@@ -97,8 +97,12 @@ public:
     size_t getY() const { return this->y; }
 };
 
-class OfflineGame {
 
+
+class OfflineGame {
+private:
+public:
+    void run(Field &field, size_t ticks, ofstream &outputData);
 };
 
 class StandartGame {

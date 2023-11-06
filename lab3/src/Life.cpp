@@ -31,7 +31,6 @@ void Life::initialField() {
 void Life::initialField(ifstream &inputData) {
     cout << "Welcome to Conway's Game of Life!" << endl;
     InputDataParser dataParser;
-
     /*если файл не прошел проверку на корректность,
      * то игра будет запущена в стандартном режиме с произвольным заполнением.*/
     if (!dataParser.inputDataParsing(this->field, inputData)) {
@@ -44,5 +43,12 @@ void Life::initialField(ifstream &inputData) {
 }
 
 void Life::initialField(ifstream &inputData, size_t ticks, ofstream &outputData) {
+    InputDataParser dataParser;
+    if (!dataParser.inputDataParsing(this->field, inputData)) {
+        initialField();
+        return;
+    }
 
+    OfflineGame game;
+    game.run(this->field, ticks, outputData);
 }

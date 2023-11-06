@@ -6,12 +6,13 @@ using std::endl;
 using std::cin;
 using std::getline;
 
-bool EnterParametersFromConsole::rulesIsCorrect(string &input) {
+bool EnterParametersFromConsole::rulesIsCorrect(string &input, string message) {
     if (input.size() > 9) {
         return false;
     }
     for (char s : input) {
         if (!isdigit(s)) {
+            cout << message << endl;
             return false;
         }
     }
@@ -25,10 +26,15 @@ void EnterParametersFromConsole::initialFieldParameters(Field &field) {
     cin >> input;
     field.setFieldName(input);
 
-    cout << "Enter birth rule: ";
     do {
+        cout << "Enter birth rule:";
         cin >> input;
-    } while (!rulesIsCorrect(input));
+    } while (!rulesIsCorrect(input, "Incorrect birth rule. You need enter a sequences of different digits from the set {0...8}"));
+
+    do {
+        cout << "Enter survival rule:";
+        cin >> input;
+    } while (!rulesIsCorrect(input, "Incorrect survival rule. You need enter a sequences of different digits from the set {0...8}"));
 
     initialFieldSize(field);
 }
@@ -38,14 +44,14 @@ void EnterParametersFromConsole::initialFieldSize(Field &field) {
     size_t rows, columns;
     string input;
 
-    cout << "Enter quantity rows:";
     do {
+        cout << "Enter quantity rows:";
         cin >> input;
     } while (!exceptionHandling.coordinateIsCorrect(rows, ULONG_LONG_MAX, input, "Incorrect input rows. You need enter unsigned integer value."));
     field.setRows(rows);
 
-    cout << "Enter quantity columns:";
     do {
+        cout << "Enter quantity columns:";
         cin >> input;
     } while (!exceptionHandling.coordinateIsCorrect(columns, ULONG_LONG_MAX, input, "Incorrect input columns. You need enter unsigned integer value."));
     field.setColumns(columns);

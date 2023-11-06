@@ -7,10 +7,6 @@ using std::endl;
 using std::cin;
 using std::vector;
 
-//void ChangeFieldStatus::randomFieldFill() {
-//
-//}
-
 void ChangeField::pulseFieldFill(Field &field) {
     const size_t X = 0;
     const size_t Y = 0;
@@ -26,6 +22,7 @@ void ChangeField::pulseFieldFill(Field &field) {
             field.cellsTree.addCell(cell, field.getRows(), field.getColums(), 0);
         }
     }
+    // todo...
 }
 
 /*надо подумать, можно ли как-то выводить в консоль без доп сета*/
@@ -63,7 +60,6 @@ void Field::drawField(ofstream &fileOut) {
     fileOut << "#Life 1.06" << endl;
     fileOut << "#" << this->fieldName << endl;
     fileOut << "#R B" << this->birthRule << "/S" << this->survivalRule << endl;
-    size_t i = rows, j = 0;
     set<Cell> allCellsList;
     this->cellsTree.getAllCells(allCellsList);
     for (Cell cell : allCellsList) {
@@ -108,7 +104,6 @@ void StandartGame::writeFieldInFile(Field &field, std::string &filePath) {
     fileOut.close();
 }
 
-/*надо узнать, можно ли сделать эту функцию без кейсов*/
 void StandartGame::run(Field &field) {
     cout << "Game started in Standart mode." << endl;
     coutHelp();
@@ -136,4 +131,8 @@ void StandartGame::run(Field &field) {
                 return;
         }
     }
+}
+
+void OfflineGame::run(Field &field, size_t ticks, ofstream &outputData) {
+    // todo...
 }
