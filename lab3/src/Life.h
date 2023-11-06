@@ -2,22 +2,10 @@
 #define LIFE_H
 
 #include <iostream>
-#include <string>
-#include <fstream>
-#include <vector>
 #include <set>
-#include <sstream>
-#include <algorithm>
 using std::string;
-using std::cout;
-using std::cin;
-using std::endl;
-using std::fstream;
 using std::ifstream;
 using std::ofstream;
-using std::exception;
-using std::getline;
-using std::vector;
 using std::set;
 using std::stringstream;
 using std::pair;

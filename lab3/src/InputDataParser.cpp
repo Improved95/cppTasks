@@ -1,4 +1,9 @@
 #include "Life.h"
+#include <fstream>
+using std::cout;
+using std::endl;
+using std::getline;
+
 void InputDataParser::coutInputExample() {
     cout << "Incorrect format file." << endl;
     cout << "Example input format:" << endl;

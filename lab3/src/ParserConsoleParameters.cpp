@@ -1,4 +1,8 @@
 #include "Life.h"
+#include <fstream>
+using std::cout;
+using std::endl;
+using std::exception;
 
 void ParserConsoleParameters::parseAndInitial(int argc, char **argv, Life *gameObject) {
     ifstream fileIn;

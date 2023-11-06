@@ -1,25 +1,32 @@
 #include "Life.h"
+#include <vector>
+#include <fstream>
+#include <sstream>
+using std::cout;
+using std::endl;
+using std::cin;
+using std::vector;
 
 //void ChangeFieldStatus::randomFieldFill() {
 //
 //}
 
-//void ChangeField::pulseFieldFill(Field &field) {
-//    const size_t X = 0;
-//    const size_t Y = 0;
-//
-//    vector<Cell> cells;
-//    for (size_t j = 0; j < 2; j++) {
-//        for (size_t i = 0; i < 3; i++) {
-//            Cell cell(i + 2 + X, Y + 5 * j);
-//            field.cellsList->addCell(cell, field.getRows(), field.getColums(), 0);
-//        }
-//        for (size_t i = 0; i < 3; i++) {
-//            Cell cell(i + 8 + X, Y + 5 * j);
-//            field.cellsList->addCell(cell, field.getRows(), field.getColums(), 0);
-//        }
-//    }
-//}
+void ChangeField::pulseFieldFill(Field &field) {
+    const size_t X = 0;
+    const size_t Y = 0;
+
+    vector<Cell> cells;
+    for (size_t j = 0; j < 2; j++) {
+        for (size_t i = 0; i < 3; i++) {
+            Cell cell(i + 2 + X, Y + 5 * j);
+            field.cellsTree.addCell(cell, field.getRows(), field.getColums(), 0);
+        }
+        for (size_t i = 0; i < 3; i++) {
+            Cell cell(i + 8 + X, Y + 5 * j);
+            field.cellsTree.addCell(cell, field.getRows(), field.getColums(), 0);
+        }
+    }
+}
 
 /*надо подумать, можно ли как-то выводить в консоль без доп сета*/
 void Field::drawField() {

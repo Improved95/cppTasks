@@ -1,5 +1,10 @@
 #include "Life.h"
 #include <limits.h>
+#include <sstream>
+using std::cout;
+using std::endl;
+using std::cin;
+using std::getline;
 
 bool EnterParametersFromConsole::rulesIsCorrect(string &input) {
     if (input.size() > 9) {
