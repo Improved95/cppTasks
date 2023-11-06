@@ -21,6 +21,7 @@
 //    }
 //}
 
+/*надо подумать, можно ли как-то выводить в консоль без доп сета*/
 void Field::drawField() {
     cout << "University name: " << fieldName << endl;
     size_t i = rows, j = 0;
@@ -51,11 +52,23 @@ void Field::drawField() {
     }
 }
 
+void Field::drawField(ofstream &fileOut) {
+    fileOut << "#Life 1.06" << endl;
+    fileOut << "#" << this->fieldName << endl;
+    fileOut << "#R B" << this->birthRule << "/S" << this->survivalRule << endl;
+    size_t i = rows, j = 0;
+    set<Cell> allCellsList;
+    this->cellsTree.getAllCells(allCellsList);
+    for (Cell cell : allCellsList) {
+        fileOut << cell.getX() << " " << cell.getY() << endl;
+    }
+}
+
 void StandartGame::coutHelp() {
     cout << "You can input this comand:" << endl;
     cout << "1) help - output the available commands;" << endl;
-    cout << "2) tick<n> - calculate n iterations and display them on the screen;" << endl;
-    cout << "3) dump<filePath> - save field in file;" << endl;
+    cout << "2) tick<n - calculate n iterations and display them on the screen;" << endl;
+    cout << "3) dump<filePath - save field in file;" << endl;
     cout << "4) exit - stop game." << endl;
 }
 
@@ -77,43 +90,43 @@ void StandartGame::calculateNIterations(Field &field, size_t ticks) {
     }
 }
 
-void StandartGame::run(Field &field) {
-    /*generate(field, 1, -1);
-    for (int i = 0 ; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            generate(field, j, i);
-            field.drawField();
-            clearTree(&field.getCellsList());
-        }
-    }*/
-    calculateNIterations(field, 28);
-//    field.getCellsList().addCell(Cell(4, 9), 10, 10, 0);
-    field.drawField();
+void StandartGame::writeFieldInFile(Field &field, std::string &filePath) {
+    ofstream fileOut;
+    fileOut.open(filePath);
+    if (!fileOut.is_open()) {
+        cout << "Could not open the file" << endl;
+        return;
+    }
+    field.drawField(fileOut);
+    fileOut.close();
+}
 
-//    cout << "Game started in Standart mode." << endl;
-//    coutHelp();
-//    ExceptionHandling exceptionHandling;
-//
-//    size_t ticks = 0;
-//    bool runningGame = true;
-//    while (runningGame) {
-//        pair<int, string> input = cinFromConsole();
-//        switch(input.first) {
-//            case 1:
-//                coutHelp();
-//                break;
-//            case 2:
-//                if (!exceptionHandling.sttoullIsCorrect(ticks, input.second, "Incorrect n")) {
-//                    break;
-//                }
-//                calculateNIterations(field, ticks);
-//                field.drawField();
-//                break;
-//            case 3:
-//                writeFieldInFile(field, input.second);
-//                break;
-//            case 4:
-//                return;
-//        }
-//    }
+/*надо узнать, можно ли сделать эту функцию без кейсов*/
+void StandartGame::run(Field &field) {
+    cout << "Game started in Standart mode." << endl;
+    coutHelp();
+    ExceptionHandling exceptionHandling;
+
+    size_t ticks = 0;
+    bool runningGame = true;
+    while (runningGame) {
+        pair<int, string> input = cinFromConsole();
+        switch(input.first) {
+            case 1:
+                coutHelp();
+                break;
+            case 2:
+                if (!exceptionHandling.sttoullIsCorrect(ticks, input.second, "Incorrect n")) {
+                    break;
+                }
+                calculateNIterations(field, ticks);
+                field.drawField();
+                break;
+            case 3:
+                writeFieldInFile(field, input.second);
+                break;
+            case 4:
+                return;
+        }
+    }
 }

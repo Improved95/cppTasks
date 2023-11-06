@@ -84,7 +84,7 @@ public:
     BlockOfCells * constructorOfStruct(BlockOfCells *node, const size_t rows, const size_t columns, const size_t blockSize, const int mode);
     void addCell(const Cell &cell, const size_t rows, const size_t columns, const int mode);
     bool cellIsExist(const Cell &cell, const size_t rows, const size_t columns, const int mode) const;
-    bool cellIsExistByCoordinate(const size_t posX, const size_t posY, const size_t rows, const size_t columns, const int mode) const;
+    bool cellIsExist(const size_t posX, const size_t posY, const size_t rows, const size_t columns, const int mode) const;
     void getAllCells(set<Cell> &allCellsList);
 };
 
@@ -99,7 +99,6 @@ public:
         this->y = yPos;
     }
     friend bool operator<(const Cell &a, const Cell &b) {
-//        return (a.x < b.x || (a.x == b.x && a.y <= b.y));
         return (a.y > b.y || (a.y == b.y && a.x < b.x));
     }
 
@@ -145,10 +144,6 @@ private:
     BlockOfCells cellsTree;
 
 public:
-    Field() {
-        this->columns = 10;
-        this->rows = 10;
-    }
     void operator=(const Field &field) {
         this->fieldName = field.fieldName;
         this->rows = field.rows;
@@ -173,6 +168,7 @@ public:
     BlockOfCells & getCellsList() { return cellsTree; }
 
     void drawField();
+    void drawField(ofstream &fileOut);
 
     friend ChangeField;
 };

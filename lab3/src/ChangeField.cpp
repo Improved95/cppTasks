@@ -14,18 +14,18 @@ size_t ChangeField:: countNeighborsForCellByCoordinate(const size_t posX, const 
     for (size_t i = 0; i < 3; i++) {
         newPosX = getRealCoord(posX - 1 + i, field.rows);
         newPosY = getRealCoord(posY + 1, field.columns);
-        if (copyRoot->cellIsExistByCoordinate(newPosX, newPosY, field.rows, field.columns, 0)) {
+        if (copyRoot->cellIsExist(newPosX, newPosY, field.rows, field.columns, 0)) {
             neighbors++;
         }
     }
 
     // побоками
     newPosX = getRealCoord(posX - 1, field.rows);
-    if (copyRoot->cellIsExistByCoordinate(newPosX, posY, field.rows, field.columns, 0)) {
+    if (copyRoot->cellIsExist(newPosX, posY, field.rows, field.columns, 0)) {
         neighbors++;
     }
     newPosX = getRealCoord(posX + 1, field.rows);
-    if (copyRoot->cellIsExistByCoordinate(newPosX, posY, field.rows, field.columns, 0)) {
+    if (copyRoot->cellIsExist(newPosX, posY, field.rows, field.columns, 0)) {
         neighbors++;
     }
 
@@ -33,7 +33,7 @@ size_t ChangeField:: countNeighborsForCellByCoordinate(const size_t posX, const 
     for (size_t i = 0; i < 3; i++) {
         newPosX = getRealCoord(posX - 1 + i, field.rows);
         newPosY = getRealCoord(posY - 1, field.columns);
-        if (copyRoot->cellIsExistByCoordinate(newPosX, newPosY, field.rows, field.columns, 0)) {
+        if (copyRoot->cellIsExist(newPosX, newPosY, field.rows, field.columns, 0)) {
             neighbors++;
         }
     }
@@ -49,7 +49,7 @@ void ChangeField::bypassingNoExistCells(Cell &cell, BlockOfCells *originalRoot, 
         posX = getRealCoord(cell.getX() - 1 + i, field.rows);
         posY = getRealCoord(cell.getY() + 1, field.columns);
         neighbors = countNeighborsForCellByCoordinate(posX, posY, copyRoot, field);
-        if (field.birthRule.find(std::to_string(neighbors)) != std::string::npos && !copyRoot->cellIsExistByCoordinate(posX, posY, field.rows, field.columns, 0)) {
+        if (field.birthRule.find(std::to_string(neighbors)) != std::string::npos && !copyRoot->cellIsExist(posX, posY, field.rows, field.columns, 0)) {
             originalRoot->addCell(Cell(posX, posY), field.rows, field.columns, 0);
         }
     }
@@ -58,13 +58,13 @@ void ChangeField::bypassingNoExistCells(Cell &cell, BlockOfCells *originalRoot, 
     posX = getRealCoord(cell.getX() - 1, field.rows);
     posY = cell.getY();
     neighbors = countNeighborsForCellByCoordinate(posX, posY, copyRoot, field);
-    if (field.birthRule.find(std::to_string(neighbors)) != std::string::npos && !copyRoot->cellIsExistByCoordinate(posX, posY, field.rows, field.columns, 0)) {
+    if (field.birthRule.find(std::to_string(neighbors)) != std::string::npos && !copyRoot->cellIsExist(posX, posY, field.rows, field.columns, 0)) {
         originalRoot->addCell(Cell(posX, posY), field.rows, field.columns, 0);
     }
     posX = getRealCoord(cell.getX() + 1, field.rows);
     posY = cell.getY();
     neighbors = countNeighborsForCellByCoordinate(posX, posY, copyRoot, field);
-    if (field.birthRule.find(std::to_string(neighbors)) != std::string::npos  && !copyRoot->cellIsExistByCoordinate(posX, posY, field.rows, field.columns, 0)) {
+    if (field.birthRule.find(std::to_string(neighbors)) != std::string::npos  && !copyRoot->cellIsExist(posX, posY, field.rows, field.columns, 0)) {
         originalRoot->addCell(Cell(posX, posY), field.rows, field.columns, 0);
     }
 
@@ -73,7 +73,7 @@ void ChangeField::bypassingNoExistCells(Cell &cell, BlockOfCells *originalRoot, 
         posX = getRealCoord(cell.getX() - 1 + i, field.rows);
         posY = getRealCoord(cell.getY() - 1, field.columns);
         neighbors = countNeighborsForCellByCoordinate(posX, posY, copyRoot, field);
-        if (field.birthRule.find(std::to_string(neighbors)) != std::string::npos  && !copyRoot->cellIsExistByCoordinate(posX, posY, field.rows, field.columns, 0)) {
+        if (field.birthRule.find(std::to_string(neighbors)) != std::string::npos  && !copyRoot->cellIsExist(posX, posY, field.rows, field.columns, 0)) {
             originalRoot->addCell(Cell(posX, posY), field.rows, field.columns, 0);
         }
     }

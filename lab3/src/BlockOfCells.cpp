@@ -121,25 +121,25 @@ bool BlockOfCells::cellIsExist(const Cell &cell, const size_t rows, const size_t
 //    }
 }
 
-bool BlockOfCells::cellIsExistByCoordinate(const size_t posX, const size_t posY, const size_t rows, const size_t columns, const int mode) const {
+bool BlockOfCells::cellIsExist(const size_t posX, const size_t posY, const size_t rows, const size_t columns, const int mode) const {
     if (mode == 0) {
         if (posX < rows / DIVIDER) {
             if (this->left != nullptr) {
-                return this->left->cellIsExistByCoordinate(posX, posY, rows / DIVIDER, columns, 1);
+                return this->left->cellIsExist(posX, posY, rows / DIVIDER, columns, 1);
             }
         } else {
             if (this->right != nullptr) {
-                return this->right->cellIsExistByCoordinate(posX, posY, rows / DIVIDER, columns, 1);
+                return this->right->cellIsExist(posX, posY, rows / DIVIDER, columns, 1);
             }
         }
     } else {
         if (posY < columns / DIVIDER) {
             if (this->left != nullptr) {
-                return this->left->cellIsExistByCoordinate(posX, posY, rows, columns / DIVIDER, 0);
+                return this->left->cellIsExist(posX, posY, rows, columns / DIVIDER, 0);
             }
         } else {
             if (this->right != nullptr) {
-                return this->right->cellIsExistByCoordinate(posX, posY, rows, columns / DIVIDER, 0);
+                return this->right->cellIsExist(posX, posY, rows, columns / DIVIDER, 0);
             }
         }
     }

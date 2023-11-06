@@ -109,7 +109,7 @@ bool InputDataParser::fileV106Parser(Field &field, ifstream &inputData) {
     }
 
     EnterParametersFromConsole enterParameters;
-//    enterParameters.initialFieldSize(field);
+    enterParameters.initialFieldSize(field);
 
     BlockOfCells blockOfCells = BlockOfCells();
     BlockOfCells *root = blockOfCells.constructorOfStruct(&blockOfCells, field.getRows(), field.getColums(), 3, 0);
