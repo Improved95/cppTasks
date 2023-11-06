@@ -147,4 +147,3 @@ bool InputDataParser::inputDataParsing(Field &field, ifstream &inputData) {
 
     return true;
 }
-

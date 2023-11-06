@@ -79,4 +79,3 @@ pair<int, string> EnterParametersFromConsole::parseInGameInput(stringstream &inp
     }
     return output;
 }
-
