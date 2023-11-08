@@ -86,15 +86,22 @@ pair<int, string> StandartGame::cinFromConsole() {
     return checkInput.parseInGameInput(streamInput);
 }
 
-void StandartGame::calculateNIterations(Field &field, size_t ticks) {
+void FunctionalityGame::calculateNIterations(Field &field, size_t ticks) {
     ChangeField changeField;
     for (size_t i = 0; i < ticks; i++) {
         changeField.calculateFieldByRules(field);
     }
 }
 
-void FunctionalityGame::writeFieldInFile(Field &field, ofstream &outputData) {
-    field.drawField(outputData);
+void FunctionalityGame::writeFieldInFile(Field &field, string &input) {
+    ofstream fileOut;
+    fileOut.open(input);
+    if (!fileOut.is_open()) {
+        cout << "Could not open the file" << endl;
+        return;
+    }
+    field.drawField(fileOut);
+    fileOut.close();
 }
 
 void StandartGame::run(Field &field) {
@@ -118,14 +125,7 @@ void StandartGame::run(Field &field) {
                 field.drawField();
                 break;
             case 3:
-                ofstream fileOut;
-                fileOut.open(input.second);
-                if (!fileOut.is_open()) {
-                    cout << "Could not open the file" << endl;
-                    return;
-                }
-                writeFieldInFile(field, fileOut);
-                fileOut.close();
+                writeFieldInFile(field, input.second);
                 break;
             case 4:
                 return;
@@ -133,10 +133,11 @@ void StandartGame::run(Field &field) {
     }
 }
 
+
 void OfflineGame::run(Field &field, size_t ticks, ofstream &outputData) {
     ChangeField changeField;
     for (size_t i = 0; i < ticks; i++) {
         changeField.calculateFieldByRules(field);
     }
-    writeFieldInFile(field, )
+
 }

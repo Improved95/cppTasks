@@ -98,21 +98,21 @@ public:
 };
 
 class FunctionalityGame {
+private:
 public:
+    void calculateNIterations(Field &field, size_t ticks);
     void run();
-    void writeFieldInFile(Field &field, string &filePath);
+    void writeFieldInFile(Field &field, string &input);
 };
 
 class OfflineGame : public FunctionalityGame {
-private:
 public:
-    void run(Field &field, size_t ticks, ofstream &outputData);
+    void run(Field &field, size_t ticks, string &outputData);
 };
 
 class StandartGame : public FunctionalityGame {
 private:
     void coutHelp();
-    void calculateNIterations(Field &field, size_t ticks);
     pair<int, string> cinFromConsole();
 public:
     void run(Field &field);
