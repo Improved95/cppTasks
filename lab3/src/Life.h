@@ -23,7 +23,7 @@ public:
 
 class InputDataParser {
 private:
-    void coutInputExample();
+    void coutInputExample(string errorMessage);
     bool formatLifeDeathRuleIsCorrect(Field &field, string input);
     bool isStrokeWithFieldName(Field &field, ifstream &inputData);
     bool isStrokeWithDeathSurvRules(Field &field, ifstream &inputData);
@@ -97,21 +97,15 @@ public:
     size_t getY() const { return this->y; }
 };
 
-class FunctionalityGame {
-private:
+class OfflineGame {
 public:
+    void run(Field &field, size_t ticks, ofstream &outputData);
+};
+
+class StandartGame {
+private:
     void calculateNIterations(Field &field, size_t ticks);
-    void run();
     void writeFieldInFile(Field &field, string &input);
-};
-
-class OfflineGame : public FunctionalityGame {
-public:
-    void run(Field &field, size_t ticks, string &outputData);
-};
-
-class StandartGame : public FunctionalityGame {
-private:
     void coutHelp();
     pair<int, string> cinFromConsole();
 public:

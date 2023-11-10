@@ -31,8 +31,9 @@ void Life::initialField() {
 void Life::initialField(ifstream &inputData) {
     cout << "Welcome to Conway's Game of Life!" << endl;
     InputDataParser dataParser;
-    /*если файл не прошел проверку на корректность,
-     * то игра будет запущена в стандартном режиме с произвольным заполнением.*/
+    EnterParametersFromConsole enterParameters;
+
+    enterParameters.initialFieldSize(field);
     if (!dataParser.inputDataParsing(this->field, inputData)) {
         initialField();
         return;
@@ -43,7 +44,11 @@ void Life::initialField(ifstream &inputData) {
 }
 
 void Life::initialField(ifstream &inputData, size_t ticks, ofstream &outputData) {
+    cout << "j1" << endl;
     InputDataParser dataParser;
+
+    this->field.setRows(20);
+    this->field.setColumns(20);
     if (!dataParser.inputDataParsing(this->field, inputData)) {
         initialField();
         return;

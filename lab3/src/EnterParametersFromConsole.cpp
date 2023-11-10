@@ -47,13 +47,13 @@ void EnterParametersFromConsole::initialFieldSize(Field &field) {
     do {
         cout << "Enter quantity rows:";
         cin >> input;
-    } while (!exceptionHandling.coordinateIsCorrect(rows, ULONG_LONG_MAX, input, "Incorrect input rows. You need enter unsigned integer value."));
+    } while (!exceptionHandling.sttoullIsCorrect(rows, input, "Incorrect input rows. You need enter unsigned integer value."));
     field.setRows(rows);
 
     do {
         cout << "Enter quantity columns:";
         cin >> input;
-    } while (!exceptionHandling.coordinateIsCorrect(columns, ULONG_LONG_MAX, input, "Incorrect input columns. You need enter unsigned integer value."));
+    } while (!exceptionHandling.sttoullIsCorrect(columns, input, "Incorrect input columns. You need enter unsigned integer value."));
     field.setColumns(columns);
 }
 

@@ -86,14 +86,14 @@ pair<int, string> StandartGame::cinFromConsole() {
     return checkInput.parseInGameInput(streamInput);
 }
 
-void FunctionalityGame::calculateNIterations(Field &field, size_t ticks) {
+void StandartGame::calculateNIterations(Field &field, size_t ticks) {
     ChangeField changeField;
     for (size_t i = 0; i < ticks; i++) {
         changeField.calculateFieldByRules(field);
     }
 }
 
-void FunctionalityGame::writeFieldInFile(Field &field, string &input) {
+void StandartGame::writeFieldInFile(Field &field, string &input) {
     ofstream fileOut;
     fileOut.open(input);
     if (!fileOut.is_open()) {
@@ -133,11 +133,10 @@ void StandartGame::run(Field &field) {
     }
 }
 
-
 void OfflineGame::run(Field &field, size_t ticks, ofstream &outputData) {
     ChangeField changeField;
     for (size_t i = 0; i < ticks; i++) {
         changeField.calculateFieldByRules(field);
     }
-
+    field.drawField(outputData);
 }

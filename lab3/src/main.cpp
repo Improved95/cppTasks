@@ -11,9 +11,9 @@ int main(int argc, char **argv) {
     if (!fileIn.is_open()) return 1;
 
     Life life1;
-//    life1.initialFieldWithConsoleParameters(argc, argv);
-    life1.initialField(fileIn);
-//    life1.initialField(fileIn, 5, fileOut);
+    life1.initialFieldWithConsoleParameters(argc, argv);
+//    life1.initialField(fileIn);
+//    life1.initialField(fileIn, 10, fileOut);
 
     fileIn.close();
     fileOut.close();
