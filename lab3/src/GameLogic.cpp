@@ -75,7 +75,7 @@ void StandartGame::coutHelp() {
     cout << "4) exit - stop game." << endl;
 }
 
-pair<int, string> StandartGame::cinFromConsole() {
+pair<function<void(Field&, vector<string>)>, vector<string>> StandartGame::cinFromConsole() {
     EnterParametersFromConsole checkInput;
     string input;
     stringstream streamInput;
@@ -83,19 +83,25 @@ pair<int, string> StandartGame::cinFromConsole() {
     cout << "Enter command:";
     cin >> input;
     streamInput << input;
-    return checkInput.parseInGameInput(streamInput);
+    return checkInput.parseInGameInput(this, streamInput);
 }
 
-void StandartGame::calculateNIterations(Field &field, size_t ticks) {
+void StandartGame::calculateNIterations(Field &field, vector<string> &parameters) {
     ChangeField changeField;
+    ExceptionHandling exceptionHandling;
+
+    size_t ticks = 0;
+    if (!exceptionHandling.sttoullIsCorrect(ticks, parameters[0], "Incorrect n")) {
+        return;
+    }
     for (size_t i = 0; i < ticks; i++) {
         changeField.calculateFieldByRules(field);
     }
 }
 
-void StandartGame::writeFieldInFile(Field &field, string &input) {
+void StandartGame::writeFieldInFile(Field &field, vector<string> &parameters) {
     ofstream fileOut;
-    fileOut.open(input);
+    fileOut.open(parameters[0]);
     if (!fileOut.is_open()) {
         cout << "Could not open the file" << endl;
         return;
@@ -107,29 +113,15 @@ void StandartGame::writeFieldInFile(Field &field, string &input) {
 void StandartGame::run(Field &field) {
     cout << "Game started in Standart mode." << endl;
     coutHelp();
-    ExceptionHandling exceptionHandling;
 
     size_t ticks = 0;
     bool runningGame = true;
     while (runningGame) {
-        pair<int, string> input = cinFromConsole();
-        switch(input.first) {
-            case 1:
-                coutHelp();
-                break;
-            case 2:
-                if (!exceptionHandling.sttoullIsCorrect(ticks, input.second, "Incorrect n")) {
-                    break;
-                }
-                calculateNIterations(field, ticks);
-                field.drawField();
-                break;
-            case 3:
-                writeFieldInFile(field, input.second);
-                break;
-            case 4:
-                return;
+        pair<function<void(Field&, vector<string>)>, vector<string>> input = cinFromConsole();
+        if () {
+
         }
+        input.first(field, input.second);
     }
 }
 

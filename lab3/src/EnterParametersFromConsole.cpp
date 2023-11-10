@@ -57,20 +57,20 @@ void EnterParametersFromConsole::initialFieldSize(Field &field) {
     field.setColumns(columns);
 }
 
-pair<int, string> EnterParametersFromConsole::parseInGameInput(stringstream &input) {
+pair<function<void(Field&, vector<string>)>, vector<string>> EnterParametersFromConsole::parseInGameInput(StandartGame *gameControlObject, stringstream &input) {
     string mode;
-    pair<int, string> output;
+    pair<function<void(Field&, vector<string>)>, vector<string>> output;
     getline(input, mode , '<');
     if (mode == "help") {
-        output.first = 1;
+        output.first = ;
     } else if (mode == "tick") {
-        output.first = 2;
+        output.first = (*gameControlObject).calculateNIterations;
         getline(input, mode);
-        output.second = mode.substr(0, mode.size());
+        output.second.push_back(mode.substr(0, mode.size()));
     } else if (mode == "dump") {
-        output.first = 3;
+        output.first = (*gameControlObject).writeFieldInFile;
         getline(input, mode);
-        output.second = mode.substr(0, mode.size());
+        output.second.push_back(mode.substr(0, mode.size()));
     } else if (mode == "exit") {
         output.first = 4;
     } else {
