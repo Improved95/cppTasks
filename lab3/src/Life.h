@@ -3,16 +3,12 @@
 
 #include <iostream>
 #include <set>
-#include <functional>
-#include <vector>
 using std::string;
 using std::ifstream;
 using std::ofstream;
 using std::set;
 using std::stringstream;
 using std::pair;
-using std::function;
-using std::vector;
 
 class Life;
 class Field;
@@ -51,7 +47,7 @@ public:
     bool rulesIsCorrect(string &input, string message);
     void initialFieldSize(Field &field);
     void initialFieldParameters(Field &field);
-    pair<function<void(Field&, vector<string>)>, vector<string>> parseInGameInput(StandartGame *gameControlObject, stringstream &input);
+    pair<int, string> parseInGameInput(stringstream &input);
 };
 
 class BlockOfCells {
@@ -108,12 +104,12 @@ public:
 
 class StandartGame {
 private:
-    pair<function<void(Field&, vector<string>)>, vector<string>> cinFromConsole();
+    void calculateNIterations(Field &field, size_t ticks);
+    void writeFieldInFile(Field &field, string &input);
+    void coutHelp();
+    pair<int, string> cinFromConsole();
 public:
     void run(Field &field);
-    void coutHelp();
-    void calculateNIterations(Field &field, vector<string> &parameters);
-    void writeFieldInFile(Field &field, vector<string> &parameters);
 };
 
 class ChangeField {

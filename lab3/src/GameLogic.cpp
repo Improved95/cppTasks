@@ -75,7 +75,7 @@ void StandartGame::coutHelp() {
     cout << "4) exit - stop game." << endl;
 }
 
-pair<function<void(Field&, vector<string>)>, vector<string>> StandartGame::cinFromConsole() {
+pair<int, string> StandartGame::cinFromConsole() {
     EnterParametersFromConsole checkInput;
     string input;
     stringstream streamInput;
@@ -83,25 +83,19 @@ pair<function<void(Field&, vector<string>)>, vector<string>> StandartGame::cinFr
     cout << "Enter command:";
     cin >> input;
     streamInput << input;
-    return checkInput.parseInGameInput(this, streamInput);
+    return checkInput.parseInGameInput(streamInput);
 }
 
-void StandartGame::calculateNIterations(Field &field, vector<string> &parameters) {
+void StandartGame::calculateNIterations(Field &field, size_t ticks) {
     ChangeField changeField;
-    ExceptionHandling exceptionHandling;
-
-    size_t ticks = 0;
-    if (!exceptionHandling.sttoullIsCorrect(ticks, parameters[0], "Incorrect n")) {
-        return;
-    }
     for (size_t i = 0; i < ticks; i++) {
         changeField.calculateFieldByRules(field);
     }
 }
 
-void StandartGame::writeFieldInFile(Field &field, vector<string> &parameters) {
+void StandartGame::writeFieldInFile(Field &field, string &input) {
     ofstream fileOut;
-    fileOut.open(parameters[0]);
+    fileOut.open(input);
     if (!fileOut.is_open()) {
         cout << "Could not open the file" << endl;
         return;
@@ -113,15 +107,29 @@ void StandartGame::writeFieldInFile(Field &field, vector<string> &parameters) {
 void StandartGame::run(Field &field) {
     cout << "Game started in Standart mode." << endl;
     coutHelp();
+    ExceptionHandling exceptionHandling;
 
     size_t ticks = 0;
     bool runningGame = true;
     while (runningGame) {
-        pair<function<void(Field&, vector<string>)>, vector<string>> input = cinFromConsole();
-        if () {
-
+        pair<int, string> input = cinFromConsole();
+        switch(input.first) {
+            case 1:
+                coutHelp();
+                break;
+            case 2:
+                if (!exceptionHandling.sttoullIsCorrect(ticks, input.second, "Incorrect n")) {
+                    break;
+                }
+                calculateNIterations(field, ticks);
+                field.drawField();
+                break;
+            case 3:
+                writeFieldInFile(field, input.second);
+                break;
+            case 4:
+                return;
         }
-        input.first(field, input.second);
     }
 }
 
