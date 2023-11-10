@@ -7,9 +7,12 @@ using std::exception;
 void ParserConsoleParameters::parseAndInitial(int argc, char **argv, Life *gameObject) {
     ifstream fileIn;
     ofstream fileOut;
+
+    fileIn.open(argv[1]);
+    fileOut.open(argv[3]);
     size_t tickQuantity;
+
     if (argc == 2) {
-        fileIn.open(argv[1]);
         if (!fileIn.is_open()) {
             cout << "Incorrect output file path. You need enter path to input file, quantity ticks, path to output file. Example: 'fileIn.life' 5 'fileOut.life'" << endl;
             gameObject->initialField();
@@ -17,7 +20,6 @@ void ParserConsoleParameters::parseAndInitial(int argc, char **argv, Life *gameO
         }
     }
     if (argc == 4) {
-        fileOut.open(argv[3]);
         if (!fileOut.is_open()) {
             cout << "Incorrect output file path. You need enter path to input file, quantity ticks, path to output file. Example: 'fileIn.life' 5 'fileOut.life'" << endl;
             gameObject->initialField();

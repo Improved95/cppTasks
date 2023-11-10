@@ -44,7 +44,6 @@ void Life::initialField(ifstream &inputData) {
 }
 
 void Life::initialField(ifstream &inputData, size_t ticks, ofstream &outputData) {
-    cout << "j1" << endl;
     InputDataParser dataParser;
 
     this->field.setRows(20);

@@ -8,6 +8,7 @@ void InputDataParser::coutInputExample(string errorMessage) {
     cout << errorMessage << endl;
     cout << "Example input format:" << endl;
     cout << "#Life 1.06\n#Base\n#R B3/S23\n3 0\n4 0\n5 0\n5 1\n4 2" << endl;
+    cout << "Game started in standart mode without input data." << endl;
 }
 
 bool InputDataParser::formatLifeDeathRuleIsCorrect(Field &field, string input) {

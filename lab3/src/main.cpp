@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
     Life life1;
     life1.initialFieldWithConsoleParameters(argc, argv);
 //    life1.initialField(fileIn);
-//    life1.initialField(fileIn, 10, fileOut);
+//    life1.initialField(fileIn, 28, fileOut);
 
     fileIn.close();
     fileOut.close();
