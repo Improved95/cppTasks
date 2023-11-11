@@ -8,25 +8,20 @@ using std::cin;
 using std::vector;
 
 void ChangeField::pulseFieldFill(Field &field) {
-    const size_t X = 0;
-    const size_t Y = 0;
+    const size_t X = 2;
+    const size_t Y = 2;
 
-    vector<Cell> cells;
-    for (size_t j = 0; j < 2; j++) {
-        for (size_t i = 0; i < 3; i++) {
-            Cell cell(i + 2 + X, Y + 5 * j);
-            field.cellsTree.addCell(cell, field.getRows(), field.getColums(), 0);
-        }
-        for (size_t i = 0; i < 3; i++) {
-            Cell cell(i + 8 + X, Y + 5 * j);
-            field.cellsTree.addCell(cell, field.getRows(), field.getColums(), 0);
-        }
+    vector<size_t> patternX = {2, 3, 4, 8, 9, 10, 2, 3, 4, 8, 9, 10, 2, 3, 4, 8, 9, 10, 2, 3, 4, 8, 9, 10, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 12, 12, 12, 12, 12, 12};
+    vector<size_t> patternY = {0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 12, 12, 12, 12, 12, 12, 2, 3, 4, 8, 9, 10, 2, 3, 4, 8, 9, 10, 2, 3, 4, 8, 9, 10, 2, 3, 4, 8, 9, 10};
+    for (size_t i = 0; i < patternX.size(); i++) {
+        field.cellsTree.addCell(Cell(X + patternX[i], Y + patternY[i]), field.rows, field.columns, 0);
     }
-    // todo...
+
 }
 
 /*надо подумать, можно ли как-то выводить в консоль без доп сета*/
 void Field::drawField() {
+    system("clear");
     cout << "University name: " << fieldName << endl;
     size_t i = rows, j = 0;
     set<Cell> allCellsList;
@@ -35,7 +30,7 @@ void Field::drawField() {
     for (; i > 0; i--) {
         for (; j < columns; j++) {
             if (i == it->getY() + 1 && j == it->getX()) {
-                cout << "1";
+                cout << "#";
                 it++;
             } else {
                 cout << "_";
@@ -82,6 +77,9 @@ pair<int, string> StandartGame::cinFromConsole() {
 
     cout << "Enter command:";
     cin >> input;
+    if (cin.fail()) {
+        cout << "work" << endl;
+    }
     streamInput << input;
     return checkInput.parseInGameInput(streamInput);
 }
@@ -105,6 +103,7 @@ void StandartGame::writeFieldInFile(Field &field, string &input) {
 }
 
 void StandartGame::run(Field &field) {
+    system("clear");
     cout << "Game started in Standart mode." << endl;
     coutHelp();
     ExceptionHandling exceptionHandling;
@@ -114,6 +113,9 @@ void StandartGame::run(Field &field) {
     while (runningGame) {
         pair<int, string> input = cinFromConsole();
         switch(input.first) {
+            case 0:
+                calculateNIterations(field, ticks);
+                field.drawField();
             case 1:
                 coutHelp();
                 break;

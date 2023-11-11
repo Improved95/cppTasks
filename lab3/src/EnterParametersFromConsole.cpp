@@ -30,11 +30,13 @@ void EnterParametersFromConsole::initialFieldParameters(Field &field) {
         cout << "Enter birth rule:";
         cin >> input;
     } while (!rulesIsCorrect(input, "Incorrect birth rule. You need enter a sequences of different digits from the set {0...8}"));
+    field.setBirthRules(input);
 
     do {
         cout << "Enter survival rule:";
         cin >> input;
     } while (!rulesIsCorrect(input, "Incorrect survival rule. You need enter a sequences of different digits from the set {0...8}"));
+    field.setSurvivalRule(input);
 
     initialFieldSize(field);
 }

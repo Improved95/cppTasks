@@ -14,7 +14,8 @@ void ParserConsoleParameters::parseAndInitial(int argc, char **argv, Life *gameO
 
     if (argc == 2) {
         if (!fileIn.is_open()) {
-            cout << "Incorrect output file path. You need enter path to input file, quantity ticks, path to output file. Example: 'fileIn.life' 5 'fileOut.life'" << endl;
+            cout << "Incorrect output file path. You need enter path to input file. Example: 'fileIn.life'" << endl;
+            cout << "Game started in standart mode without input data." << endl;
             gameObject->initialField();
             goto END_FUNCTION_AND_CLOSE_FILES;
         }
@@ -22,17 +23,20 @@ void ParserConsoleParameters::parseAndInitial(int argc, char **argv, Life *gameO
     if (argc == 4) {
         if (!fileOut.is_open()) {
             cout << "Incorrect output file path. You need enter path to input file, quantity ticks, path to output file. Example: 'fileIn.life' 5 'fileOut.life'" << endl;
+            cout << "Game started in standart mode without input data." << endl;
             gameObject->initialField();
             goto END_FUNCTION_AND_CLOSE_FILES;
         }
         ExceptionHandling exceptionHandling;
         if (!exceptionHandling.sttoullIsCorrect(tickQuantity, argv[2], "Incorrect output file path. You need enter path to input file, quantity ticks, path to output file. Example: 'fileIn.life' 5 'fileOut.life'")) {
+            cout << "Game started in standart mode without input data." << endl;
             gameObject->initialField();
             goto END_FUNCTION_AND_CLOSE_FILES;
         }
     }
     if (argc != 2 && argc != 4) {
         cout << "Incorrect input. You need enter path to input file, quantity ticks, path to output file. Example: 'fileIn.life' 5 'fileOut.life'" << endl;
+        cout << "Game started in standart mode without input data." << endl;
         gameObject->initialField();
         goto END_FUNCTION_AND_CLOSE_FILES;
     }
