@@ -1,8 +1,10 @@
 #include "SoundProcessor.h"
 
 int main(int argc, char *argv[]) {
-    SoundProcessor soundProcessor;
-    soundProcessor.convert(argc, argv);
+    int r;
 
-    return 0;
+    SoundProcessor soundProcessor;
+    r = soundProcessor.convertWithConsoleParameters(argc, argv);
+
+    return r;
 }

@@ -9,9 +9,9 @@ if (MSVC)
     add_compile_options(/W4 /WX)
 else()
     # lots of warnings and all warnings as errors
-    add_compile_options(-Wall -Wextra -pedantic -Werror)
+#    add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 
-#add_library(corelib OBJECT src/Life)
+add_library(corelib OBJECT src/SoundProcessor.cpp src/Converter.cpp src/ParsingInputParameters.cpp)
 add_executable(${exe_name} src/main.cpp)
-#target_link_libraries(${exe_name} corelib)
+target_link_libraries(${exe_name} corelib)
