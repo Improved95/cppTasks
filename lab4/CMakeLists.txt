@@ -12,6 +12,6 @@ else()
 #    add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 
-add_library(corelib OBJECT src/SoundProcessor.cpp src/Converter.cpp src/ParsingInputParameters.cpp)
+add_library(corelib OBJECT src/SoundProcessor.cpp src/Converter.cpp src/ParsingIArguments.cpp)
 add_executable(${exe_name} src/main.cpp)
 target_link_libraries(${exe_name} corelib)

@@ -1,6 +1,6 @@
 #include "SoundProcessor.h"
 
-int SoundProcessor::convertWithConsoleParameters(int argc, char **argv) {
-    ParseConsoleParameters parseConsoleParameters;
-    return parseConsoleParameters.parseParametersAndInitialConvert(argc, argv);
+int SoundProcessor::convertWithConsoleArguments(int argc, char **argv) {
+    ParseConsoleArguments parseConsoleParameters;
+    return parseConsoleParameters.parseArgumentsAndInitialConvert(argc, argv);
 }

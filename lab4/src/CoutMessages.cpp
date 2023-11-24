@@ -6,7 +6,11 @@ void CoutMessages::coutErrorAndHelp(string message) {
 }
 
 void CoutMessages::coutHelp() {
-    cout << "You should initial converter with next parameters:\n"
+    cout << "You should initial converter with next arguments:\n"
             "Help - ./SoundProcessor -h\n"
             "Converter- ./SoundProcessor -c config.txt output.wav input1.wav [<nput2.wav …]" << endl;
+}
+
+void CoutMessages::coutError(string message) {
+    cout << message << endl;
 }

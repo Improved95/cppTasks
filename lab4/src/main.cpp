@@ -4,7 +4,7 @@ int main(int argc, char *argv[]) {
     int r;
 
     SoundProcessor soundProcessor;
-    r = soundProcessor.convertWithConsoleParameters(argc, argv);
+    r = soundProcessor.convertWithConsoleArguments(argc, argv);
 
     return r;
 }
