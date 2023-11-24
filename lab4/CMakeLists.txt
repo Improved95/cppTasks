@@ -12,6 +12,9 @@ else()
 #    add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 
-add_library(corelib OBJECT src/SoundProcessor.cpp src/Converter.cpp src/ParsingIArguments.cpp)
+set(PATH_TO_EXECUTABLES src/executables/)
 add_executable(${exe_name} src/main.cpp)
+add_library(corelib OBJECT ${PATH_TO_EXECUTABLES}SoundProcessor.cpp ${PATH_TO_EXECUTABLES}Converter.cpp ${PATH_TO_EXECUTABLES}ParsingIArguments.cpp
+        ${PATH_TO_EXECUTABLES}CoutMessages.cpp)
+target_include_directories(corelib PUBLIC src/headers)
 target_link_libraries(${exe_name} corelib)
