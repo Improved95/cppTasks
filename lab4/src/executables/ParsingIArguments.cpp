@@ -25,7 +25,7 @@ int ParseConsoleArguments::parseConfigFileArg(char **argv, vector<OpenFilesSmart
 int ParseConsoleArguments::parseWavFilesArg(int argc, char **argv, vector<OpenFilesSmartPointers> &openedFilesVector) {
     CoutMessages coutMessages;
     regex patternWavFilesName("[A-Za-z0-9]+[.]wav");
-    for (size_t i = 3; i < argc + 1; i++) {
+    for (size_t i = 3; i < size_t(argc + 1); i++) {
         if (!regex_match(argv[i], patternWavFilesName)) {
             coutMessages.coutError("Incorrect name of WAV file.");
             return 1;
