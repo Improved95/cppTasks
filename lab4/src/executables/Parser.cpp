@@ -1,10 +1,10 @@
 #include "SoundProcessor.h"
-#include "Converter.h"
 #include <regex>
+#include <cxxopts.hpp>
 using std::regex;
 using std::regex_match;
 
-int ParseConsoleArguments::parseConfigFileArg(char **argv, vector<OpenFilesSmartPointers> &openedFilesVector) {
+/*int ParseConsoleArguments::parseConfigFileArg(char **argv, vector<OpenFilesSmartPointers> &openedFilesVector) {
     CoutMessages coutMessages;
     regex patternConfigName("[A-Za-z0-9]+[.]txt");
     if (!regex_match(argv[2], patternConfigName)) {
@@ -43,31 +43,12 @@ int ParseConsoleArguments::parseWavFilesArg(int argc, char **argv, vector<OpenFi
     ConverterManager converterManager;
     converterManager.initialConverterManager();
     return 0;
-}
+}*/
 
 int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char **argv) {
-    int r;
-    CoutMessages coutMessages;
+    int r = 0;
 
-    if (argc < 2) {
-        coutMessages.coutErrorAndHelp("Incorrect console arguments.");
-        return 1;
-    }
-    if (argv[1] == "-h") {
-        coutMessages.coutHelp();
-        return 0;
-    } else if (argv[1] == "-c") {
-        vector<OpenFilesSmartPointers> openedFilesVector;
-        if ((r = parseConfigFileArg(argv, openedFilesVector)) != 0) {
-            return r;
-        }
-        if ((r = parseWavFilesArg(argc, argv, openedFilesVector)) != 0) {
-            return r;
-        }
-     } else {
-        coutMessages.coutErrorAndHelp("Incorrect console arguments.");
-        return 1;
-    }
+
 
     return r;
 }

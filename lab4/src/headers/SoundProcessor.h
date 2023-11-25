@@ -12,19 +12,6 @@ using std::endl;
 using std::string;
 using std::vector;
 
-class OpenFilesSmartPointers {
-private:
-    fstream *ptr;
-public:
-    OpenFilesSmartPointers(fstream *ptr_) {
-        this->ptr = ptr_;
-    }
-    ~OpenFilesSmartPointers() {
-        (*this->ptr).close();
-    }
-    //разыменование
-};
-
 class CoutMessages {
 public:
     void coutHelp();
@@ -33,9 +20,6 @@ public:
 };
 
 class ParseConsoleArguments {
-private:
-    int parseConfigFileArg(char **argv, vector<OpenFilesSmartPointers> &openedFilesVector);
-    int parseWavFilesArg(int argc, char **argv, vector<OpenFilesSmartPointers> &filesVector);
 public:
     int parseArgumentsAndInitialConvert(int argc, char **argv);
 };

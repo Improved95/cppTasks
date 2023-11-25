@@ -1,0 +1,7 @@
+prefix=C:/improved/coding/cpp/cppTasks/lab4/lib/cxxopts
+includedir=${prefix}/include
+
+Name: cxxopts
+Description: 
+Version: 3.1.1
+Cflags: -I${includedir}
