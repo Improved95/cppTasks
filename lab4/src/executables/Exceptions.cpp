@@ -1,12 +1,10 @@
-#include <iostream>
 #include "Exceptions.h"
 #include "Messages.h"
-#include "cxxopts.hpp"
-#include <string>
-using std::regex;
-using std::regex_match;
+#include <regex>
 using std::cerr;
 using std::endl;
+using std::regex_match;
+using std::regex;
 
 void SoundProcessorExceptions::showMessageError(string message) {
     ShowError showError;
@@ -18,7 +16,7 @@ int ArgumentsExceptions::cxxoptsParsingExceptionHandling(cxxopts::ParseResult &r
         result = options.parse(argc, argv);
     } catch (exception &ex) {
         showMessageError(ex.what() + (string)("\n") + options.help());
-        return 1;
+        return returnErrorValue;
     }
     return 0;
 }
@@ -33,16 +31,20 @@ int ArgumentsExceptions::mutuallyExclusiveArgHandling(vector<size_t> &argvs) {
         }
     } catch (exception &ex) {
         showMessageError("You called mutually exclusive arguments.");
-        return 1;
+        return returnErrorValue;
     }
     return 0;
 }
 
-int ArgumentsExceptions::inputFileFormatIncorrectHandling(string &string, ) {
+int ArgumentsExceptions::inputFileFormatIncorrectHandling(string &fileName, string pattern, cxxopts::Options options) {
     try {
-
+        regex regexPattern(pattern);
+        if (!regex_match(fileName, regexPattern)) {
+            throw exception();
+        }
     } catch(exception &ex) {
-
+        showMessageError("Incorrect file name format" + (string)("\n") + options.help());
+        return returnErrorValue;
     }
     return 0;
 }

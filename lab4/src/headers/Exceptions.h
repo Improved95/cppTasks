@@ -1,8 +1,9 @@
 #ifndef EXCEPTION
 #define EXCEPTION
 
+#include <iostream>
 #include "cxxopts.hpp"
-#include "string"
+#include <string>
 #include <vector>
 using std::vector;
 using std::string;
@@ -21,7 +22,7 @@ public:
     }
     int cxxoptsParsingExceptionHandling(cxxopts::ParseResult &result, int argc, char *argv[], cxxopts::Options options);
     int mutuallyExclusiveArgHandling(vector<size_t> &argvs);
-    int inputFileFormatIncorrectHandling(string &string);
+    int inputFileFormatIncorrectHandling(string &fileName, string pattern, cxxopts::Options options);
 };
 
 class FilesExceptions : public SoundProcessorExceptions {
