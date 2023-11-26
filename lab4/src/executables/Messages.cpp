@@ -1,11 +1,14 @@
-#include "SoundProcessor.h"
+#include "Messages.h"
 
-void CoutMessages::coutErrorAndHelp(string message) {
+void ShowMessages::showMessage(string &message) const {
     cout << message << endl;
-//    coutHelp();
 }
 
-void CoutMessages::coutConfigExample() {
+void ShowError::cerrError(string &message) const {
+    cerr << message << endl;
+}
+
+void ShowInfo::coutConfigExample() {
     cout << "config.txt example:" << endl;
     cout <<
         "# Mute first 30s in input1\n"
@@ -17,8 +20,4 @@ void CoutMessages::coutConfigExample() {
         "# Mute third minute in mixed stream\n"
         "mute 120 180\n"
         << endl;
-}
-
-void CoutMessages::coutError(string message) {
-    cout << message << endl;
 }

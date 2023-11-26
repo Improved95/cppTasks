@@ -1,4 +1,5 @@
-#include "../headers/SoundProcessor.h"
+#include "SoundProcessor.h"
+#include "Parser.h"
 
 int SoundProcessor::convertWithConsoleArguments(int argc, char **argv) {
     ParseConsoleArguments parseConsoleParameters;
