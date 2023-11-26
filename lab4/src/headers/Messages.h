@@ -20,7 +20,7 @@ public:
 
 class ShowInfo : public ShowMessages {
 public:
-    void coutConfigExample();
+    void coutInstruction();
 };
 
 #endif

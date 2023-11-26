@@ -14,7 +14,7 @@ void SoundProcessorExceptions::showMessageError(string message) {
 int ArgumentsExceptions::cxxoptsParsingExceptionHandling(cxxopts::ParseResult &result, int argc, char *argv[], cxxopts::Options options) {
     try {
         result = options.parse(argc, argv);
-    } catch (exception &ex) {
+    } catch (const cxxopts::exceptions::parsing &ex) {
         showMessageError(ex.what() + (string)("\n") + options.help());
         return returnErrorValue;
     }
@@ -43,7 +43,7 @@ int ArgumentsExceptions::inputFileFormatIncorrectHandling(string &fileName, stri
             throw exception();
         }
     } catch(exception &ex) {
-        showMessageError("Incorrect file name format" + (string)("\n") + options.help());
+        showMessageError("Incorrect file name format." + (string)("\n") + options.help());
         return returnErrorValue;
     }
     return 0;

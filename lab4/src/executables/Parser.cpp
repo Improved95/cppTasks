@@ -22,9 +22,10 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char **argv
         ("h,help", "Cout help list;")
         ("c,convert", "Execute converting.")
         ("configFile", "Config with rule of converting.", cxxopts::value<string>())
+        ("outputFile", "Output file after converting.", cxxopts::value<string>())
         ("filesForConverting", "Input files for converting.", cxxopts::value<vector<string>>());
-    options.parse_positional({"configFile", "filesForConverting"});
-    options.set_positional_help("config.txt output.wav input1.wav [input2.wav ...]");
+    options.parse_positional({"configFile", "outputFile", "filesForConverting"});
+    options.positional_help("<config>.txt <output>.wav <input1>.wav [<input2>.wav ...]");
 
     cxxopts::ParseResult result;
     if ((r = argumentsExceptions.cxxoptsParsingExceptionHandling(result, argc, argv, options)) != 0) {
@@ -38,18 +39,25 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char **argv
 
     if (result.count("help")) {
         cout << options.help() << endl;
-        showInfo.coutConfigExample();
+        showInfo.coutInstruction();
         return 0;
     }
 
     string configFileName = result["configFile"].as<string>();
-    if ((r = argumentsExceptions.inputFileFormatIncorrectHandling(configFileName, (string)("[A-Za-z0-9]+[.]txt"), options)) != 0) {
+    if ((r = argumentsExceptions.inputFileFormatIncorrectHandling(configFileName, ("[A-Za-z0-9]+[.]txt"), options)) != 0) {
+        return r;
+    }
+
+    configFileName = result["outputFile"].as<string>();
+    if ((r = argumentsExceptions.inputFileFormatIncorrectHandling(configFileName, ("[A-Za-z0-9]+[.]wav"), options)) != 0) {
         return r;
     }
 
     vector<string> inputFileNames = result["filesForConverting"].as<vector<string>>();
-    if ((r = argumentsExceptions.inputFileFormatIncorrectHandling(configFileName, (string)("[A-Za-z0-9]+[.]wav"), options)) != 0) {
-        return r;
+    for (auto &el : inputFileNames) {
+        if ((r = argumentsExceptions.inputFileFormatIncorrectHandling(el, ("[A-Za-z0-9]+[.]wav"), options)) != 0) {
+            return r;
+        }
     }
 
     return r;
