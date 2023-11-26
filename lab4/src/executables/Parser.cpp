@@ -1,54 +1,32 @@
 #include "SoundProcessor.h"
-#include <regex>
-#include <cxxopts.hpp>
 using std::regex;
 using std::regex_match;
 
-/*int ParseConsoleArguments::parseConfigFileArg(char **argv, vector<OpenFilesSmartPointers> &openedFilesVector) {
-    CoutMessages coutMessages;
-    regex patternConfigName("[A-Za-z0-9]+[.]txt");
-    if (!regex_match(argv[2], patternConfigName)) {
-        coutMessages.coutError("Incorrect name of file config.");
-        return 1;
-    }
-    fstream configFile;
-    configFile.open(argv[2], fstream::in);
-    OpenFilesSmartPointers openedFile(&configFile);
-    if (!configFile.is_open()) {
-        coutMessages.coutError("Cannot open config file.");
-        return 2;
-    }
-    openedFilesVector.push_back(openedFile);
-    return 0;
-}
-
-int ParseConsoleArguments::parseWavFilesArg(int argc, char **argv, vector<OpenFilesSmartPointers> &openedFilesVector) {
-    CoutMessages coutMessages;
-    regex patternWavFilesName("[A-Za-z0-9]+[.]wav");
-    for (size_t i = 3; i < argc + 1; i++) {
-        if (!regex_match(argv[i], patternWavFilesName)) {
-            coutMessages.coutError("Incorrect name of WAV file.");
-            return 1;
-        }
-        fstream wavFile;
-        wavFile.open(argv[i], fstream::in);
-        OpenFilesSmartPointers openedFile(&wavFile);
-        if (!wavFile.is_open()) {
-            string mes = "Cannot open" + std::to_string(i - 2) + "wav file.";
-            coutMessages.coutError(mes);
-            return 2;
-        }
-        openedFilesVector.push_back(openedFile);
-    }
-    ConverterManager converterManager;
-    converterManager.initialConverterManager();
-    return 0;
-}*/
-
 int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char **argv) {
     int r = 0;
+    CoutMessages coutMessages;
+    ParsersExceptions parsersExceptions;
+    cxxopts::Options options("./SoundProcessor", "Converting streams with input parameteres.");
 
+    options.add_options()
+        ("h,help", "Cout help list;")
+        ("c,convert", "Execute converting.")
+        ("configFile", "Config with rule of converting.", cxxopts::value<string>())
+        ("filesForConverting", "Input files for converting.", cxxopts::value<vector<string>>());
+    options.parse_positional({"configFile", "filesForConverting"});
+    options.set_positional_help("config.txt output.wav input1.wav [input2.wav ...]");
 
+    cxxopts::ParseResult result;
+    if ((r = parsersExceptions.cxxoptsParsingExceptionHandling(result, argc, argv, options)) != 0) {
+        cout << "work" << endl;
+        return r;
+    }
+
+    if (result.count("help") && result.count("convert")) {
+        cout << options.help() << endl;
+        coutMessages.coutConfigExample();
+        return 1;
+    }
 
     return r;
 }

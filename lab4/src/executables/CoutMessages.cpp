@@ -1,14 +1,22 @@
-#include "../headers/SoundProcessor.h"
+#include "SoundProcessor.h"
 
 void CoutMessages::coutErrorAndHelp(string message) {
     cout << message << endl;
-    coutHelp();
+//    coutHelp();
 }
 
-void CoutMessages::coutHelp() {
-    cout << "You should initial converter with next arguments:\n"
-            "Help - ./SoundProcessor -h\n"
-            "Converter - ./SoundProcessor -c config.txt output.wav input1.wav [<input2.wav ...]" << endl;
+void CoutMessages::coutConfigExample() {
+    cout << "config.txt example:" << endl;
+    cout <<
+        "# Mute first 30s in input1\n"
+        "mute 0 30\n"
+        "\n"
+        "# Mix input1 with input2, start from 10s\n"
+        "mix $2 10\n"
+        "\n"
+        "# Mute third minute in mixed stream\n"
+        "mute 120 180\n"
+        << endl;
 }
 
 void CoutMessages::coutError(string message) {

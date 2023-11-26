@@ -15,10 +15,8 @@ endif()
 set(PATH_TO_EXECUTABLES src/executables/)
 add_executable(${exe_name} src/main.cpp)
 add_library(corelib OBJECT ${PATH_TO_EXECUTABLES}SoundProcessor.cpp ${PATH_TO_EXECUTABLES}Converter.cpp ${PATH_TO_EXECUTABLES}Parser.cpp
-        ${PATH_TO_EXECUTABLES}CoutMessages.cpp)
+        ${PATH_TO_EXECUTABLES}CoutMessages.cpp ${PATH_TO_EXECUTABLES}Exceptions.cpp)
 target_include_directories(corelib PUBLIC src/headers)
 target_include_directories(corelib PUBLIC lib/cxxopts/include)
 target_link_libraries(${exe_name} corelib)
-target_link_libraries(${exe_name} cxxopts)
-
-#
+#target_link_libraries(${exe_name} cxxopts)

@@ -1861,9 +1861,15 @@ class OptionParser
   NameHashMap m_keys{};
 };
 
-class Options
-{
+class Options {
+
+private:
+    std::string positional_arguments_names;
+
   public:
+    void set_positional_help(std::string positional_arguments_names_) {
+        this->positional_arguments_names = positional_arguments_names_;
+    }
 
   explicit Options(std::string program_name, std::string help_string = "")
   : m_program(std::move(program_name))
@@ -2833,7 +2839,7 @@ Options::help(const std::vector<std::string>& help_groups, bool print_usage) con
   }
 
   if (!m_positional.empty() && !m_positional_help.empty()) {
-    result += " " + toLocalString(m_positional_help);
+    result += " " + toLocalString(this->positional_arguments_names);
   }
 
   result += "\n\n";
