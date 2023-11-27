@@ -1864,6 +1864,7 @@ class OptionParser
 class Options
 {
   public:
+    Options() {}
 
   explicit Options(std::string program_name, std::string help_string = "")
   : m_program(std::move(program_name))

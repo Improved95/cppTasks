@@ -16,22 +16,39 @@ protected:
 };
 
 class ArgumentsExceptions : public SoundProcessorExceptions {
+private:
+    cxxopts::Options options;
 public:
-    ArgumentsExceptions() {
+    ArgumentsExceptions(const cxxopts::Options &options_) {
+        this->options = std::move(options_);
         this->returnErrorValue = 1;
     }
-    int cxxoptsParsingExceptionHandling(cxxopts::ParseResult &result, int argc, char *argv[], cxxopts::Options options);
+    int cxxoptsParsingExceptionHandling(cxxopts::ParseResult &result, int argc, char *argv[]);
     int mutuallyExclusiveArgHandling(vector<size_t> &argvs);
-    int inputFileFormatIncorrectHandling(string &fileName, string pattern, cxxopts::Options options);
+    int zeroArgumentExceptionHandling(int argc);
+    int requiredArgumentNonExistHandling(string option, cxxopts::ParseResult &result);
+};
+
+class FileNameExceptions : public ArgumentsExceptions {
+public:
+    FileNameExceptions(const cxxopts::Options &options_) : ArgumentsExceptions(options_) {
+
+    }
+
+    int inputFileFormatIncorrectHandling(string &fileName, string pattern);
 };
 
 class FilesExceptions : public SoundProcessorExceptions {
-
+    FilesExceptions() {
+        this->returnErrorValue = 2;
+    }
 };
 
 class ConvertsExceptions : public SoundProcessorExceptions {
 public:
-
+    ConvertsExceptions() {
+        this->returnErrorValue = 3;
+    }
 };
 
 #endif
