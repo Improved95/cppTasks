@@ -16,26 +16,34 @@ protected:
 };
 
 class ArgumentsExceptions : public SoundProcessorExceptions {
-private:
+protected:
     cxxopts::Options options;
 public:
     ArgumentsExceptions(const cxxopts::Options &options_) {
         this->options = std::move(options_);
         this->returnErrorValue = 1;
     }
-    int cxxoptsParsingExceptionHandling(cxxopts::ParseResult &result, int argc, char *argv[]);
-    int mutuallyExclusiveArgHandling(vector<size_t> &argvs);
-    int zeroArgumentExceptionHandling(int argc);
-    int requiredArgumentNonExistHandling(string option, cxxopts::ParseResult &result);
+    int checkCxxoptsParsing(cxxopts::ParseResult &result, int argc, char *argv[]);
+    int checkMutuallyExclusiveArg(vector<size_t> &argvs);
+    int checkZeroArguments(int argc);
+    int checkRequiredArgument(string option, cxxopts::ParseResult &result);
 };
 
 class FileNameExceptions : public ArgumentsExceptions {
 public:
-    FileNameExceptions(const cxxopts::Options &options_) : ArgumentsExceptions(options_) {
+    FileNameExceptions(const cxxopts::Options &options_) : ArgumentsExceptions(options_) {}
+    int checkInputFileFormat(string &fileName, string pattern);
+};
 
-    }
+class FileNameWithDiffExtentionsExceptions : public FileNameExceptions {
+private:
+    const string supportFormats[1]  = {"wav"};
+    const string mainPattern = "[A-Za-z0-9]+[.]";
+public:
+    FileNameWithDiffExtentionsExceptions(const cxxopts::Options &options_) : FileNameExceptions(options_) {}
 
-    int inputFileFormatIncorrectHandling(string &fileName, string pattern);
+    int checkTxtFileName(string &fileName);
+    int checkInputFileWithDiffFormat(string &fileName);
 };
 
 class FilesExceptions : public SoundProcessorExceptions {

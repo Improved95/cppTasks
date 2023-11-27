@@ -3,5 +3,15 @@
 
 int SoundProcessor::convertWithConsoleArguments(int argc, char **argv) {
     ParseConsoleArguments parseConsoleParameters;
-    return parseConsoleParameters.parseArgumentsAndInitialConvert(argc, argv);
+    int r;
+
+    string config, output;
+    vector<string> inputs;
+    if ((r = parseConsoleParameters.parseArgumentsAndInitialConvert(argc, argv, config, output, inputs)) != 0) {
+        return r;
+    }
+
+
+
+    return r;
 }

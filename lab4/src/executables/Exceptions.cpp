@@ -11,7 +11,7 @@ void SoundProcessorExceptions::showMessageError(string message) {
     showError.cerrError(message);
 }
 
-int ArgumentsExceptions::cxxoptsParsingExceptionHandling(cxxopts::ParseResult &result, int argc, char *argv[]) {
+int ArgumentsExceptions::checkCxxoptsParsing(cxxopts::ParseResult &result, int argc, char **argv) {
     try {
         result = this->options.parse(argc, argv);
     } catch (const cxxopts::exceptions::exception &ex) {
@@ -21,7 +21,7 @@ int ArgumentsExceptions::cxxoptsParsingExceptionHandling(cxxopts::ParseResult &r
     return 0;
 }
 
-int ArgumentsExceptions::mutuallyExclusiveArgHandling(vector<size_t> &argvs) {
+int ArgumentsExceptions::checkMutuallyExclusiveArg(vector<size_t> &argvs) {
     try {
         size_t saveEl = argvs[0];
         for (size_t i = 1; i < argvs.size(); i++) {
@@ -36,7 +36,7 @@ int ArgumentsExceptions::mutuallyExclusiveArgHandling(vector<size_t> &argvs) {
     return 0;
 }
 
-int ArgumentsExceptions::inputFileFormatIncorrectHandling(string &fileName, string pattern) {
+int FileNameExceptions::checkInputFileFormat(string &fileName, string pattern) {
     try {
         regex regexPattern(pattern);
         if (!regex_match(fileName, regexPattern)) {
@@ -49,7 +49,7 @@ int ArgumentsExceptions::inputFileFormatIncorrectHandling(string &fileName, stri
     return 0;
 }
 
-int ArgumentsExceptions::zeroArgumentExceptionHandling(int argc) {
+int ArgumentsExceptions::checkZeroArguments(int argc) {
     try {
         if (argc < 1) {
             throw exception();
@@ -61,14 +61,42 @@ int ArgumentsExceptions::zeroArgumentExceptionHandling(int argc) {
     return 0;
 }
 
-int ArgumentsExceptions::requiredArgumentNonExistHandling(string option_, cxxopts::ParseResult &result) {
+int ArgumentsExceptions::checkRequiredArgument(string option, cxxopts::ParseResult &result) {
     try {
-        if (result.count(option_) == 0) {
+        if (result.count(option) == 0) {
             throw exception();
         }
     } catch (exception &ex) {
-        showMessageError("You didn't input " + option_ + (string)("\n") + this->options.help());
+        showMessageError("You didn't input " + option + (string)"." + (string)("\n") + this->options.help());
         return returnErrorValue;
     }
     return 0;
+}
+
+int FileNameWithDiffExtentionsExceptions::checkInputFileWithDiffFormat(string &fileName) {
+    try {
+        for (size_t i = 0; i < this->supportFormats->size(); i++) {
+            regex regexPattern(this->mainPattern + supportFormats[i]);
+            if (regex_match(fileName, regexPattern)) {
+                return 0;
+            }
+        }
+        throw exception();
+    } catch(exception &ex) {
+        showMessageError("Incorrect filename format of " + (string)"<"  + fileName + (string)">" + (string)("\n") + this->options.help());
+        return returnErrorValue;
+    }
+}
+
+int FileNameWithDiffExtentionsExceptions::checkTxtFileName(string &fileName) {
+    try {
+        regex regexPattern(this->mainPattern + (string)"txt");
+        if (regex_match(fileName, regexPattern)) {
+            return 0;
+        }
+        throw exception();
+    } catch(exception &ex) {
+        showMessageError("Incorrect filename format " + (string)"\'"  + fileName + (string)"\'" + (string)("\n") + this->options.help());
+        return returnErrorValue;
+    }
 }

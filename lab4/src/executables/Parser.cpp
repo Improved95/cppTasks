@@ -13,7 +13,7 @@ using std::regex_match;
 using std::cout;
 using std::endl;
 
-int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char **argv) {
+int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[], string &config, string &output, vector<string> &inputs) {
     int r;
     ShowInfo showInfo;
     cxxopts::Options options("./SoundProcessor", "Converting streams with input parameteres.");
@@ -30,17 +30,17 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char **argv
     ArgumentsExceptions argumentsExceptions(options);
 
     cxxopts::ParseResult result;
-    if ((r = argumentsExceptions.cxxoptsParsingExceptionHandling(result, argc, argv)) != 0) {
+    if ((r = argumentsExceptions.checkCxxoptsParsing(result, argc, argv)) != 0) {
         return r;
     }
 
-    if ((r = argumentsExceptions.zeroArgumentExceptionHandling(result.count("help") + result.count("convert")) != 0)) {
+    if ((r = argumentsExceptions.checkZeroArguments(result.count("help") + result.count("convert")) != 0)) {
         return r;
     }
 
     //определяю взаимоисключающие параметры
     vector<size_t> argvs = {result.count("help"), result.count("convert")};
-    if ((r = argumentsExceptions.mutuallyExclusiveArgHandling(argvs)) != 0) {
+    if ((r = argumentsExceptions.checkMutuallyExclusiveArg(argvs)) != 0) {
         return r;
     }
 
@@ -50,37 +50,35 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char **argv
         return 0;
     }
 
-    FileNameExceptions fileNameExceptions(options);
+    FileNameWithDiffExtentionsExceptions fileNameWithDiffEE(options);
     //Был ли введен конфиг
-    if ((r = argumentsExceptions.requiredArgumentNonExistHandling("ConfigFile", result)) != 0) {
+    if ((r = argumentsExceptions.checkRequiredArgument("ConfigFile", result)) != 0) {
         return r;
     }
-    string configFileName = result["ConfigFile"].as<string>();
-    if ((r = fileNameExceptions.inputFileFormatIncorrectHandling(configFileName, ("[A-Za-z0-9]+[.]txt"))) != 0) {
+    string fileName = result["ConfigFile"].as<string>();
+    if ((r = fileNameWithDiffEE.checkTxtFileName(fileName)) != 0) {
         return r;
     }
 
     //Был ли введен выходной файл
-    if ((r = argumentsExceptions.requiredArgumentNonExistHandling("OutputFile", result)) != 0) {
+    if ((r = argumentsExceptions.checkRequiredArgument("OutputFile", result)) != 0) {
         return r;
     }
-    configFileName = result["OutputFile"].as<string>();
-    if ((r = fileNameExceptions.inputFileFormatIncorrectHandling(configFileName, ("[A-Za-z0-9]+[.]wav"))) != 0) {
+    fileName = result["OutputFile"].as<string>();
+    if ((r = fileNameWithDiffEE.checkInputFileWithDiffFormat(fileName)) != 0) {
         return r;
     }
 
     //Были ли введены файлы для конвертации
-    if ((r = argumentsExceptions.requiredArgumentNonExistHandling("FilesForConverting", result)) != 0) {
+    if ((r = argumentsExceptions.checkRequiredArgument("FilesForConverting", result)) != 0) {
         return r;
     }
     vector<string> inputFileNames = result["FilesForConverting"].as<vector<string>>();
     for (auto &el : inputFileNames) {
-        if ((r = fileNameExceptions.inputFileFormatIncorrectHandling(el, ("[A-Za-z0-9]+[.]wav"))) != 0) {
+        if ((r = fileNameWithDiffEE.checkInputFileWithDiffFormat(el)) != 0) {
             return r;
         }
     }
-
-
 
     return r;
 }
