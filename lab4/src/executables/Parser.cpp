@@ -1,7 +1,6 @@
 #include <iostream>
 #include "Parser.h"
 #include "Exceptions.h"
-#include "Messages.h"
 #include "cxxopts.hpp"
 #include "vector"
 using std::string;
@@ -10,6 +9,9 @@ using std::regex;
 using std::regex_match;
 using std::cout;
 using std::endl;
+using std::cerr;
+
+cxxopts::Options * ArgumentException::consoleOptions = nullptr;
 
 int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[], string &config, string &output, vector<string> &inputs) {
     /*
@@ -82,7 +84,6 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
     return r;
     */
 
-    int r = 0;
     cxxopts::Options options("./SoundProcessor", "Converting streams with input parameteres.");
 
     options.add_options()
@@ -98,12 +99,19 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
 
     try {
         result = options.parse(argc, argv);
-    } catch (ArgumentException &ex) {
+    } catch (cxxopts::exceptions::exception &ex) {
         cerr << ex.what() << endl;
         return 1;
     }
 
-
+    try {
+        if (argc < 0) {
+            throw ArgumentException("Too few arguments.", &options);
+        }
+    } catch (ArgumentException &ex) {
+        cerr << ex.what() << endl;
+        return ex.getErrorCode();
+    }
 
     return 0;
 }

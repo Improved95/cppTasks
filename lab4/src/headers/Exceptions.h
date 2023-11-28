@@ -9,19 +9,33 @@ using std::vector;
 using std::string;
 using std::exception;
 
-class SoundProcessorException {
+class SoundProcessorException : public exception {
 public:
-    SoundProcessorException() {
-        code = 0;
+    SoundProcessorException(const char * msg_) {
+        this->msg = msg_;
+        this->code = 0;
     }
+
+    virtual const char * what() throw() {
+        return msg;
+    };
+    int getErrorCode() { return this->code; }
+
+protected:
     int code;
+    const char *msg;
 };
 
-class ArgumentException : public cxxopts::exceptions::exception,  SoundProcessorException {
+class ArgumentException : public SoundProcessorException {
 public:
-    ArgumentException() : cxxopts::exceptions::exception("main_exception") {
-        code = 1;
+    ArgumentException(const char * msg_, cxxopts::Options *options_) : SoundProcessorException(msg_) {
+        setOptions(options_);
+        this->code = 1;
     }
+    static void setOptions(cxxopts::Options *options_) { consoleOptions = options_; }
+
+private:
+    static cxxopts::Options *consoleOptions;
 };
 
 /*
