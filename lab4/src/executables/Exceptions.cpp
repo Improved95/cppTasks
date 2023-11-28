@@ -6,6 +6,7 @@ using std::endl;
 using std::regex_match;
 using std::regex;
 
+/*
 void SoundProcessorExceptions::showMessageError(string message) {
     ShowError showError;
     showError.cerrError(message);
@@ -100,3 +101,4 @@ int FileNameWithDiffExtentionsExceptions::checkTxtFileName(string &fileName) {
         return returnErrorValue;
     }
 }
+*/

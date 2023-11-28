@@ -1,6 +1,4 @@
 #include <iostream>
-#include <string>
-#include <cstring>
 #include "Parser.h"
 #include "Exceptions.h"
 #include "Messages.h"
@@ -14,6 +12,7 @@ using std::cout;
 using std::endl;
 
 int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[], string &config, string &output, vector<string> &inputs) {
+    /*
     int r;
     ShowInfo showInfo;
     cxxopts::Options options("./SoundProcessor", "Converting streams with input parameteres.");
@@ -81,4 +80,30 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
     }
 
     return r;
+    */
+
+    int r = 0;
+    cxxopts::Options options("./SoundProcessor", "Converting streams with input parameteres.");
+
+    options.add_options()
+            ("h,help", "Cout help list;")
+            ("c,convert", "Execute converting;")
+            ("ConfigFile", "Config file with parameters of converting;", cxxopts::value<string>())
+            ("OutputFile", "Output file after converting;", cxxopts::value<string>())
+            ("FilesForConverting", "Input files for converting.", cxxopts::value<vector<string>>());
+    options.parse_positional({"ConfigFile", "OutputFile", "FilesForConverting"});
+    options.positional_help("<config>.txt <output>.wav <input1>.wav [<input2>.wav ...]");
+
+    cxxopts::ParseResult result;
+
+    try {
+        result = options.parse(argc, argv);
+    } catch (ArgumentException &ex) {
+        cerr << ex.what() << endl;
+        cout << "h1" << endl;
+    }
+
+
+
+    return 0;
 }

@@ -9,12 +9,23 @@ using std::vector;
 using std::string;
 using std::exception;
 
-class SoundProcessorExceptions {
-protected:
-    int returnErrorValue = 0;
-    void showMessageError(string message);
+class SoundProcessorExceptions : public cxxopts::exceptions::exception {
+public:
+    SoundProcessorExceptions() : cxxopts::exceptions::exception("main_exception") {}
+    int code = 0;
 };
 
+class ArgumentException : public SoundProcessorExceptions {
+    ArgumentException() : SoundProcessorExceptions() {
+        code = 1;
+    }
+};
+
+class FileNameException : public SoundProcessorExceptions {
+
+};
+
+/*
 class ArgumentsExceptions : public SoundProcessorExceptions {
 protected:
     cxxopts::Options options;
@@ -58,5 +69,6 @@ public:
         this->returnErrorValue = 3;
     }
 };
+*/
 
 #endif

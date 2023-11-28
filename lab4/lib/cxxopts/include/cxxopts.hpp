@@ -409,18 +409,12 @@ CXXOPTS_DIAGNOSTIC_POP
 
 namespace exceptions {
 
-class exception : public std::exception
-{
+class exception : public std::exception {
   public:
-  explicit exception(std::string  message)
-  : m_message(std::move(message))
-  {
-  }
+  explicit exception(std::string message) : m_message(std::move(message)) {}
 
   CXXOPTS_NODISCARD
-  const char*
-  what() const noexcept override
-  {
+  const char* what() const noexcept override {
     return m_message.c_str();
   }
 
