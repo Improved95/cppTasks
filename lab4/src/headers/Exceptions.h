@@ -12,17 +12,18 @@ using std::exception;
 class SoundProcessorExceptions : public cxxopts::exceptions::exception {
 public:
     SoundProcessorExceptions() : cxxopts::exceptions::exception("main_exception") {}
-    int code = 0;
 };
 
 class ArgumentException : public SoundProcessorExceptions {
     ArgumentException() : SoundProcessorExceptions() {
-        code = 1;
+        this->code = 1;
     }
 };
 
 class FileNameException : public SoundProcessorExceptions {
-
+    FileNameException() : SoundProcessorExceptions() {
+        this->code = 2;
+    }
 };
 
 /*

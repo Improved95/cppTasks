@@ -411,15 +411,20 @@ namespace exceptions {
 
 class exception : public std::exception {
   public:
-  explicit exception(std::string message) : m_message(std::move(message)) {}
+  explicit exception(std::string message) : m_message(std::move(message)) {
+      this->code = 0;
+  }
 
   CXXOPTS_NODISCARD
   const char* what() const noexcept override {
     return m_message.c_str();
   }
 
+  int code;
+
   private:
   std::string m_message;
+  protected:
 };
 
 class specification : public exception
