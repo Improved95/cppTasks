@@ -100,7 +100,7 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
         result = options.parse(argc, argv);
     } catch (ArgumentException &ex) {
         cerr << ex.what() << endl;
-        return ex.code;
+        return 1;
     }
 
 

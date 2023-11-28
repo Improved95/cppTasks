@@ -9,22 +9,27 @@ using std::vector;
 using std::string;
 using std::exception;
 
-class SoundProcessorExceptions : public cxxopts::exceptions::exception {
+class SoundProcessorException {
 public:
-    SoundProcessorExceptions() : cxxopts::exceptions::exception("main_exception") {}
+    SoundProcessorException() {
+        code = 0;
+    }
+    int code;
 };
 
-class ArgumentException : public SoundProcessorExceptions {
-    ArgumentException() : SoundProcessorExceptions() {
-        this->code = 1;
+class ArgumentException : public cxxopts::exceptions::exception,  SoundProcessorException {
+public:
+    ArgumentException() : cxxopts::exceptions::exception("main_exception") {
+        code = 1;
     }
 };
 
+/*
 class FileNameException : public SoundProcessorExceptions {
-    FileNameException() : SoundProcessorExceptions() {
-        this->code = 2;
-    }
+
 };
+*/
+
 
 /*
 class ArgumentsExceptions : public SoundProcessorExceptions {
