@@ -28,15 +28,23 @@ protected:
 
 class ArgumentException : public SoundProcessorException {
 public:
-    ArgumentException(const char * msg_, cxxopts::Options *options_) : SoundProcessorException(msg_) {
-        setOptions(options_);
+    ArgumentException(const char * msg_, const cxxopts::Options *options_) : SoundProcessorException(msg_) {
         this->code = 1;
+        this->consoleOptions = options_;
     }
-    static void setOptions(cxxopts::Options *options_) { consoleOptions = options_; }
 
-private:
-    static cxxopts::Options *consoleOptions;
+protected:
+    const cxxopts::Options *consoleOptions;
 };
+
+class zeroArgumentException : public ArgumentException {
+public:
+    zeroArgumentException(const char * msg_, const cxxopts::Options *options_) : ArgumentException(msg_, options_) {
+        this->msg = msg_;
+    }
+};
+
+
 
 /*
 class FileNameException : public SoundProcessorExceptions {

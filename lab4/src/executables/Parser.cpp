@@ -11,8 +11,6 @@ using std::cout;
 using std::endl;
 using std::cerr;
 
-cxxopts::Options * ArgumentException::consoleOptions = nullptr;
-
 int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[], string &config, string &output, vector<string> &inputs) {
     /*
     int r;
@@ -95,8 +93,18 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
     options.parse_positional({"ConfigFile", "OutputFile", "FilesForConverting"});
     options.positional_help("<config>.txt <output>.wav <input1>.wav [<input2>.wav ...]");
 
-    cxxopts::ParseResult result;
+    try {
+        if (argc < 2) {
+            string errorMes = "Too few arguments entered.";
+            throw zeroArgumentException(errorMes.c_str(), &options);
+        }
+    } catch (zeroArgumentException &ex) {
+        cerr << "h1" << endl;
+        cerr << ex.what() << endl;
+        return ex.getErrorCode();
+    }
 
+    cxxopts::ParseResult result;
     try {
         result = options.parse(argc, argv);
     } catch (cxxopts::exceptions::exception &ex) {
@@ -104,14 +112,7 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
         return 1;
     }
 
-    try {
-        if (argc < 0) {
-            throw ArgumentException("Too few arguments.", &options);
-        }
-    } catch (ArgumentException &ex) {
-        cerr << ex.what() << endl;
-        return ex.getErrorCode();
-    }
+
 
     return 0;
 }
