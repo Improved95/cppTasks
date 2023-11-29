@@ -5,19 +5,45 @@
 #include <string>
 #include "cxxopts.hpp"
 #include "Messages.h"
+#include <unordered_map>
 using std::vector;
 using std::string;
+using std::unordered_map;
+using std::unique_ptr;
+
+class MethodsFabric;
 
 class ParseConsoleArguments : public ConvertStringToChar {
 public:
     int parseArgumentsAndInitialConvert(int argc, char **argv, string &config,
                                         string &output, vector<string> &inputs);
 
+    string & checkMutuallyArguments(cxxopts::ParseResult &result, cxxopts::Options &option);
+    void argumentIsExist(const char *optionName, cxxopts::ParseResult &result, cxxopts::Options &options);
+
 private:
     const char* mutuallyArguments[2] = {"help", "convert"};
-    void checkMutuallyArguments(cxxopts::ParseResult &result, cxxopts::Options &option);
-    void argumentIsExist(const char *optionName, cxxopts::ParseResult &result, cxxopts::Options &options);
+//    const unordered_map<string, > methods = {
+//
+//    };
 };
+
+class ModesWorkingFactory {
+public:
+    using ConverterCreator = unique_ptr<ParseConsoleArguments> (*)();
+};
+
+class CoutHelp : public ParseConsoleArguments {
+};
+
+class ParseArgumentsForNSUSoundProcessor : public ParseConsoleArguments {
+public:
+    int parseFilesArguments(char *argv[], cxxopts::ParseResult &result, cxxopts::Options &options,
+                            string &config, string &output, vector<string> &inputs);
+};
+
+
+
 
 class ParseFileName : public ConvertStringToChar {
 protected:

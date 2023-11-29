@@ -16,7 +16,7 @@ int SoundProcessor::convertWithConsoleArguments(int argc, char **argv) {
         return r;
     }
 
-
+    ConverterManager converterManager;
 
     return r;
 }

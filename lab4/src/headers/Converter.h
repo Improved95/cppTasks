@@ -6,21 +6,21 @@
 using std::ifstream;
 using std::vector;
 
-class IConverter {
-    virtual void takeSampleFromInput(ifstream &input);
-};
-
-class Mute : IConverter {
+class Converter {
 
 };
 
-class Mix : IConverter {
+class MuteConverter : Converter {
+
+};
+
+class MixConverter : Converter {
 
 };
 
 class ConverterManager {
 public:
-    void initialConverterManager();
+
 };
 
 #endif

@@ -36,15 +36,19 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
     }
 
     try {
-        checkMutuallyArguments(result, options);
+        string mode = checkMutuallyArguments(result, options);
     } catch (MutuallyArgException &ex) {
         cerr << ex.sp_what() << endl;
         return ex.getErrorCode();
     }
 
-    if (result["help"].count() > 0) {
-        return -1;
-    }
+
+
+    return 0;
+}
+
+int ParseArgumentsForNSUSoundProcessor::parseFilesArguments(char *argv[], cxxopts::ParseResult &result, cxxopts::Options &options,
+                                               string &config, string &output, vector<string> &inputs) {
 
     //check of existing config file and his correctness
     ParseFileNameWithAnyExtension parseFileNameWithAnyExtension;
@@ -92,19 +96,22 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
     return 0;
 }
 
-void ParseConsoleArguments::checkMutuallyArguments(cxxopts::ParseResult &result, cxxopts::Options &option) {
+string & ParseConsoleArguments::checkMutuallyArguments(cxxopts::ParseResult &result, cxxopts::Options &option) {
     bool mutuallyArgumentIsExist = false;
+    string returnMode;
     for (auto &el : mutuallyArguments) {
         if (result[el].count() > 0) {
             if (mutuallyArgumentIsExist) {
                 throw MutuallyArgException("You input mulually arguments, choose correct mode.", &option);
             }
+            returnMode = el;
             mutuallyArgumentIsExist = true;
         }
         if (result[el].count() > 1) {
             throw MutuallyArgException("You input so many same arguments.", &option);
         }
     }
+    return returnMode;
 }
 
 void ParseConsoleArguments::argumentIsExist(const char *optionName, cxxopts::ParseResult &result, cxxopts::Options &options) {
