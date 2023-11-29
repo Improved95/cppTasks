@@ -16,7 +16,7 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
             ("OutputFile", "Output file after converting;", cxxopts::value<string>())
             ("FilesForConverting", "Input files for converting.", cxxopts::value<vector<string>>());
     options.parse_positional({"ConfigFile", "OutputFile", "FilesForConverting"});
-    options.positional_help("<config>.txt <output>.wav <input1>.wav [<input2>.wav ...]");
+    options.positional_help("config.txt output.wav input1.wav [input2.wav ...]");
 
     try {
         if (argc < 2) {
@@ -42,6 +42,8 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
         return ex.getErrorCode();
     }
 
+    // проверить что введена help
+
     //check of existing config file and his correctness
     ParseFileNameWithAnyExtension parseFileNameWithAnyExtension;
     try {
@@ -58,24 +60,26 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
     //check of existing output file and his correctness
     ParseFileNameWithSoundsExtension parseFileNameWithSoundsExtension;
     try {
+        argumentIsExist("OutputFile", result, options);
         parseFileNameWithSoundsExtension.checkFileName(argv[3], result, options, "OutputFile");
-    } catch (FileNameException &ex) {
+    } catch (ArgumentIsEntered &ex) {
         cerr << ex.sp_what() << endl;
         return ex.getErrorCode();
-    } catch (ArgumentException &ex) {
+    } catch (FileNameException &ex) {
         cerr << ex.sp_what() << endl;
         return ex.getErrorCode();
     }
 
     try {
+        argumentIsExist("FilesForConverting", result, options);
         vector<string> inputFileNames = result["FilesForConverting"].as<vector<string>>();
         for (auto &el : inputFileNames) {
             parseFileNameWithSoundsExtension.checkFileName(el.c_str(), result, options, "FilesForConverting");
         }
-    } catch (FileNameException &ex) {
+    } catch (ArgumentIsEntered &ex) {
         cerr << ex.sp_what() << endl;
         return ex.getErrorCode();
-    } catch (ArgumentException &ex) {
+    } catch (FileNameException &ex) {
         cerr << ex.sp_what() << endl;
         return ex.getErrorCode();
     }
@@ -97,9 +101,7 @@ void ParseConsoleArguments::checkMutuallyArguments(cxxopts::ParseResult &result,
 
 void ParseConsoleArguments::argumentIsExist(const char *optionName, cxxopts::ParseResult &result, cxxopts::Options &options) {
     if (result[optionName].count() < 1) {
-        string message = "You didn't enter ";
-        message.append(optionName);
-        throw ArgumentIsEntered(message.c_str(), &options);
+        throw ArgumentIsEntered(convertToChar("You didn't enter option", optionName), &options);
     }
 }
 
@@ -108,7 +110,7 @@ void ParseFileNameWithAnyExtension::checkFileName(const char *fileName, const cx
 
     regex regexPattern(this->namePattern + this->anyExtensionPattern);
     if (!regex_match(fileName, regexPattern)) {
-        throw FileNameException("Incorrect filename", &options);
+        throw FileNameException(convertToChar("Incorrect filename of", fileName), &options);
     }
 }
 
@@ -122,5 +124,5 @@ void ParseFileNameWithSoundsExtension::checkFileName(const char *fileName, const
             return;
         }
     }
-    throw FileNameException("Incorrect filename", &options);
+    throw FileNameException(convertToChar("Incorrect filename of", fileName), &options);
 }
