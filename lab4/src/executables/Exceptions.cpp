@@ -102,3 +102,4 @@ int FileNameWithDiffExtentionsExceptions::checkTxtFileName(string &fileName) {
     }
 }
 */
+

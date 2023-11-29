@@ -95,12 +95,10 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
 
     try {
         if (argc < 2) {
-            string errorMes = "Too few arguments entered.";
-            throw zeroArgumentException(errorMes.c_str(), &options);
+            throw zeroArgumentException("Too few arguments entered.", &options);
         }
     } catch (zeroArgumentException &ex) {
-        cerr << "h1" << endl;
-        cerr << ex.what() << endl;
+        cerr << ex.sp_what() << endl;
         return ex.getErrorCode();
     }
 
@@ -112,7 +110,11 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
         return 1;
     }
 
+    try {
 
+    } catch {
+
+    }
 
     return 0;
 }

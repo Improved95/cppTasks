@@ -16,9 +16,9 @@ public:
         this->code = 0;
     }
 
-    virtual const char * what() throw() {
-        return msg;
-    };
+    virtual const char * what() throw() { return msg; };
+    virtual string sp_what() throw() = 0;
+
     int getErrorCode() { return this->code; }
 
 protected:
@@ -30,18 +30,30 @@ class ArgumentException : public SoundProcessorException {
 public:
     ArgumentException(const char * msg_, const cxxopts::Options *options_) : SoundProcessorException(msg_) {
         this->code = 1;
-        this->consoleOptions = options_;
+        this->options = options_;
+    }
+
+    virtual string sp_what() throw() override {
+        string message;
+        message.assign(this->msg);
+        message += ((string)"\n" + this->options->help());
+        return message;
     }
 
 protected:
-    const cxxopts::Options *consoleOptions;
+    const cxxopts::Options *options;
 };
 
 class zeroArgumentException : public ArgumentException {
 public:
-    zeroArgumentException(const char * msg_, const cxxopts::Options *options_) : ArgumentException(msg_, options_) {
-        this->msg = msg_;
-    }
+    zeroArgumentException(const char * msg_, const cxxopts::Options *options_)
+        : ArgumentException(msg_, options_) {}
+};
+
+class MutuallyExclusiveArg : public ArgumentException {
+public:
+    MutuallyExclusiveArg(const char * msg_, const cxxopts::Options *options_)
+            : ArgumentException(msg_, options_) {}
 };
 
 
