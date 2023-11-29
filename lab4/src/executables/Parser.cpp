@@ -42,13 +42,16 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
         return ex.getErrorCode();
     }
 
-    // проверить что введена help
+    if (result["help"].count() > 0) {
+        return -1;
+    }
 
     //check of existing config file and his correctness
     ParseFileNameWithAnyExtension parseFileNameWithAnyExtension;
     try {
         argumentIsExist("ConfigFile", result, options);
         parseFileNameWithAnyExtension.checkFileName(argv[2], result, options, "ConfigFile");
+        config = argv[2];
     } catch (ArgumentIsEntered &ex) {
         cerr << ex.sp_what() << endl;
         return ex.getErrorCode();
@@ -62,6 +65,7 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
     try {
         argumentIsExist("OutputFile", result, options);
         parseFileNameWithSoundsExtension.checkFileName(argv[3], result, options, "OutputFile");
+        output = argv[3];
     } catch (ArgumentIsEntered &ex) {
         cerr << ex.sp_what() << endl;
         return ex.getErrorCode();
@@ -76,6 +80,7 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
         for (auto &el : inputFileNames) {
             parseFileNameWithSoundsExtension.checkFileName(el.c_str(), result, options, "FilesForConverting");
         }
+        inputs = std::move(inputFileNames);
     } catch (ArgumentIsEntered &ex) {
         cerr << ex.sp_what() << endl;
         return ex.getErrorCode();
@@ -95,6 +100,9 @@ void ParseConsoleArguments::checkMutuallyArguments(cxxopts::ParseResult &result,
                 throw MutuallyArgException("You input mulually arguments, choose correct mode.", &option);
             }
             mutuallyArgumentIsExist = true;
+        }
+        if (result[el].count() > 1) {
+            throw MutuallyArgException("You input so many same arguments.", &option);
         }
     }
 }
