@@ -1,4 +1,6 @@
 #include "Messages.h"
+using std::cout;
+using std::endl;
 
 void ShowMessages::showMessage(string &message) const {
     cout << message << endl;

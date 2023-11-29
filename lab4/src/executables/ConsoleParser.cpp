@@ -1,8 +1,8 @@
 #include <iostream>
 #include "Parser.h"
 #include "Exceptions.h"
-using std::string;
-using std::vector;
+using std::regex;
+using std::regex_match;
 using std::endl;
 using std::cerr;
 

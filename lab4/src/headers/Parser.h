@@ -7,8 +7,6 @@
 #include "Messages.h"
 using std::vector;
 using std::string;
-using std::regex;
-using std::regex_match;
 
 class ParseConsoleArguments : public ConvertStringToChar {
 public:
