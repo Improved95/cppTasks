@@ -36,7 +36,7 @@ public:
     virtual string sp_what() throw() override {
         string message;
         message.assign(this->msg);
-        message += ((string)"\n" + this->options->help());
+        message += ((string)"\nHelp list:\n" + this->options->help());
         return message;
     }
 
@@ -50,20 +50,25 @@ public:
         : ArgumentException(msg_, options_) {}
 };
 
-class MutuallyExclusiveArg : public ArgumentException {
+class MutuallyArgException : public ArgumentException {
 public:
-    MutuallyExclusiveArg(const char * msg_, const cxxopts::Options *options_)
-            : ArgumentException(msg_, options_) {}
+    MutuallyArgException(const char * msg_, const cxxopts::Options *options_)
+        : ArgumentException(msg_, options_) {}
 };
 
-
-
-/*
-class FileNameException : public SoundProcessorExceptions {
-
+class ArgumentIsEntered : public ArgumentException {
+public:
+    ArgumentIsEntered(const char * msg_, const cxxopts::Options *options_)
+        : ArgumentException(msg_, options_) {}
 };
-*/
 
+class FileNameException : public ArgumentException {
+public:
+    FileNameException(const char * msg_, const cxxopts::Options *options_)
+        : ArgumentException(msg_, options_) {
+        this->code = 2;
+    }
+};
 
 /*
 class ArgumentsExceptions : public SoundProcessorExceptions {
