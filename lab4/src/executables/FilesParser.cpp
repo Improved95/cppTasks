@@ -40,7 +40,10 @@ int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<string> &param
         return ex.getErrorCode();
     }
 
+    auto it = ConverterParametersParserFactory::parametersParserRegistry.find(nameConverter)->second();
 
+    string test;
+    it->parse(test);
 
     return 0;
 }
@@ -54,14 +57,5 @@ void MixConverterParametersParser::parse(string &parameters) {
 }
 
 const unordered_map<string, function<ConverterParametersParser*()>> ConverterParametersParserFactory::parametersParserRegistry = {
-        { FilesParser::getConvertersName()[0], [](){ return  } },
-        { FilesParser::getConvertersName()[1], [](){  } }
+        { FilesParser::getConvertersName()[0], []() { return new MuteConverterParametersParser; } }
 };
-
-MuteConverterParametersParser * ConverterParametersParserFactory::createMuteParser() {
-    return new MuteConverterParametersParser;
-}
-
-MixConverterParametersParser * ConverterParametersParserFactory::createMixParser() {
-    return new MixConverterParametersParser();
-}

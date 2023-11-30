@@ -10,7 +10,6 @@
 using std::ifstream;
 using std::string;
 using std::vector;
-using std::unique_ptr;
 using std::function;
 using std::unordered_map;
 
@@ -34,6 +33,7 @@ public:
 };
 
 class ConverterParametersParser {
+public:
     virtual void parse(string &parameters) = 0;
 };
 
@@ -47,10 +47,8 @@ class MixConverterParametersParser : public ConverterParametersParser {
 
 class ConverterParametersParserFactory {
 public:
-    static MuteConverterParametersParser * createMuteParser();
-    static MixConverterParametersParser * createMixParser();
-private:
     static const unordered_map<string, function<ConverterParametersParser*()>> parametersParserRegistry;
+private:
 };
 
 #endif
