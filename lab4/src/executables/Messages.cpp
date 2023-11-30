@@ -22,12 +22,27 @@ void ShowInfo::coutInstruction() {
     showMessage(message);
 }
 
-
-const char * ConvertStringToChar::concatenationTwoConstChar(const char *whatsHappend, const char *withWhat) {
+const char * Concatenation::concatenateTwoConstChar(const char *m1, const char *m2) {
     string message;
-    message.append(whatsHappend);
+    message.append(m1);
     message += " \"";
-    message.append(withWhat);
+    message.append(m2);
     message += "\".";
     return message.c_str();
 }
+
+const char *Concatenation::concatenatingStrAndChar(const char *m1, const string &m2) {
+    string message;
+    message.append(m1);
+    message += (string)(" ") + m2;
+}
+
+const char *Concatenation::concatenateStrAndChar(const char *m1, const string &m2) {
+    return concatenatingStrAndChar(m1, m2);
+}
+
+const char *Concatenation::concatenateStrAndChar(const string &m1, const char *m2) {
+    return concatenatingStrAndChar(m2, m1);
+}
+
+

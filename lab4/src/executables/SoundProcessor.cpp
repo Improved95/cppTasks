@@ -1,22 +1,18 @@
 #include "SoundProcessor.h"
-#include "Parser.h"
-//#include "Converter.h"
+#include "ConsoleParser.h"
+#include "Converter.h"
 
 int SoundProcessor::convertWithConsoleArguments(int argc, char **argv) {
     ParseConsoleArguments parseConsoleParameters;
     int r;
 
-    string config, output;
-    vector<string> inputs;
-    if ((r = parseConsoleParameters.parseArgumentsAndInitialConvert(argc, argv, config, output, inputs)) == -1) {
-        ShowInfo showInfo;
-        showInfo.coutInstruction();
-        return 0;
-    } else if (r != 0) {
+    vector<string> arguments;
+    if ((r = parseConsoleParameters.parseArgumentsAndInitialConvert(argc, argv, arguments)) != 0) {
         return r;
     }
 
-//    ConverterManager converterManager;
+    NsuSoundProcessorManager nsuSoundProcessorManager(arguments);
+    nsuSoundProcessorManager.convert();
 
     return r;
 }

@@ -15,9 +15,13 @@ public:
     void coutInstruction();
 };
 
-class ConvertStringToChar {
+class Concatenation {
 public:
-    const char *concatenationTwoConstChar(const char *whatsHappend, const char *withWhat);
+    const char *concatenateTwoConstChar(const char *m1, const char *m2);
+    const char *concatenateStrAndChar(const char *m1, const string &m2);
+    const char *concatenateStrAndChar(const string &m1, const char *m2);
+private:
+    const char *concatenatingStrAndChar(const char *m1, const string &m2);
 };
 
 #endif

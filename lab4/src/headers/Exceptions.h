@@ -3,10 +3,11 @@
 
 #include <iostream>
 #include "cxxopts.hpp"
+#include "Messages.h"
 using std::string;
 using std::exception;
 
-class SoundProcessorException : public exception {
+class SoundProcessorException : public exception, public Concatenation {
 public:
     SoundProcessorException(const char * msg_) {
         this->msg = msg_;
@@ -14,9 +15,9 @@ public:
     }
 
     virtual const char * what() throw() { return msg; };
-    virtual string sp_what() throw() = 0;
+    virtual string ex_what() throw() = 0;
 
-    int getErrorCode() { return this->code; }
+    const int getErrorCode() const { return this->code; }
 
 protected:
     int code;
@@ -31,7 +32,7 @@ public:
         this->options = options_;
     }
 
-    virtual string sp_what() throw() override {
+    virtual string ex_what() throw() override {
         string message;
         message.assign(this->msg);
         message += ((string)"\nHelp list:\n" + this->options->help());
@@ -68,9 +69,30 @@ public:
     }
 };
 
-/*class ConvertsExceptions : public SoundProcessorException {
-    ConvertsExceptions(const char * msg_)
-        : SoundProcessorException(msg_) {}
-};*/
+class FilesParserException : public SoundProcessorException {
+public:
+    FilesParserException(const char * msg_)
+            : SoundProcessorException(msg_) {
+        this->code = 3;
+    }
+
+    virtual string ex_what() throw() override {
+        string message;
+        message.assign(this->msg);
+        return message;
+    }
+};
+
+class FileNotOpenException : public FilesParserException {
+public:
+    FileNotOpenException(const char * msg_) : FilesParserException(msg_) {
+        this->code = 4;
+    }
+};
+
+class noExistConverterException : public FilesParserException {
+public:
+    noExistConverterException(const char * msg_) : FilesParserException(msg_) {}
+};
 
 #endif

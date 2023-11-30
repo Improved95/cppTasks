@@ -5,46 +5,28 @@
 #include <string>
 #include "cxxopts.hpp"
 #include "Messages.h"
-#include <unordered_map>
-#include <functional>
 using std::vector;
 using std::string;
-using std::unordered_map;
-using std::unique_ptr;
-using std::make_unique;
-using std::function;
 
-class ParseArgumentsForNSUSoundProcessor;
-class CoutHelp;
-
-class ParseConsoleArguments : public ConvertStringToChar {
+class ParseConsoleArguments : public Concatenation {
 public:
-    int parseArgumentsAndInitialConvert(int argc, char **argv, string &config,
-                                        string &output, vector<string> &inputs);
+    int parseArgumentsAndInitialConvert(int argc, char **argv, vector<string> &arguments);
 
     string checkMutuallyArguments(cxxopts::ParseResult &result, cxxopts::Options &option);
     void argumentIsExist(const char *optionName, cxxopts::ParseResult &result, cxxopts::Options &options);
 
-    static unique_ptr<ParseConsoleArguments> parsersCreator;
 private:
     static const size_t quantityModes = 2;
     static const char* const mutuallyArguments[quantityModes];
-    static const unordered_map<string, function<ParseConsoleArguments()>> parsersRegistry;
-
-    ParseConsoleArguments creatorUniqueParsers(string &mode);
-};
-
-class CoutHelp : public ParseConsoleArguments {
-
 };
 
 class ParseArgumentsForNSUSoundProcessor : public ParseConsoleArguments {
 public:
-    int parseFilesArguments(char *argv[], cxxopts::ParseResult &result, cxxopts::Options &options,
-                            string &config, string &output, vector<string> &inputs);
+    int parseFilesArguments(char *argv[], cxxopts::ParseResult &result,
+                            cxxopts::Options &options, vector<string> &arguments);
 };
 
-class ParseFileName : public ConvertStringToChar {
+class ParseFileName : public Concatenation {
 protected:
     static const string namePattern;
     static const string anyExtensionPattern;
