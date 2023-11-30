@@ -28,6 +28,7 @@ int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<string> &param
         for (auto &el : convertersNames) {
             if (std::regex_search(parameterStr, match, pattern) && match[0] == el) {
                 nameConverter = match[0];
+                cerr << nameConverter << endl;
                 converterIsExist = true;
                 break;
             }
@@ -54,23 +55,26 @@ const char* NsuSoundProcessorParametersParser::patternsOfConverterNamesWithParam
 
 int NsuMuteConverterParametersParser::parse(string &parameters) {
     try {
+        cerr << "h1" << endl;
+        cerr << parameters << endl;
         regex pattern(patternsOfConverterNamesWithParameters[0]);
         smatch match;
         if (regex_search(parameters, match, pattern) && match[0] != parameters) {
             throw IncorrectParametersFormatException(
                     concatenateTwoConstChar(concatenateStrAndChar("Incorrect format parameters in\"", match[0]), "\"."));
         }
+        cerr << match[0] << endl;
     } catch (IncorrectParametersFormatException &ex) {
         cerr << ex.ex_what() << endl;
         return ex.getErrorCode();
     }
 
 
-
+    return 0;
 }
 
 int NsuMixConverterParametersParser::parse(string &parameters) {
-
+    return 0;
 }
 
 const unordered_map<string, function<ConverterParametersParser*()>> NsuConverterParametersParserFactory::parametersParserRegistry = {

@@ -35,6 +35,7 @@ const char *Concatenation::concatenatingStrAndChar(const char *m1, const string 
     string message;
     message.append(m1);
     message += (string)(" ") + m2;
+    return message.c_str();
 }
 
 const char *Concatenation::concatenateStrAndChar(const char *m1, const string &m2) {
