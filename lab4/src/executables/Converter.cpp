@@ -23,8 +23,10 @@ int NsuSoundProcessorManager::convert() {
     }
 
     vector<string> parameters;
-    while ((r = filesParser.parse(configFile, parameters)) != 0) {
-        // создаем конвертер на основе того что лежит в конфиге и запускаем его
+    bool stopReadingFile = false;
+    while (!stopReadingFile) {
+        r = filesParser.parse(configFile, parameters, stopReadingFile);
+        // создать класс конвертера на основе парсера
     }
 
     configFile.close();

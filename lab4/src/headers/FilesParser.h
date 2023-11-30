@@ -15,7 +15,7 @@ using std::unordered_map;
 
 class FilesParser : public Concatenation {
 public:
-    virtual int parse(ifstream &, vector<string> &) = 0;
+    virtual int parse(ifstream &, vector<string> &, bool &stopReadingFile) = 0;
 
     static const char** getConvertersName() {
         return convertersNames;
@@ -27,9 +27,10 @@ protected:
     static const char* convertersNamesPattern;
 };
 
+
 class NsuSoundProcessorConfigParser : public FilesParser {
 public:
-    virtual int parse(ifstream &config, vector<string> &parameters) override;
+    virtual int parse(ifstream &config, vector<string> &parameters, bool &stopReadingFile) override;
 };
 
 class ConverterParametersParser {
@@ -38,7 +39,12 @@ public:
 };
 
 class MuteConverterParametersParser : public ConverterParametersParser {
+public:
     virtual void parse(string &parameters) override;
+};
+
+class NSUMuteConverterParametersParser : public MuteConverterParametersParser {
+
 };
 
 class MixConverterParametersParser : public ConverterParametersParser {
