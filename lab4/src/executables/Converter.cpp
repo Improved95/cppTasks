@@ -10,6 +10,7 @@ int NsuSoundProcessorManager::convert() {
     int r;
     NsuSoundProcessorConfigParser filesParser;
 
+
     ifstream configFile;
     try {
         configFile.open(arguments[0]);

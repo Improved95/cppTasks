@@ -16,9 +16,10 @@ int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<string> &param
         return -1;
     }
     if (parameter[0] == '#') {
-        return 0;
+        getline(config, parameter);
     }
 
+    std::cout << "h2" << endl;
     string nameConverter;
     try {
         regex pattern(convertersNamesPattern);
@@ -42,6 +43,7 @@ int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<string> &param
 
     auto it = ConverterParametersParserFactory::parametersParserRegistry.find(nameConverter)->second();
 
+    std::cout << "h1" << endl;
     string test;
     it->parse(test);
 
@@ -49,7 +51,7 @@ int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<string> &param
 }
 
 void MuteConverterParametersParser::parse(string &parameters) {
-
+    std::cout << "parsing mute converter" << endl;
 }
 
 void MixConverterParametersParser::parse(string &parameters) {
