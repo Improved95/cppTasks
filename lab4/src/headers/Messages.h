@@ -17,7 +17,7 @@ public:
 
 class ConvertStringToChar {
 public:
-    const char *convertToChar(const char *whatsHappend, const char *withWhat);
+    const char *concatenationTwoConstChar(const char *whatsHappend, const char *withWhat);
 };
 
 #endif

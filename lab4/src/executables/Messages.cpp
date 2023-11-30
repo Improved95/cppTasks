@@ -23,7 +23,7 @@ void ShowInfo::coutInstruction() {
 }
 
 
-const char * ConvertStringToChar::convertToChar(const char *whatsHappend, const char *withWhat) {
+const char * ConvertStringToChar::concatenationTwoConstChar(const char *whatsHappend, const char *withWhat) {
     string message;
     message.append(whatsHappend);
     message += " \"";

@@ -19,7 +19,6 @@ class MixConverter : Converter {
 };
 
 class ConverterManager {
-public:
 
 };
 

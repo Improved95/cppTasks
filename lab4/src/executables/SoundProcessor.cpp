@@ -1,6 +1,6 @@
 #include "SoundProcessor.h"
 #include "Parser.h"
-#include "Converter.h"
+//#include "Converter.h"
 
 int SoundProcessor::convertWithConsoleArguments(int argc, char **argv) {
     ParseConsoleArguments parseConsoleParameters;
@@ -16,7 +16,7 @@ int SoundProcessor::convertWithConsoleArguments(int argc, char **argv) {
         return r;
     }
 
-    ConverterManager converterManager;
+//    ConverterManager converterManager;
 
     return r;
 }
