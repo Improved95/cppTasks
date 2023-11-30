@@ -16,45 +16,55 @@ using std::unordered_map;
 class FilesParser : public Concatenation {
 public:
     virtual int parse(ifstream &, vector<string> &, bool &stopReadingFile) = 0;
-
-    static const char** getConvertersName() {
-        return convertersNames;
-    }
-protected:
-    static const size_t quantityConverter = 2;
-    static const char* convertersNames[quantityConverter];
-    static const char* converterNamesWithParametersPatterns[quantityConverter];
-    static const char* convertersNamesPattern;
 };
 
+class NsuConvertersInfo {
+protected:
+    static const size_t convertersQuantity = 2;
+};
 
-class NsuSoundProcessorConfigParser : public FilesParser {
+class NsuSoundProcessorFilesParser : public FilesParser, public NsuConvertersInfo {
+public:
+    static const char** getConvertersName() { return convertersNames; }
+    static const size_t getConvertersQuantity() { return convertersQuantity; }
+protected:
+    static const char* convertersNames[convertersQuantity];
+    static const char* ConvertersNamesPatterns;
+};
+
+class NsuSoundProcessorConfigParser : public NsuSoundProcessorFilesParser {
 public:
     virtual int parse(ifstream &config, vector<string> &parameters, bool &stopReadingFile) override;
 };
 
-class ConverterParametersParser {
+/*==================================================================================================*/
+
+class ConverterParametersParser : public Concatenation {
 public:
-    virtual void parse(string &parameters) = 0;
+    virtual int parse(string &parameters) = 0;
 };
 
-class MuteConverterParametersParser : public ConverterParametersParser {
+class NsuSoundProcessorParametersParser : public ConverterParametersParser, public NsuConvertersInfo {
 public:
-    virtual void parse(string &parameters) override;
+    static const char *patternsOfConverterNamesWithParameters[convertersQuantity];
 };
 
-class NSUMuteConverterParametersParser : public MuteConverterParametersParser {
-
+class NsuMuteConverterParametersParser : public NsuSoundProcessorParametersParser {
+public:
+    virtual int parse(string &parameters) override;
 };
 
-class MixConverterParametersParser : public ConverterParametersParser {
-    virtual void parse(string &parameters) override;
+class NsuMixConverterParametersParser : public NsuSoundProcessorParametersParser {
+    virtual int parse(string &parameters) override;
 };
 
 class ConverterParametersParserFactory {
+    //класс пустышка(хз, можно так или нет)
+};
+
+class NsuConverterParametersParserFactory : public ConverterParametersParserFactory{
 public:
     static const unordered_map<string, function<ConverterParametersParser*()>> parametersParserRegistry;
-private:
 };
 
 #endif

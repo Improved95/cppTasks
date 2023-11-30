@@ -95,4 +95,9 @@ public:
     noExistConverterException(const char * msg_) : FilesParserException(msg_) {}
 };
 
+class IncorrectParametersFormatException : public FilesParserException {
+public:
+    IncorrectParametersFormatException(const char * msg_) : FilesParserException(msg_) {}
+};
+
 #endif
