@@ -22,7 +22,7 @@ void ShowInfo::coutInstruction() {
     showMessage(message);
 }
 
-const char * Concatenation::concatenateTwoConstChar(const char *m1, const char *m2) {
+/*const char * Concatenation::concatenateTwoConstChar(const char *m1, const char *m2) {
     string message;
     message.append(m1);
     message += " \"";
@@ -44,6 +44,6 @@ const char *Concatenation::concatenateStrAndChar(const char *m1, const string &m
 
 const char *Concatenation::concatenateStrAndChar(const string &m1, const char *m2) {
     return concatenatingStrAndChar(m2, m1);
-}
+}*/
 
 

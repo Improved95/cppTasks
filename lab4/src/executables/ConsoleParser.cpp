@@ -55,7 +55,7 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
     return r;
 }
 
-const char* const ParseConsoleArguments::mutuallyArguments[quantityModes] = {"help", "convert"};
+const string ParseConsoleArguments::mutuallyArguments[quantityModes] = {"help", "convert"};
 
 int ParseArgumentsForNSUSoundProcessor::parseFilesArguments(char *argv[], cxxopts::ParseResult &result,
                                                             cxxopts::Options &options, vector<string> &arguments) {
@@ -112,7 +112,7 @@ string ParseConsoleArguments::checkMutuallyArguments(cxxopts::ParseResult &resul
     for (auto &el : mutuallyArguments) {
         if (result[el].count() > 0) {
             if (mutuallyArgumentIsExist) {
-                throw MutuallyArgException("You input mulually arguments, choose correct mode.", &option);
+                throw MutuallyArgException("You input mutually arguments, choose correct mode.", &option);
             }
             returnMode = el;
             mutuallyArgumentIsExist = true;
@@ -124,26 +124,26 @@ string ParseConsoleArguments::checkMutuallyArguments(cxxopts::ParseResult &resul
     return returnMode;
 }
 
-void ParseConsoleArguments::argumentIsExist(const char *optionName, cxxopts::ParseResult &result, cxxopts::Options &options) {
+void ParseConsoleArguments::argumentIsExist(const string &optionName, cxxopts::ParseResult &result, cxxopts::Options &options) {
     if (result[optionName].count() < 1) {
-        throw ArgumentIsEntered(concatenateTwoConstChar("You didn't enter option", optionName), &options);
+        throw ArgumentIsEntered("You didn't enter option" + optionName, &options);
     }
 }
 
 const string ParseFileName::namePattern = "[A-Za-z0-9]+[.]";
 const string ParseFileName::anyExtensionPattern = "[a-z]*";
-void ParseFileNameWithAnyExtension::checkFileName(const char *fileName, const cxxopts::ParseResult &result,
-                                                  const cxxopts::Options &options, const char *optionName) {
+void ParseFileNameWithAnyExtension::checkFileName(const string &fileName, const cxxopts::ParseResult &result,
+                                                  const cxxopts::Options &options, const string &optionName) {
 
     regex pattern(this->namePattern + this->anyExtensionPattern);
     if (!regex_match(fileName, pattern)) {
-        throw FileNameException(concatenateTwoConstChar("Incorrect filename of", fileName), &options);
+        throw FileNameException("Incorrect filename of " + fileName, &options);
     }
 }
 
-const char * const ParseFileNameWithSoundsExtension::soundExtensions[quantitySoundExtensions] = {"wav"};
-void ParseFileNameWithSoundsExtension::checkFileName(const char *fileName, const cxxopts::ParseResult &result,
-                                                     const cxxopts::Options &options, const char *optionName) {
+const string ParseFileNameWithSoundsExtension::soundExtensions[quantitySoundExtensions] = {"wav"};
+void ParseFileNameWithSoundsExtension::checkFileName(const string &fileName, const cxxopts::ParseResult &result,
+                                                     const cxxopts::Options &options, const string &optionName) {
 
     regex pattern(this->namePattern + this->anyExtensionPattern);
     for (auto &el : this->soundExtensions) {
@@ -152,5 +152,5 @@ void ParseFileNameWithSoundsExtension::checkFileName(const char *fileName, const
             return;
         }
     }
-    throw FileNameException(concatenateTwoConstChar("Incorrect filename of", fileName), &options);
+    throw FileNameException("Incorrect filename of " + fileName, &options);
 }

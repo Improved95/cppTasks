@@ -7,36 +7,34 @@
 using std::string;
 using std::exception;
 
-class SoundProcessorException : public exception, public Concatenation {
+class SoundProcessorException : public exception {
 public:
-    SoundProcessorException(const char * msg_) {
+    SoundProcessorException(const string &msg_) {
         this->msg = msg_;
         this->code = 0;
     }
 
-    virtual const char * what() throw() { return msg; };
-    virtual string ex_what() throw() = 0;
+    virtual const char * what() throw() { return msg.c_str(); };
+    virtual const string & ex_what() throw() { return msg; };
 
     const int getErrorCode() const { return this->code; }
 
 protected:
     int code;
-    const char *msg;
+    string msg;
 };
 
 class ArgumentException : public SoundProcessorException {
 public:
-    ArgumentException(const char * msg_, const cxxopts::Options *options_)
+    ArgumentException(const string &msg_, const cxxopts::Options *options_)
         : SoundProcessorException(msg_) {
         this->code = 1;
         this->options = options_;
     }
 
-    virtual string ex_what() throw() override {
-        string message;
-        message.assign(this->msg);
-        message += ((string)"\nHelp list:\n" + this->options->help());
-        return message;
+    virtual const string & ex_what() throw() override {
+        this->msg += ("\nHelp list:\n" + this->options->help());
+        return this->msg;
     }
 
 protected:
@@ -45,25 +43,25 @@ protected:
 
 class zeroArgumentException : public ArgumentException {
 public:
-    zeroArgumentException(const char * msg_, const cxxopts::Options *options_)
+    zeroArgumentException(const string &msg_, const cxxopts::Options *options_)
         : ArgumentException(msg_, options_) {}
 };
 
 class MutuallyArgException : public ArgumentException {
 public:
-    MutuallyArgException(const char * msg_, const cxxopts::Options *options_)
+    MutuallyArgException(const string &msg_, const cxxopts::Options *options_)
         : ArgumentException(msg_, options_) {}
 };
 
 class ArgumentIsEntered : public ArgumentException {
 public:
-    ArgumentIsEntered(const char * msg_, const cxxopts::Options *options_)
+    ArgumentIsEntered(const string &msg_, const cxxopts::Options *options_)
         : ArgumentException(msg_, options_) {}
 };
 
 class FileNameException : public ArgumentException {
 public:
-    FileNameException(const char * msg_, const cxxopts::Options *options_)
+    FileNameException(const string &msg_, const cxxopts::Options *options_)
         : ArgumentException(msg_, options_) {
         this->code = 2;
     }
@@ -71,33 +69,31 @@ public:
 
 class FilesParserException : public SoundProcessorException {
 public:
-    FilesParserException(const char * msg_)
+    FilesParserException(const string &msg_)
             : SoundProcessorException(msg_) {
         this->code = 3;
     }
 
-    virtual string ex_what() throw() override {
-        string message;
-        message.assign(this->msg);
-        return message;
+    virtual const string & ex_what() throw() override {
+        return this->msg;
     }
 };
 
 class FileNotOpenException : public FilesParserException {
 public:
-    FileNotOpenException(const char * msg_) : FilesParserException(msg_) {
+    FileNotOpenException(const string &msg_) : FilesParserException(msg_) {
         this->code = 4;
     }
 };
 
 class noExistConverterException : public FilesParserException {
 public:
-    noExistConverterException(const char * msg_) : FilesParserException(msg_) {}
+    noExistConverterException(const string &msg_) : FilesParserException(msg_) {}
 };
 
 class IncorrectParametersFormatException : public FilesParserException {
 public:
-    IncorrectParametersFormatException(const char * msg_) : FilesParserException(msg_) {}
+    IncorrectParametersFormatException(const string &msg_) : FilesParserException(msg_) {}
 };
 
 #endif

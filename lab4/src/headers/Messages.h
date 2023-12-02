@@ -15,6 +15,7 @@ public:
     void coutInstruction();
 };
 
+/*
 class Concatenation {
 public:
     const char *concatenateTwoConstChar(const char *m1, const char *m2);
@@ -23,5 +24,6 @@ public:
 private:
     const char *concatenatingStrAndChar(const char *m1, const string &m2);
 };
+*/
 
 #endif

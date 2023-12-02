@@ -13,7 +13,7 @@ using std::vector;
 using std::function;
 using std::unordered_map;
 
-class FilesParser : public Concatenation {
+class FilesParser {
 public:
     virtual int parse(ifstream &, vector<string> &, bool &stopReadingFile) = 0;
 };
@@ -25,11 +25,11 @@ protected:
 
 class NsuSoundProcessorFilesParser : public FilesParser, public NsuConvertersInfo {
 public:
-    static const char** getConvertersName() { return convertersNames; }
+    static const string* getConvertersName() { return convertersNames; }
     static const size_t getConvertersQuantity() { return convertersQuantity; }
 protected:
-    static const char* convertersNames[convertersQuantity];
-    static const char* ConvertersNamesPatterns;
+    static const string convertersNames[convertersQuantity];
+    static const string ConvertersNamesPatterns;
 };
 
 class NsuSoundProcessorConfigParser : public NsuSoundProcessorFilesParser {
@@ -39,14 +39,14 @@ public:
 
 /*==================================================================================================*/
 
-class ConverterParametersParser : public Concatenation {
+class ConverterParametersParser {
 public:
     virtual int parse(string &parameters) = 0;
 };
 
 class NsuSoundProcessorParametersParser : public ConverterParametersParser, public NsuConvertersInfo {
 public:
-    static const char *patternsOfConverterNamesWithParameters[convertersQuantity];
+    static const string patternsOfConverterNamesWithParameters[convertersQuantity];
 };
 
 class NsuMuteConverterParametersParser : public NsuSoundProcessorParametersParser {
