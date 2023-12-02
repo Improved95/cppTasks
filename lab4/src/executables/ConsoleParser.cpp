@@ -21,7 +21,7 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
 
     try {
         if (argc < 2) {
-            throw zeroArgumentException("Too few arguments entered.", &options);
+            throw zeroArgumentException(&options);
         }
     } catch (zeroArgumentException &ex) {
         cerr << ex.ex_what() << endl;
@@ -56,7 +56,6 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
 }
 
 const string ParseConsoleArguments::mutuallyArguments[quantityModes] = {"help", "convert"};
-
 int ParseArgumentsForNSUSoundProcessor::parseFilesArguments(char *argv[], cxxopts::ParseResult &result,
                                                             cxxopts::Options &options, vector<string> &arguments) {
 
@@ -64,7 +63,7 @@ int ParseArgumentsForNSUSoundProcessor::parseFilesArguments(char *argv[], cxxopt
     ParseFileNameWithAnyExtension parseFileNameWithAnyExtension;
     try {
         argumentIsExist("ConfigFile", result, options);
-        parseFileNameWithAnyExtension.checkFileName(argv[2], result, options, "ConfigFile");
+        parseFileNameWithAnyExtension.checkFileName(argv[2], options);
         arguments.push_back(argv[2]);
     } catch (ArgumentIsEntered &ex) {
         cerr << ex.ex_what() << endl;
@@ -78,7 +77,7 @@ int ParseArgumentsForNSUSoundProcessor::parseFilesArguments(char *argv[], cxxopt
     ParseFileNameWithSoundsExtension parseFileNameWithSoundsExtension;
     try {
         argumentIsExist("OutputFile", result, options);
-        parseFileNameWithSoundsExtension.checkFileName(argv[3], result, options, "OutputFile");
+        parseFileNameWithSoundsExtension.checkFileName(argv[3], options);
         arguments.push_back(argv[3]);
     } catch (ArgumentIsEntered &ex) {
         cerr << ex.ex_what() << endl;
@@ -92,7 +91,7 @@ int ParseArgumentsForNSUSoundProcessor::parseFilesArguments(char *argv[], cxxopt
         argumentIsExist("FilesForConverting", result, options);
         vector<string> inputFileNames = result["FilesForConverting"].as<vector<string>>();
         for (auto &el : inputFileNames) {
-            parseFileNameWithSoundsExtension.checkFileName(el.c_str(), result, options, "FilesForConverting");
+            parseFileNameWithSoundsExtension.checkFileName(el.c_str(), options);
             arguments.push_back(el);
         }
     } catch (ArgumentIsEntered &ex) {
@@ -126,31 +125,26 @@ string ParseConsoleArguments::checkMutuallyArguments(cxxopts::ParseResult &resul
 
 void ParseConsoleArguments::argumentIsExist(const string &optionName, cxxopts::ParseResult &result, cxxopts::Options &options) {
     if (result[optionName].count() < 1) {
-        throw ArgumentIsEntered("You didn't enter option" + optionName, &options);
+        throw ArgumentIsEntered(optionName, &options);
     }
 }
 
-const string ParseFileName::namePattern = "[A-Za-z0-9]+[.]";
-const string ParseFileName::anyExtensionPattern = "[a-z]*";
-void ParseFileNameWithAnyExtension::checkFileName(const string &fileName, const cxxopts::ParseResult &result,
-                                                  const cxxopts::Options &options, const string &optionName) {
-
+const string ParseFileName::namePattern = "(\\w+)";
+const string ParseFileName::anyExtensionPattern = "([.](\\w)+)*";
+void ParseFileNameWithAnyExtension::checkFileName(const string &fileName, const cxxopts::Options &options) {
     regex pattern(this->namePattern + this->anyExtensionPattern);
     if (!regex_match(fileName, pattern)) {
-        throw FileNameException("Incorrect filename of " + fileName, &options);
+        throw FileNameException(fileName, &options);
     }
 }
 
-const string ParseFileNameWithSoundsExtension::soundExtensions[quantitySoundExtensions] = {"wav"};
-void ParseFileNameWithSoundsExtension::checkFileName(const string &fileName, const cxxopts::ParseResult &result,
-                                                     const cxxopts::Options &options, const string &optionName) {
-
-    regex pattern(this->namePattern + this->anyExtensionPattern);
+const string ParseFileNameWithSoundsExtension::soundExtensions[quantitySoundExtensions] = {"[.]wav"};
+void ParseFileNameWithSoundsExtension::checkFileName(const string &fileName, const cxxopts::Options &options) {
     for (auto &el : this->soundExtensions) {
-        regex regexPattern(this->namePattern + el);
+        regex pattern(this->namePattern + el);
         if (regex_match(fileName, pattern)) {
             return;
         }
     }
-    throw FileNameException("Incorrect filename of " + fileName, &options);
+    throw FileNameException(fileName, &options);
 }

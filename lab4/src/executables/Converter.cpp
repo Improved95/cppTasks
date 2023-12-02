@@ -15,7 +15,7 @@ int NsuSoundProcessorManager::convert() {
     try {
         configFile.open(arguments[0]);
         if (!configFile.is_open()) {
-            throw FileNotOpenException("Config file couldn't open.");
+            throw FileNotOpenException(arguments[0]);
         }
     } catch (FileNotOpenException &ex) {
         cerr << ex.ex_what() << endl;

@@ -30,20 +30,17 @@ class ParseFileName {
 protected:
     static const string namePattern;
     static const string anyExtensionPattern;
-    virtual void checkFileName(const string &fileName, const cxxopts::ParseResult &result,
-                               const cxxopts::Options &options, const string &optionName) = 0;
+    virtual void checkFileName(const string &fileName, const cxxopts::Options &options) = 0;
 };
 
 class ParseFileNameWithAnyExtension : public ParseFileName {
 public:
-    void checkFileName(const string &fileName, const cxxopts::ParseResult &result,
-                       const cxxopts::Options &options, const string &optionName) override;
+    void checkFileName(const string &fileName, const cxxopts::Options &options) override;
 };
 
 class ParseFileNameWithSoundsExtension : public ParseFileName {
 public:
-    void checkFileName(const string &fileName, const cxxopts::ParseResult &result,
-                       const cxxopts::Options &options, const string &optionName) override;
+    void checkFileName(const string &fileName, const cxxopts::Options &options) override;
 
 private:
     static const size_t quantitySoundExtensions = 1;

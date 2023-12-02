@@ -34,7 +34,7 @@ int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<string> &param
             }
         }
         if (!converterIsExist) {
-            throw noExistConverterException("Converter \'" + (string)match[0] + "\" does not exist.");
+            throw noExistConverterException((string)match[0]);
         }
     } catch (noExistConverterException &ex) {
         cerr << ex.ex_what() << endl;
@@ -49,19 +49,18 @@ int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<string> &param
 }
 
 
-const string NsuSoundProcessorParametersParser::patternsOfConverterNamesWithParameters[convertersQuantity] = {"mute [0-9]+ [0-9]+",
-                                                                                                             "mix [0-9]+ [0-9]+ [$][0-9]+ [0-9]+"};
+const string NsuSoundProcessorParametersParser::
+patternsOfConverterNamesWithParameters[convertersQuantity] = {"mute [0-9]+ [0-9]+",
+                                                              "mix [0-9]+ [0-9]+ [$][0-9]+ [0-9]+"};
 
 int NsuMuteConverterParametersParser::parse(string &parameters) {
     try {
-        cerr << "h1" << endl;
-        cerr << parameters << endl;
         regex pattern(patternsOfConverterNamesWithParameters[0]);
         smatch match;
         if (regex_search(parameters, match, pattern) && match[0] != parameters) {
-            throw IncorrectParametersFormatException("Incorrect format parameters in\"" + (string)match[0] + "\".");
+            throw IncorrectParametersFormatException((string)match[0]);
         }
-        cerr << match[0] << endl;
+        cerr << (string)match[0] << endl;
     } catch (IncorrectParametersFormatException &ex) {
         cerr << ex.ex_what() << endl;
         return ex.getErrorCode();

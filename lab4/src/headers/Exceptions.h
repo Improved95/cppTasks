@@ -26,10 +26,14 @@ protected:
 
 class ArgumentException : public SoundProcessorException {
 public:
-    ArgumentException(const string &msg_, const cxxopts::Options *options_)
-        : SoundProcessorException(msg_) {
+    ArgumentException(const cxxopts::Options *options_)
+            : SoundProcessorException("default_message") {
         this->code = 1;
         this->options = options_;
+    }
+
+    ArgumentException(const string &msg_, const cxxopts::Options *options_) : ArgumentException(options_) {
+        this->msg = msg_;
     }
 
     virtual const string & ex_what() throw() override {
@@ -43,34 +47,45 @@ protected:
 
 class zeroArgumentException : public ArgumentException {
 public:
-    zeroArgumentException(const string &msg_, const cxxopts::Options *options_)
-        : ArgumentException(msg_, options_) {}
+    zeroArgumentException(const cxxopts::Options *options_)
+        : ArgumentException(options_) {
+        this->msg = "Too few arguments entered.";
+    }
 };
 
 class MutuallyArgException : public ArgumentException {
 public:
     MutuallyArgException(const string &msg_, const cxxopts::Options *options_)
-        : ArgumentException(msg_, options_) {}
+        : ArgumentException(msg_, options_) {
+    }
 };
 
 class ArgumentIsEntered : public ArgumentException {
 public:
-    ArgumentIsEntered(const string &msg_, const cxxopts::Options *options_)
-        : ArgumentException(msg_, options_) {}
+    ArgumentIsEntered(const string &optionName, const cxxopts::Options *options_)
+        : ArgumentException(options_) {
+        this->msg = "You didn't enter '" + optionName + "'.";
+    }
 };
 
 class FileNameException : public ArgumentException {
 public:
-    FileNameException(const string &msg_, const cxxopts::Options *options_)
-        : ArgumentException(msg_, options_) {
+    FileNameException(const cxxopts::Options *options_) : ArgumentException("default_message", options_) {
         this->code = 2;
+    }
+
+    FileNameException(const string &fileName, const cxxopts::Options *options_) : FileNameException(options_) {
+        this->msg = "Incorrect filename of '" + fileName + "'.";
     }
 };
 
 class FilesParserException : public SoundProcessorException {
 public:
+    FilesParserException()
+        : SoundProcessorException("default_message") {}
+
     FilesParserException(const string &msg_)
-            : SoundProcessorException(msg_) {
+        : FilesParserException() {
         this->code = 3;
     }
 
@@ -81,19 +96,24 @@ public:
 
 class FileNotOpenException : public FilesParserException {
 public:
-    FileNotOpenException(const string &msg_) : FilesParserException(msg_) {
+    FileNotOpenException(const string &fileName) : FilesParserException() {
+        this->msg = "File '" + fileName + "' couldn't open.";
         this->code = 4;
     }
 };
 
 class noExistConverterException : public FilesParserException {
 public:
-    noExistConverterException(const string &msg_) : FilesParserException(msg_) {}
+    noExistConverterException(const string &converterName) : FilesParserException() {
+        this->msg = "Converter '" + converterName + "' doesn't exist.";
+    }
 };
 
 class IncorrectParametersFormatException : public FilesParserException {
 public:
-    IncorrectParametersFormatException(const string &msg_) : FilesParserException(msg_) {}
+    IncorrectParametersFormatException(const string &parameters) : FilesParserException() {
+        this->msg = "Incorrect format parameters in '" + parameters + "'.";
+    }
 };
 
 #endif
