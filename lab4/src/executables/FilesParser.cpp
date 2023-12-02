@@ -10,71 +10,41 @@ using std::endl;
 const string NsuSoundProcessorFilesParser::ConvertersNamesPatterns = "^(\\w+)";
 const string NsuSoundProcessorFilesParser::convertersNames[convertersQuantity] = {"mute", "mix"};
 
-int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<string> &parameters, bool &stopReadingFile) {
+int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<string> &parameters) {
     string parameterStr;
-    if (!getline(config, parameterStr)) {
-        stopReadingFile = true;
-        return 0;
-    }
-    if (parameterStr[0] == '#') {
-        getline(config, parameterStr);
+    while (getline(config, parameterStr)) {
+        if (parameterStr[0] == '#') {
+            getline(config, parameterStr);
+        }
+
+        string nameConverter;
+        try {
+            nameConverter = checkConverterName(parameterStr);
+        } catch (noExistConverterException &ex) {
+            cerr << ex.ex_what() << endl;
+            return ex.getErrorCode();
+        }
+
+
     }
 
+
+    return 0;
+}
+
+string NsuSoundProcessorConfigParser::checkConverterName(string &parameterStr) {
     string nameConverter;
-    try {
-        regex pattern(ConvertersNamesPatterns);
-        smatch match;
-        bool converterIsExist = false;
-        for (auto &el : convertersNames) {
-            if (std::regex_search(parameterStr, match, pattern) && match[0] == el) {
-                nameConverter = match[0];
-                cerr << nameConverter << endl;
-                converterIsExist = true;
-                break;
-            }
+    regex pattern(ConvertersNamesPatterns);
+    smatch match;
+    for (auto &el : convertersNames) {
+        if (std::regex_search(parameterStr, match, pattern) && match[0] == el) {
+            return (string)match[0];
         }
-        if (!converterIsExist) {
-            throw noExistConverterException((string)match[0]);
-        }
-    } catch (noExistConverterException &ex) {
-        cerr << ex.ex_what() << endl;
-        stopReadingFile = true;
-        return ex.getErrorCode();
     }
-
-    auto it = NsuConverterParametersParserFactory::parametersParserRegistry.find(nameConverter)->second();
-    it->parse(parameterStr);
-
-    return 0;
+    throw noExistConverterException((string)match[0]);
 }
 
-
-const string NsuSoundProcessorParametersParser::
-patternsOfConverterNamesWithParameters[convertersQuantity] = {"mute [0-9]+ [0-9]+",
-                                                              "mix [0-9]+ [0-9]+ [$][0-9]+ [0-9]+"};
-
-int NsuMuteConverterParametersParser::parse(string &parameters) {
-    try {
-        regex pattern(patternsOfConverterNamesWithParameters[0]);
-        smatch match;
-        if (regex_search(parameters, match, pattern) && match[0] != parameters) {
-            throw IncorrectParametersFormatException((string)match[0]);
-        }
-        cerr << (string)match[0] << endl;
-    } catch (IncorrectParametersFormatException &ex) {
-        cerr << ex.ex_what() << endl;
-        return ex.getErrorCode();
-    }
+//patternsOfConverterNamesWithParameters[convertersQuantity] = {"mute [0-9]+ [0-9]+",
+//                                                              "mix [0-9]+ [0-9]+ [$][0-9]+ [0-9]+"};
 
 
-    return 0;
-}
-
-int NsuMixConverterParametersParser::parse(string &parameters) {
-    return 0;
-}
-
-const unordered_map<string, function<ConverterParametersParser*()>> NsuConverterParametersParserFactory::parametersParserRegistry = {
-        { NsuSoundProcessorFilesParser::getConvertersName()[0], []() { return new NsuMuteConverterParametersParser; } },
-        { NsuSoundProcessorFilesParser::getConvertersName()[1], []() { return new NsuMixConverterParametersParser; } }
-};
