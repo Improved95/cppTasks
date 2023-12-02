@@ -21,29 +21,3 @@ void ShowInfo::coutInstruction() {
                       "\nmute 120 180";
     showMessage(message);
 }
-
-/*const char * Concatenation::concatenateTwoConstChar(const char *m1, const char *m2) {
-    string message;
-    message.append(m1);
-    message += " \"";
-    message.append(m2);
-    message += "\".";
-    return message.c_str();
-}
-
-const char *Concatenation::concatenatingStrAndChar(const char *m1, const string &m2) {
-    string message;
-    message.append(m1);
-    message += (string)(" ") + m2;
-    return message.c_str();
-}
-
-const char *Concatenation::concatenateStrAndChar(const char *m1, const string &m2) {
-    return concatenatingStrAndChar(m1, m2);
-}
-
-const char *Concatenation::concatenateStrAndChar(const string &m1, const char *m2) {
-    return concatenatingStrAndChar(m2, m1);
-}*/
-
-

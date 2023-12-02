@@ -26,7 +26,7 @@ protected:
 class NsuSoundProcessorFilesParser : public FilesParser, public NsuConvertersInfo {
 public:
     static const string* getConvertersName() { return convertersNames; }
-    static const size_t getConvertersQuantity() { return convertersQuantity; }
+    static size_t getConvertersQuantity() { return convertersQuantity; }
 protected:
     static const string convertersNames[convertersQuantity];
     static const string ConvertersNamesPatterns;

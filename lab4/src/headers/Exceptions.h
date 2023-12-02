@@ -14,10 +14,8 @@ public:
         this->code = 0;
     }
 
-    virtual const char * what() throw() { return msg.c_str(); };
     virtual const string & ex_what() throw() { return msg; };
-
-    const int getErrorCode() const { return this->code; }
+    int getErrorCode() const { return this->code; }
 
 protected:
     int code;
@@ -32,7 +30,8 @@ public:
         this->options = options_;
     }
 
-    ArgumentException(const string &msg_, const cxxopts::Options *options_) : ArgumentException(options_) {
+    ArgumentException(const string &msg_, const cxxopts::Options *options_)
+        : ArgumentException(options_) {
         this->msg = msg_;
     }
 
@@ -70,22 +69,25 @@ public:
 
 class FileNameException : public ArgumentException {
 public:
-    FileNameException(const cxxopts::Options *options_) : ArgumentException("default_message", options_) {
+    FileNameException(const cxxopts::Options *options_)
+        : ArgumentException("default_message", options_) {
         this->code = 2;
     }
 
-    FileNameException(const string &fileName, const cxxopts::Options *options_) : FileNameException(options_) {
+    FileNameException(const string &fileName, const cxxopts::Options *options_)
+        : FileNameException(options_) {
         this->msg = "Incorrect filename of '" + fileName + "'.";
     }
 };
 
 class FilesParserException : public SoundProcessorException {
 public:
-    FilesParserException()
-        : SoundProcessorException("default_message") {}
-
+    FilesParserException() : SoundProcessorException("default_message") {
+        this->code = 3;
+    }
     FilesParserException(const string &msg_)
         : FilesParserException() {
+        this->msg = msg_;
         this->code = 3;
     }
 
@@ -96,7 +98,8 @@ public:
 
 class FileNotOpenException : public FilesParserException {
 public:
-    FileNotOpenException(const string &fileName) : FilesParserException() {
+    FileNotOpenException(const string &fileName)
+        : FilesParserException() {
         this->msg = "File '" + fileName + "' couldn't open.";
         this->code = 4;
     }
@@ -104,14 +107,16 @@ public:
 
 class noExistConverterException : public FilesParserException {
 public:
-    noExistConverterException(const string &converterName) : FilesParserException() {
+    noExistConverterException(const string &converterName)
+        : FilesParserException() {
         this->msg = "Converter '" + converterName + "' doesn't exist.";
     }
 };
 
 class IncorrectParametersFormatException : public FilesParserException {
 public:
-    IncorrectParametersFormatException(const string &parameters) : FilesParserException() {
+    IncorrectParametersFormatException(const string &parameters)
+        : FilesParserException() {
         this->msg = "Incorrect format parameters in '" + parameters + "'.";
     }
 };
