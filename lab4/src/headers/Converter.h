@@ -11,7 +11,18 @@ using std::move;
 using std::unordered_map;
 using std::pair;
 
-class NsuConverterI {
+class NsuConvertersInfo {
+public:
+    static const string * getConvertersName() { return convertersNames; }
+    static const string & getConvertersNamesPatterns() { return ConvertersNamesPatterns; }
+//    static const size_t getConvertersQuantity() { return convertersQuantity; };
+protected:
+    static const size_t convertersQuantity = 2;
+    static const string convertersNames[convertersQuantity];
+    static const string ConvertersNamesPatterns;
+};
+
+class NsuConverterI : public NsuConvertersInfo {
 public:
     NsuConverterI(const string &parameters) {
         this->parameters = parameters;
@@ -24,11 +35,13 @@ public:
 
 protected:
     static size_t orderCreation;
+    static const string patternsOfConverterNamesWithParameters[convertersQuantity];
 
     string parameters;
     size_t priority = 0;
     bool convertingIsComplete = false;
     unordered_map<size_t, pair<size_t, size_t>> busyThreads;
+
 };
 
 class NsuMute : public NsuConverterI {
@@ -65,50 +78,7 @@ public:
     virtual int convert() override;
 };
 
-/*====================================================================================*/
-
-class NsuConverterCreatorI {
-public:
-    virtual NsuConverterI * createConverter(const string &parameters) const = 0;
-};
-
-template <class T>
-class NsuConverterCreator : public NsuConverterCreatorI {
-public:
-    virtual NsuConverterI * createConverter(const string &parameters) const override {
-        return new T(parameters);
-    }
-};
-
-class NsuConvertersFactory {
-public:
-    NsuConvertersFactory() {
-        add<NsuMute>("mute");
-        add<NsuMix>("mix");
-    }
-
-    template<class T>
-    void add(const string &converterName) {
-        auto it = convetersRegistry.find(converterName);
-        if (it == convetersRegistry.end()) {
-            convetersRegistry[converterName] = new NsuConverterCreator<T>();
-        }
-    }
-
-    NsuConverterI * create(const string &converterName) {
-        auto it = convetersRegistry.find(converterName);
-        if (it != convetersRegistry.end()) {
-            return it->second->createConverter(converterName);
-        }
-        return nullptr;
-    }
-
-private:
-    unordered_map<string, NsuConverterCreatorI*> convetersRegistry;
-};
-
 #endif
-
 
 /*
  * пусть конвертеры хранят приоритеты и то, с чем они работают, другие конвертеры будут

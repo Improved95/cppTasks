@@ -3,6 +3,7 @@
 #include "FilesParser.h"
 #include "Exceptions.h"
 #include "Converter.h"
+#include "ConvertersFactory.h"
 using std::getline;
 using std::regex;
 using std::smatch;
@@ -10,11 +11,10 @@ using std::vector;
 using std::cerr;
 using std::endl;
 
-const string NsuSoundProcessorFilesParser::ConvertersNamesPatterns = "^(\\w+)";
-const string NsuSoundProcessorFilesParser::convertersNames[convertersQuantity] = {"mute", "mix"};
+const string NsuConvertersInfo::ConvertersNamesPatterns = "^(\\w+)";
+const string NsuConvertersInfo::convertersNames[convertersQuantity] = {"mute", "mix"};
 
-int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<string> &parameters,
-                                         vector<NsuConverterI*> &convertersVector) {
+int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<NsuConverterI*> &convertersVector) {
     string parameterStr;
     NsuConvertersFactory factory;
 
@@ -31,7 +31,7 @@ int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<string> &param
             return ex.getErrorCode();
         }
 
-//        convertersVector.push_back(factory.create(nameConverter));
+        convertersVector.push_back(factory.create(nameConverter));
     }
 
     return 0;
@@ -39,9 +39,9 @@ int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<string> &param
 
 string NsuSoundProcessorConfigParser::checkConverterName(string &parameterStr) {
     string nameConverter;
-    regex pattern(ConvertersNamesPatterns);
+    regex pattern(NsuConvertersInfo::getConvertersNamesPatterns());
     smatch match;
-    for (auto &el : convertersNames) {
+    for (auto &el : *NsuConvertersInfo::getConvertersName()) {
         if (std::regex_search(parameterStr, match, pattern) && match[0] == el) {
             return (string)match[0];
         }

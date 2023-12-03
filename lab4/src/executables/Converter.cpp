@@ -22,9 +22,13 @@ int NsuSoundProcessorManager::convert() {
         return ex.getErrorCode();
     }
 
-    vector<string> parameters;
+    NsuConvertersFactory factory;
     vector<NsuConverterI*> convertersVector;
-    r = filesParser.parse(configFile, parameters);
+    convertersVector.push_back(factory.create("mix"));
+
+//    r = filesParser.parse(configFile, convertersVector);
+
+
 
     configFile.close();
     return r;
@@ -32,8 +36,9 @@ int NsuSoundProcessorManager::convert() {
 
 
 size_t NsuConverterI::orderCreation = 0;
-//patternsOfConverterNamesWithParameters[convertersQuantity] = {"mute [0-9]+ [0-9]+",
-//                                                              "mix [0-9]+ [0-9]+ [$][0-9]+ [0-9]+"};
+const string NsuConverterI::patternsOfConverterNamesWithParameters[convertersQuantity] =
+        {"mute [0-9]+ [0-9]+", "mix [0-9]+ [0-9]+ [$][0-9]+ [0-9]+"};
+
 void NsuMute::parseParameters() {
 
 }
