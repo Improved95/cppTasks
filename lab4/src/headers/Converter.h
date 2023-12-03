@@ -4,10 +4,8 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
-#include "FilesParser.h"
 using std::vector;
 using std::string;
-using std::move;
 using std::unordered_map;
 using std::pair;
 
@@ -63,7 +61,7 @@ public:
 class ConvertesManagers {
 public:
     ConvertesManagers(vector<string> &arguments_) {
-        this->arguments = move(arguments_);
+        this->arguments = std::move(arguments_);
     }
 
     virtual int convert() = 0;
