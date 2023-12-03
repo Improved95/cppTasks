@@ -1,5 +1,5 @@
-#ifndef CONVERTERS_FACTORY
-#define CONVERTERS_FACTORY
+#ifndef FACTORY
+#define FACTORY
 
 #include "Converter.h"
 
