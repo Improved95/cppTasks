@@ -20,7 +20,7 @@ private:
     static const string mutuallyArguments[quantityModes];
 };
 
-class ParseArgumentsForNSUSoundProcessor : public ParseConsoleArguments {
+class ParseArgumentsForNsuSoundProcessor : public ParseConsoleArguments {
 public:
     int parseFilesArguments(char *argv[], cxxopts::ParseResult &result,
                             cxxopts::Options &options, vector<string> &arguments);

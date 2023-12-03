@@ -6,6 +6,7 @@
 #include <vector>
 #include <unordered_map>
 #include "Messages.h"
+#include "Converter.h"
 using std::ifstream;
 using std::string;
 using std::vector;
@@ -21,7 +22,7 @@ protected:
     static const size_t convertersQuantity = 2;
 };
 
-class NsuSoundProcessorFilesParser : public FilesParser, public NsuConvertersInfo {
+class NsuSoundProcessorFilesParser : public NsuConvertersInfo {
 public:
     static const string* getConvertersName() { return convertersNames; }
     static size_t getConvertersQuantity() { return convertersQuantity; }
@@ -32,18 +33,11 @@ protected:
 
 class NsuSoundProcessorConfigParser : public NsuSoundProcessorFilesParser {
 public:
-    virtual int parse(ifstream &config, vector<string> &parameters) override;
+    int parse(ifstream &config, vector<string> &parameters,
+              vector<NsuConverterI*> &convertersVector);
 
 private:
     string checkConverterName(string &parameterStr);
-};
-
-/*==================================================================================================*/
-
-class NSUconvertersFactory {
-public:
-private:
-
 };
 
 #endif

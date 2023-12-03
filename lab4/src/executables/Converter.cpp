@@ -1,7 +1,7 @@
+#include <fstream>
 #include "Converter.h"
 #include "FilesParser.h"
 #include "Exceptions.h"
-#include <fstream>
 using std::ifstream;
 using std::cerr;
 using std::endl;
@@ -23,9 +23,29 @@ int NsuSoundProcessorManager::convert() {
     }
 
     vector<string> parameters;
+    vector<NsuConverterI*> convertersVector;
     r = filesParser.parse(configFile, parameters);
-
 
     configFile.close();
     return r;
+}
+
+
+size_t NsuConverterI::orderCreation = 0;
+//patternsOfConverterNamesWithParameters[convertersQuantity] = {"mute [0-9]+ [0-9]+",
+//                                                              "mix [0-9]+ [0-9]+ [$][0-9]+ [0-9]+"};
+void NsuMute::parseParameters() {
+
+}
+
+void NsuMix::parseParameters() {
+
+}
+
+void NsuMute::convert() {
+
+}
+
+void NsuMix::convert() {
+
 }

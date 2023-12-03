@@ -48,7 +48,7 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
         ShowInfo showInfo;
         showInfo.coutInstruction();
     } else if (mode == ParseConsoleArguments::mutuallyArguments[1]) {
-        ParseArgumentsForNSUSoundProcessor parseArgumentsForNsuSoundProcessor;
+        ParseArgumentsForNsuSoundProcessor parseArgumentsForNsuSoundProcessor;
         r = parseArgumentsForNsuSoundProcessor.parseFilesArguments(argv, result, options, arguments);
     }
 
@@ -56,7 +56,7 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
 }
 
 const string ParseConsoleArguments::mutuallyArguments[quantityModes] = {"help", "convert"};
-int ParseArgumentsForNSUSoundProcessor::parseFilesArguments(char *argv[], cxxopts::ParseResult &result,
+int ParseArgumentsForNsuSoundProcessor::parseFilesArguments(char *argv[], cxxopts::ParseResult &result,
                                                             cxxopts::Options &options, vector<string> &arguments) {
 
     //check of existing config file and his correctness
