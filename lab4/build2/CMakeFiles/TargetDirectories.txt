@@ -1,0 +1,4 @@
+C:/improved/coding/cpp/cppTasks/lab4/build2/CMakeFiles/SoundProcessor.dir
+C:/improved/coding/cpp/cppTasks/lab4/build2/CMakeFiles/corelib.dir
+C:/improved/coding/cpp/cppTasks/lab4/build2/CMakeFiles/edit_cache.dir
+C:/improved/coding/cpp/cppTasks/lab4/build2/CMakeFiles/rebuild_cache.dir

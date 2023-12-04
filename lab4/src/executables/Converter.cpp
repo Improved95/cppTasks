@@ -51,6 +51,7 @@ int NsuSoundProcessorManager::convert() {
             return r;
         }
     }
+    exit(0);
     while(NsuConverterI::convertersIsOver(convertersVector)) {
         for (auto &el : convertersVector) {
             el->convert();
@@ -71,74 +72,6 @@ bool NsuConverterI::convertersIsOver(const vector<NsuConverterI *> &convertersVe
 }
 
 size_t NsuConverterI::orderCreation = 0;
-const string NsuMute::parametersPattern = "([\\d]+[ ][\\d]+){1}";
-int NsuMute::parseParameters() {
-    int r;
-
-    try {
-        regex pattern(parametersPattern);
-        smatch match;
-        /*я просто ебал это в рот, эта хуета просто нахуй не хочет ловить неправильно введенные данные
-         * я просто ебал нахуй, какого хуя все работает, все в любом месте, но здесь нет, я просто так не могу больше,
-         * так нахуй нельзя*/
-        if (regex_search(this->parameters, match, pattern) && this->parameters != match[0].str()) {
-             throw IncorrectParametersFormatException(this->parameters);
-        }
-    } catch (IncorrectParametersFormatException &ex) {
-        cerr << ex.ex_what() << endl;
-        return ex.getErrorCode();
-    }
-
-    cxxopts::Options options("converters parameters parser");
-    options.add_options()
-            ("begin", "Beggining second for mute.", cxxopts::value<int>())
-            ("end", "Ending second for mute.", cxxopts::value<int>());
-    options.parse_positional({"begin", "end"});
-
-    cxxopts::ParseResult result;
-    if ((r = fillUsingThreads(2, options, result)) != 0) {
-        return r;
-    }
-    this->usingStream = pair(0, pair(result["begin"].as<int>(), result["end"].as<int>()));
-
-    return r;
-}
-
-const string NsuMix::parametersPattern = "[\\d]+[\\s]{1}[\\d]+[\\s]{1}[$]{1}[\\d]+[\\s]{1}[\\d]+";
-int NsuMix::parseParameters() {
-    int r;
-
-    try {
-        regex pattern(parametersPattern);
-        if (regex_match(this->parameters, pattern)) {
-            throw IncorrectParametersFormatException(this->parameters);
-        }
-    } catch (IncorrectParametersFormatException &ex) {
-        cerr << ex.ex_what() << endl;
-        return ex.getErrorCode();
-    }
-
-    cxxopts::Options options("converters parameters parser");
-    options.add_options()
-            ("begin", "Begining second for mix.", cxxopts::value<int>())
-            ("end", "Ending second for mix.", cxxopts::value<int>())
-            ("input", "Input which will be mixed with.", cxxopts::value<string>())
-            ("beginMixInput", "Second which will be mixed with.", cxxopts::value<int>());
-    options.parse_positional({"begin", "end", "input", "beginMixInput"});
-
-    cxxopts::ParseResult result;
-    if ((r = fillUsingThreads(2, options, result)) != 0) {
-        return r;
-    }
-    this->usingStream = pair(0, pair(result["begin"].as<int>(), result["end"].as<int>()));
-
-    string referenceOnMixInputStr = result["begin"].as<string>();
-    size_t referenceOnMixInput = std::stoull(referenceOnMixInputStr.substr(1, referenceOnMixInputStr.size()));
-    this->mixStream = pair(referenceOnMixInput, result["beginMixInput"].as<int>());
-
-    return r;
-}
-
 int NsuConverterI::fillUsingThreads(size_t parametersQuantity, cxxopts::Options &options, cxxopts::ParseResult &result) {
     istringstream iss(this->parameters);
     vector<string> words;
