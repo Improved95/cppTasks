@@ -1,8 +1,14 @@
+#include <regex>
 #include "FilesParser.h"
 #include "Exceptions.h"
 #include "Converter.h"
 #include "Streams.h"
 using std::ifstream;
+using std::regex;
+using std::smatch;
+using std::regex_search;
+using std::regex_match;
+using std::istringstream;
 using std::cerr;
 using std::endl;
 
@@ -39,6 +45,10 @@ int NsuSoundProcessorManager::convert() {
     }
 
     StreamOut streamOut(&fileOut);
+
+    for (auto &el : convertersVector) {
+        el->parseParameters();
+    }
     while(NsuConverterI::convertersIsOver(convertersVector)) {
         for (auto &el : convertersVector) {
             el->convert();
@@ -59,15 +69,90 @@ bool NsuConverterI::convertersIsOver(const vector<NsuConverterI *> &convertersVe
 }
 
 size_t NsuConverterI::orderCreation = 0;
-const string NsuConverterI::patternsOfConverterNamesWithParameters[convertersQuantity] =
-        {"mute [0-9]+ [0-9]+", "mix [0-9]+ [0-9]+ [$][0-9]+ [0-9]+"};
+const string NsuMute::parametersPattern = "([\\d]+[ ][\\d]+){1}";
+int NsuMute::parseParameters() {
+    int r;
 
-void NsuMute::parseParameters() {
+    try {
+        regex pattern(parametersPattern);
+        if (regex_match(this->parameters, pattern)) {
+             throw IncorrectConvertersParametersException(this->parameters, "mute");
+        }
+    } catch (IncorrectConvertersParametersException &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
 
+    cxxopts::Options options("converters parameters parser");
+    options.add_options()
+            ("begin", "Beggining second for mute.", cxxopts::value<int>())
+            ("end", "Ending second for mute.", cxxopts::value<int>());
+    options.parse_positional({"begin", "end"});
+
+    cxxopts::ParseResult result;
+    if ((r = fillUsingThreads(2, options, result)) != 0) {
+        return r;
+    }
+    this->usingStream = pair(0, pair(result["begin"].as<int>(), result["end"].as<int>()));
+
+    return r;
 }
 
-void NsuMix::parseParameters() {
+const string NsuMix::parametersPattern = "[\\d]+[\\s]{1}[\\d]+[\\s]{1}[$]{1}[\\d]+[\\s]{1}[\\d]+";
+int NsuMix::parseParameters() {
+    int r;
 
+    try {
+        regex pattern(parametersPattern);
+        if (!regex_match(this->parameters, pattern)) {
+            throw IncorrectConvertersParametersException(this->parameters, "mix");
+        }
+    } catch (IncorrectConvertersParametersException &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
+
+    cxxopts::Options options("converters parameters parser");
+    options.add_options()
+            ("begin", "Begining second for mix.", cxxopts::value<int>())
+            ("end", "Ending second for mix.", cxxopts::value<int>())
+            ("input", "Input which will be mixed with.", cxxopts::value<string>())
+            ("beginMixInput", "Second which will be mixed with.", cxxopts::value<int>());
+    options.parse_positional({"begin", "end", "input", "beginMixInput"});
+
+    cxxopts::ParseResult result;
+    if ((r = fillUsingThreads(2, options, result)) != 0) {
+        return r;
+    }
+    this->usingStream = pair(0, pair(result["begin"].as<int>(), result["end"].as<int>()));
+
+    string referenceOnMixInputStr = result["begin"].as<string>();
+    size_t referenceOnMixInput = std::stoull(referenceOnMixInputStr.substr(1, referenceOnMixInputStr.size()));
+    this->mixStream = pair(referenceOnMixInput, result["beginMixInput"].as<int>());
+
+    return r;
+}
+
+int NsuConverterI::fillUsingThreads(size_t parametersQuantity, cxxopts::Options &options, cxxopts::ParseResult &result) {
+    istringstream iss(this->parameters);
+    vector<string> words;
+    string word;
+    while (iss >> word) {
+        words.push_back(word);
+    }
+    const char* charArray[parametersQuantity + 1];
+    for (size_t i = 0; i < words.size(); i++) {
+        charArray[i + 1] = words[i].c_str();
+    }
+
+    try {
+        result = options.parse(3, charArray);
+    } catch (cxxopts::exceptions::exception &ex) {
+        cerr << ex.what() << endl;
+        return 1;
+    }
+
+    return 0;
 }
 
 void NsuMute::convert() {

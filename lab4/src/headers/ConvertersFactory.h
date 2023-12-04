@@ -31,10 +31,10 @@ public:
         }
     }
 
-    NsuConverterI * create(const string &converterName, const string &parameterStr) {
+    NsuConverterI * create(const string &converterName, const string &parameters) {
         auto it = convetersRegistry.find(converterName);
         if (it != convetersRegistry.end()) {
-            return it->second->createConverter(parameterStr);
+            return it->second->createConverter(parameters);
         }
         return nullptr;
     }

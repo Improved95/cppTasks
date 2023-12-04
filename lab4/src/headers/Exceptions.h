@@ -121,4 +121,12 @@ public:
     }
 };
 
+class IncorrectConvertersParametersException :public FilesParserException {
+public:
+    IncorrectConvertersParametersException(const string &parameters, const string &decs)
+        : FilesParserException() {
+        this->msg = "Incorrect format parameters in '" + parameters + "' in '" + decs + "'.";
+    }
+};
+
 #endif

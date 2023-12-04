@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include "cxxopts.hpp"
 using std::vector;
 using std::string;
 using std::unordered_map;
@@ -22,26 +23,26 @@ protected:
 
 class NsuConverterI : public NsuConvertersInfo {
 public:
-    NsuConverterI(const string &parameters) {
-        this->parameters = parameters;
+    NsuConverterI(const string &parameters_) {
         this->priority = orderCreation;
         this->orderCreation++;
+        this->parameters = parameters_;
     }
 
-    virtual void parseParameters() = 0;
+    virtual int parseParameters() = 0;
     virtual void convert() = 0;
 
     static bool convertersIsOver(const vector<NsuConverterI*> &convertersVector);
 
 protected:
     static size_t orderCreation;
-    static const string patternsOfConverterNamesWithParameters[convertersQuantity];
 
     string parameters;
     size_t priority = 0;
     bool convertingIsComplete = false;
-    unordered_map<size_t, pair<size_t, size_t>> busyThreads;
+    pair<size_t, pair<size_t, size_t>> usingStream;
 
+    int fillUsingThreads(size_t parametersQuantity, cxxopts::Options &options, cxxopts::ParseResult &result);
 };
 
 class NsuMute : public NsuConverterI {
@@ -49,7 +50,10 @@ public:
     NsuMute(const string &parameters) : NsuConverterI(parameters) {}
 
     virtual void convert() override;
-    virtual void parseParameters() override;
+    virtual int parseParameters() override;
+
+private:
+    static const string parametersPattern;
 };
 
 class NsuMix : public NsuConverterI {
@@ -57,7 +61,11 @@ public:
     NsuMix(const string &parameters) : NsuConverterI(parameters) {}
 
     virtual void convert() override;
-    virtual void parseParameters() override;
+    virtual int parseParameters() override;
+
+private:
+    static const string parametersPattern;
+    pair<size_t, size_t> mixStream;
 };
 
 class ConvertesManagers {
