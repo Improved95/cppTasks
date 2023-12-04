@@ -7,12 +7,14 @@
 using std::getline;
 using std::regex;
 using std::smatch;
+using std::regex_search;
 using std::vector;
 using std::cerr;
 using std::endl;
 
 const string NsuConvertersInfo::ConvertersNamesPatterns = "^(\\w+)";
 const string NsuConvertersInfo::convertersNames[convertersQuantity] = {"mute", "mix"};
+const string NsuSoundProcessorConfigParser::parametersPattrerm = "[ ]([\\s\\S])+";
 
 int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<NsuConverterI*> &convertersVector) {
     string parameterStr;
@@ -31,18 +33,21 @@ int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<NsuConverterI*
             return ex.getErrorCode();
         }
 
-        convertersVector.push_back(factory.create(nameConverter));
+        regex pattern(NsuSoundProcessorConfigParser::parametersPattrerm);
+        smatch match;
+        regex_search(parameterStr, match, pattern);
+        convertersVector.push_back(factory.create(nameConverter, ((string)match[0]).substr(1, ((string)match[0]).size())));
     }
 
     return 0;
 }
 
 string NsuSoundProcessorConfigParser::checkConverterName(string &parameterStr) {
-    string nameConverter;
     regex pattern(NsuConvertersInfo::getConvertersNamesPatterns());
     smatch match;
-    for (auto &el : *NsuConvertersInfo::getConvertersName()) {
-        if (std::regex_search(parameterStr, match, pattern) && match[0] == el) {
+    for (size_t i = 0; i < NsuConvertersInfo::getConvertersQuantity(); i++) {
+        auto el = NsuConvertersInfo::getConvertersName()[i];
+        if (regex_search(parameterStr, match, pattern) && match[0] == el) {
             return (string)match[0];
         }
     }

@@ -15,6 +15,7 @@ public:
 
 private:
     string checkConverterName(string &parameterStr);
+    static const string parametersPattrerm;
 };
 
 #endif

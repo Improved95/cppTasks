@@ -13,7 +13,7 @@ class NsuConvertersInfo {
 public:
     static const string * getConvertersName() { return convertersNames; }
     static const string & getConvertersNamesPatterns() { return ConvertersNamesPatterns; }
-//    static const size_t getConvertersQuantity() { return convertersQuantity; };
+    static const size_t getConvertersQuantity() { return convertersQuantity; };
 protected:
     static const size_t convertersQuantity = 2;
     static const string convertersNames[convertersQuantity];
@@ -30,6 +30,8 @@ public:
 
     virtual void parseParameters() = 0;
     virtual void convert() = 0;
+
+    static bool convertersIsOver(const vector<NsuConverterI*> &convertersVector);
 
 protected:
     static size_t orderCreation;

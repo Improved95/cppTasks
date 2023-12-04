@@ -2,8 +2,11 @@
 #define STREAMS
 
 #include <fstream>
+#include <Exceptions.h>
 using std::ifstream;
 using std::ofstream;
+using std::string;
+using std::cerr;
 
 class Stream {
 
@@ -15,10 +18,16 @@ private:
 };
 
 class StreamOut : public Stream {
+public:
+    StreamOut(ofstream *streamOut_) {
+        streamOut = streamOut_;
+    }
+
+    void pushInStream(/*sample*/);
+
+
 private:
     ofstream *streamOut;
-public:
-    void pushInStream(/*sample*/);
 };
 
 #endif

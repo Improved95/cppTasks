@@ -1,7 +1,7 @@
 #include "FilesParser.h"
 #include "Exceptions.h"
 #include "Converter.h"
-#include "ConvertersFactory.h"
+#include "Streams.h"
 using std::ifstream;
 using std::cerr;
 using std::endl;
@@ -22,18 +22,41 @@ int NsuSoundProcessorManager::convert() {
         return ex.getErrorCode();
     }
 
-    NsuConvertersFactory factory;
     vector<NsuConverterI*> convertersVector;
-    convertersVector.push_back(factory.create("mix"));
+    if ((r = filesParser.parse(configFile, convertersVector)) != 0) {
+        return r;
+    }
 
-//    r = filesParser.parse(configFile, convertersVector);
+    ofstream fileOut;
+    fileOut.open(arguments[1]);
+    try {
+        if (!fileOut.is_open()) {
+            throw FileNotOpenException(arguments[1]);
+        }
+    } catch (FileNotOpenException &ex) {
+        cerr << ex.ex_what() << endl;
+        cerr << ex.getErrorCode() << endl;
+    }
 
-
+    StreamOut streamOut(&fileOut);
+    while(NsuConverterI::convertersIsOver(convertersVector)) {
+        for (auto &el : convertersVector) {
+            el->convert();
+        }
+    }
 
     configFile.close();
     return r;
 }
 
+bool NsuConverterI::convertersIsOver(const vector<NsuConverterI *> &convertersVector) {
+    for (auto &el : convertersVector) {
+        if (el->convertingIsComplete) {
+            return true;
+        }
+    }
+    return false;
+}
 
 size_t NsuConverterI::orderCreation = 0;
 const string NsuConverterI::patternsOfConverterNamesWithParameters[convertersQuantity] =
