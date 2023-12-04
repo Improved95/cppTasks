@@ -47,7 +47,9 @@ int NsuSoundProcessorManager::convert() {
     StreamOut streamOut(&fileOut);
 
     for (auto &el : convertersVector) {
-        el->parseParameters();
+        if ((r = el->parseParameters()) != 0) {
+            return r;
+        }
     }
     while(NsuConverterI::convertersIsOver(convertersVector)) {
         for (auto &el : convertersVector) {
@@ -75,10 +77,14 @@ int NsuMute::parseParameters() {
 
     try {
         regex pattern(parametersPattern);
-        if (regex_match(this->parameters, pattern)) {
-             throw IncorrectConvertersParametersException(this->parameters, "mute");
+        smatch match;
+        /*я просто ебал это в рот, эта хуета просто нахуй не хочет ловить неправильно введенные данные
+         * я просто ебал нахуй, какого хуя все работает, все в любом месте, но здесь нет, я просто так не могу больше,
+         * так нахуй нельзя*/
+        if (regex_search(this->parameters, match, pattern) && this->parameters != match[0].str()) {
+             throw IncorrectParametersFormatException(this->parameters);
         }
-    } catch (IncorrectConvertersParametersException &ex) {
+    } catch (IncorrectParametersFormatException &ex) {
         cerr << ex.ex_what() << endl;
         return ex.getErrorCode();
     }
@@ -104,10 +110,10 @@ int NsuMix::parseParameters() {
 
     try {
         regex pattern(parametersPattern);
-        if (!regex_match(this->parameters, pattern)) {
-            throw IncorrectConvertersParametersException(this->parameters, "mix");
+        if (regex_match(this->parameters, pattern)) {
+            throw IncorrectParametersFormatException(this->parameters);
         }
-    } catch (IncorrectConvertersParametersException &ex) {
+    } catch (IncorrectParametersFormatException &ex) {
         cerr << ex.ex_what() << endl;
         return ex.getErrorCode();
     }
