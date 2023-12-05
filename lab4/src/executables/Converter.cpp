@@ -11,7 +11,7 @@ int NsuSoundProcessorManager::convert() {
     NsuSoundProcessorConfigParser filesParser;
 
 
-    StreamIn configFile(arguments[0], r);
+    NsuStreamIn configFile(arguments[0], r);
     if (r != 0) {
         return r;
     }
@@ -30,21 +30,23 @@ int NsuSoundProcessorManager::convert() {
         }
     }
 
-    /*while(!NsuConverterI::convertersIsOver(convertersVector)) {
+
+    while(!NsuConverterI::convertersIsOver(convertersVector)) {
         for (auto &el : convertersVector) {
             el->convert();
         }
-    }*/
+    }
 
     return r;
 }
 
 bool NsuConverterI::convertersIsOver(const vector<NsuConverterI*> &convertersVector) {
-    bool converterIsOver = true;
     for (auto &el : convertersVector) {
-        converterIsOver = el->convertingIsComplete;
+        if (!el->convertingIsComplete) {
+            return false;
+        }
     }
-    return converterIsOver;
+    return true;
 }
 
 void NsuMute::convert() {

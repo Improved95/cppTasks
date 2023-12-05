@@ -12,16 +12,16 @@ void StreamIn::setPointer(size_t pos) {
 
 int StreamIn::openFile(const string &fileName) {
     this->stream.open(fileName, std::ios::in | std::ios::binary);
-    return fileOpenException(fileName);
+    return checkFileOpen(fileName);
 }
 
 int StreamOut::openFile(const string &fileName) {
     this->stream.open(fileName, std::ios::out | std::ios::binary);
-    return fileOpenException(fileName);
+    return checkFileOpen(fileName);
 }
 
 
-int Stream::fileOpenException(const string &fileName) {
+int Stream::checkFileOpen(const string &fileName) {
     try {
         if (!this->stream.is_open()) {
             throw FileNotOpenException(fileName);

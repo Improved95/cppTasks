@@ -15,16 +15,16 @@ public:
     }
 
     fstream & getStream() { return this->stream; }
-    int fileOpenException(const string &fileName);
 
 protected:
     fstream stream;
     virtual int openFile(const string &fileName) = 0;
+    int checkFileOpen(const string &fileName);
 };
 
-class StreamIn : public Stream {
+class NsuStreamIn : public Stream {
 public:
-    StreamIn(const string &fileName, int &r) {
+    NsuStreamIn(const string &fileName, int &r) {
         r = openFile(fileName);
     }
 
@@ -32,9 +32,9 @@ private:
     virtual int openFile(const string &fileName) override;
 };
 
-class StreamOut : public Stream {
+class NsuStreamOut : public Stream {
 public:
-    StreamOut(const string &fileName, int &r) {
+    NsuStreamOut(const string &fileName, int &r) {
         r = openFile(fileName);
     }
 
