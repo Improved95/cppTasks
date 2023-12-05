@@ -1,33 +1,45 @@
 #ifndef STREAMS
 #define STREAMS
 
+#include <iostream>
 #include <fstream>
-#include <Exceptions.h>
 using std::ifstream;
 using std::ofstream;
+using std::fstream;
 using std::string;
-using std::cerr;
 
 class Stream {
+public:
+    ~Stream() {
+        this->stream.close();
+    }
 
+    fstream & getStream() { return this->stream; }
+    int fileOpenException(const string &fileName);
+
+protected:
+    fstream stream;
+    virtual int openFile(const string &fileName) = 0;
 };
 
 class StreamIn : public Stream {
+public:
+    StreamIn(const string &fileName, int &r) {
+        r = openFile(fileName);
+    }
+
 private:
-    ifstream *streamIn;
+    virtual int openFile(const string &fileName) override;
 };
 
 class StreamOut : public Stream {
 public:
-    StreamOut(ofstream *streamOut_) {
-        streamOut = streamOut_;
+    StreamOut(const string &fileName, int &r) {
+        r = openFile(fileName);
     }
 
-    void pushInStream(/*sample*/);
-
-
 private:
-    ofstream *streamOut;
+    virtual int openFile(const string &fileName) override;
 };
 
 #endif

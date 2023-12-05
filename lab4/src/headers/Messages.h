@@ -7,7 +7,7 @@ using std::string;
 
 class ShowMessages {
 public:
-    void showMessage(string &message) const;
+    void showMessage(const string &message) const;
 };
 
 class ShowInfo : public ShowMessages {

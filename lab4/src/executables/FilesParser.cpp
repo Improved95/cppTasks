@@ -18,13 +18,19 @@ const string NsuConvertersInfo::ConvertersNamesPatterns = "^(\\w+)";
 const string NsuConvertersInfo::convertersNames[convertersQuantity] = {"mute", "mix"};
 const string NsuSoundProcessorConfigParser::parametersPattrerm = "[ ]([\\s\\S])+";
 
-int NsuSoundProcessorConfigParser::parse(ifstream &config, vector<NsuConverterI*> &convertersVector) {
+int NsuSoundProcessorConfigParser::parse(StreamIn &config, vector<NsuConverterI*> &convertersVector) {
     string parameterStr;
     NsuConvertersFactory factory;
 
-    while (getline(config, parameterStr)) {
+    while (getline(config.getStream(), parameterStr)) {
         if (parameterStr[0] == '#') {
-            getline(config, parameterStr);
+            if (!getline(config.getStream(), parameterStr)) {
+                return 0;
+            };
+        }
+
+        if (parameterStr[parameterStr.size() - 1] == '\r') {
+            parameterStr = parameterStr.substr(0, parameterStr.size() - 1);
         }
 
         string nameConverter;
@@ -101,10 +107,10 @@ int NsuMix::parseParameters() {
 
     cxxopts::Options options("converters parameters parser");
     options.add_options()
-            ("begin", "Begining second for mix.", cxxopts::value<int>())
-            ("end", "Ending second for mix.", cxxopts::value<int>())
-            ("i,input", "Number of input which will be mixed with.", cxxopts::value<int>())
-            ("beginInMixInput", "Second in input which will be mixed with.", cxxopts::value<int>());
+            ("begin", "Begining second for mix.", cxxopts::value<size_t>())
+            ("end", "Ending second for mix.", cxxopts::value<size_t>())
+            ("i,input", "Number of input which will be mixed with.", cxxopts::value<size_t>())
+            ("beginInMixInput", "Second in input which will be mixed with.", cxxopts::value<size_t>());
     options.parse_positional({"begin", "end", "input", "beginInMixInput"});
 
     cxxopts::ParseResult result;
@@ -112,8 +118,8 @@ int NsuMix::parseParameters() {
         return r;
     }
 
-    this->usingStream = pair(0, pair(result["begin"].as<int>(), result["end"].as<int>()));
-    this->mixStream = pair(result["input"].as<int>(), result["beginInMixInput"].as<int>());
+    this->usingStream = pair(0, pair(result["begin"].as<size_t>(), result["end"].as<size_t>()));
+    this->mixStream = pair(result["input"].as<size_t>(), result["beginInMixInput"].as<size_t>());
 
     return r;
 }

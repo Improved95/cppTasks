@@ -34,7 +34,7 @@ public:
 
     static bool convertersIsOver(const vector<NsuConverterI*> &convertersVector);
 
-protected:
+public:
     static size_t orderCreation;
 
     string parameters;
@@ -42,7 +42,8 @@ protected:
     bool convertingIsComplete = false;
     pair<size_t, pair<size_t, size_t>> usingStream;
 
-    int fillUsingThreads(size_t parametersQuantity, cxxopts::Options &options, cxxopts::ParseResult &result);
+    int fillUsingThreads(size_t parametersQuantity,
+                         cxxopts::Options &options, cxxopts::ParseResult &result);
 };
 
 class NsuMute : public NsuConverterI {
@@ -64,8 +65,8 @@ public:
     virtual int parseParameters() override;
 
 private:
-    static const string parametersPattern;
     pair<size_t, size_t> mixStream;
+    static const string parametersPattern;
 };
 
 class ConvertesManagers {

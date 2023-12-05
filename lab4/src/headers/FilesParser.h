@@ -5,13 +5,14 @@
 #include <fstream>
 #include <vector>
 #include "Converter.h"
+#include "Streams.h"
 using std::ifstream;
 using std::string;
 using std::vector;
 
 class NsuSoundProcessorConfigParser {
 public:
-    int parse(ifstream &config, vector<NsuConverterI*> &convertersVector);
+    int parse(StreamIn &config, vector<NsuConverterI*> &convertersVector);
 
 private:
     string checkConverterName(string &parameterStr);

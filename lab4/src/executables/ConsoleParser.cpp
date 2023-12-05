@@ -6,7 +6,8 @@ using std::regex_match;
 using std::endl;
 using std::cerr;
 
-int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[], vector<string> &arguments) {
+int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[],
+                                                           vector<string> &arguments) {
     int r = 0;
     cxxopts::Options options("./SoundProcessor", "Converting streams with input parameteres.");
 
@@ -123,7 +124,8 @@ string ParseConsoleArguments::checkMutuallyArguments(cxxopts::ParseResult &resul
     return returnMode;
 }
 
-void ParseConsoleArguments::argumentIsExist(const string &optionName, cxxopts::ParseResult &result, cxxopts::Options &options) {
+void ParseConsoleArguments::argumentIsExist(const string &optionName,
+                                            cxxopts::ParseResult &result, cxxopts::Options &options) {
     if (result[optionName].count() < 1) {
         throw ArgumentIsEntered(optionName, &options);
     }
