@@ -11,6 +11,8 @@ using std::regex_search;
 using std::vector;
 using std::cerr;
 using std::endl;
+using std::regex_match;
+using std::istringstream;
 
 const string NsuConvertersInfo::ConvertersNamesPatterns = "^(\\w+)";
 const string NsuConvertersInfo::convertersNames[convertersQuantity] = {"mute", "mix"};
@@ -83,7 +85,7 @@ int NsuMute::parseParameters() {
     return r;
 }
 
-const string NsuMix::parametersPattern = "[\\d]+[\\s]{1}[\\d]+[\\s]{1}[$]{1}[\\d]+[\\s]{1}[\\d]+";
+const string NsuMix::parametersPattern = "[\\d]+[\\s]{1}[\\d]+[\\s]{1}-i[\\s]{1}[\\d]+[\\s]{1}[\\d]+";
 int NsuMix::parseParameters() {
     int r;
 
@@ -101,19 +103,40 @@ int NsuMix::parseParameters() {
     options.add_options()
             ("begin", "Begining second for mix.", cxxopts::value<int>())
             ("end", "Ending second for mix.", cxxopts::value<int>())
-            ("input", "Input which will be mixed with.", cxxopts::value<string>())
-            ("beginMixInput", "Second which will be mixed with.", cxxopts::value<int>());
-    options.parse_positional({"begin", "end", "input", "beginMixInput"});
+            ("i,input", "Number of input which will be mixed with.", cxxopts::value<int>())
+            ("beginInMixInput", "Second in input which will be mixed with.", cxxopts::value<int>());
+    options.parse_positional({"begin", "end", "input", "beginInMixInput"});
 
     cxxopts::ParseResult result;
-    if ((r = fillUsingThreads(4, options, result)) != 0) {
+    if ((r = fillUsingThreads(5, options, result)) != 0) {
         return r;
     }
-    this->usingStream = pair(0, pair(result["begin"].as<int>(), result["end"].as<int>()));
 
-    string referenceOnMixInputStr = result["input"].as<string>();
-    size_t referenceOnMixInput = std::stoull(referenceOnMixInputStr.substr(1, referenceOnMixInputStr.size()));
-    this->mixStream = pair(referenceOnMixInput, result["beginMixInput"].as<int>());
+    this->usingStream = pair(0, pair(result["begin"].as<int>(), result["end"].as<int>()));
+    this->mixStream = pair(result["input"].as<int>(), result["beginInMixInput"].as<int>());
 
     return r;
+}
+
+size_t NsuConverterI::orderCreation = 0;
+int NsuConverterI::fillUsingThreads(size_t parametersQuantity, cxxopts::Options &options, cxxopts::ParseResult &result) {
+    istringstream iss(this->parameters);
+    vector<string> words;
+    string word;
+    while (iss >> word) {
+        words.push_back(word);
+    }
+    const char* charArray[parametersQuantity + 1];
+    for (size_t i = 0; i < words.size(); i++) {
+        charArray[i + 1] = words[i].c_str();
+    }
+
+    try {
+        result = options.parse(parametersQuantity + 1, charArray);
+    } catch (cxxopts::exceptions::exception &ex) {
+        cerr << ex.what() << endl;
+        return 1;
+    }
+
+    return 0;
 }

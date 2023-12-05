@@ -4,11 +4,6 @@
 #include "Converter.h"
 #include "Streams.h"
 using std::ifstream;
-using std::regex;
-using std::smatch;
-using std::regex_search;
-using std::regex_match;
-using std::istringstream;
 using std::cerr;
 using std::endl;
 
@@ -69,29 +64,6 @@ bool NsuConverterI::convertersIsOver(const vector<NsuConverterI *> &convertersVe
         }
     }
     return false;
-}
-
-size_t NsuConverterI::orderCreation = 0;
-int NsuConverterI::fillUsingThreads(size_t parametersQuantity, cxxopts::Options &options, cxxopts::ParseResult &result) {
-    istringstream iss(this->parameters);
-    vector<string> words;
-    string word;
-    while (iss >> word) {
-        words.push_back(word);
-    }
-    const char* charArray[parametersQuantity + 1];
-    for (size_t i = 0; i < words.size(); i++) {
-        charArray[i + 1] = words[i].c_str();
-    }
-
-    try {
-        result = options.parse(3, charArray);
-    } catch (cxxopts::exceptions::exception &ex) {
-        cerr << ex.what() << endl;
-        return 1;
-    }
-
-    return 0;
 }
 
 void NsuMute::convert() {
