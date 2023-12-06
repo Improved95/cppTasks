@@ -5,6 +5,7 @@
 #include <vector>
 #include <unordered_map>
 #include "cxxopts.hpp"
+#include "Streams.h"
 using std::vector;
 using std::string;
 using std::unordered_map;
@@ -32,18 +33,21 @@ public:
     virtual int parseParameters() = 0;
     virtual void convert() = 0;
 
+    int fillUsingThreads(size_t parametersQuantity,
+                         cxxopts::Options &options, cxxopts::ParseResult &result);
     static bool convertersIsOver(const vector<NsuConverterI*> &convertersVector);
+    static int createInputStreams(vector<string> &fileNamesVector);
 
-public:
+private:
     static size_t orderCreation;
 
+protected:
     string parameters;
     size_t priority = 0;
     bool convertingIsComplete = false;
     pair<size_t, pair<size_t, size_t>> usingStream;
 
-    int fillUsingThreads(size_t parametersQuantity,
-                         cxxopts::Options &options, cxxopts::ParseResult &result);
+    static vector<BinaryStreamIn*> inputStreamsVector;
 };
 
 class NsuMute : public NsuConverterI {

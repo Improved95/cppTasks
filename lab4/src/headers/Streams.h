@@ -3,9 +3,11 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
 using std::ifstream;
 using std::ofstream;
 using std::fstream;
+using std::vector;
 using std::string;
 
 class Stream {
@@ -22,9 +24,9 @@ protected:
     int checkFileOpen(const string &fileName);
 };
 
-class NsuStreamIn : public Stream {
+class StreamIn : public Stream {
 public:
-    NsuStreamIn(const string &fileName, int &r) {
+    StreamIn(const string &fileName, int &r) {
         r = openFile(fileName);
     }
 
@@ -32,13 +34,26 @@ private:
     virtual int openFile(const string &fileName) override;
 };
 
-class NsuStreamOut : public Stream {
+class BinaryStreamIn : public Stream {
 public:
-    NsuStreamOut(const string &fileName, int &r) {
+    BinaryStreamIn(const string &fileName, int &r) {
         r = openFile(fileName);
     }
 
 private:
+    virtual int openFile(const string &fileName) override;
+};
+
+template<class T>
+class BinaryStreamOut : public Stream {
+public:
+    BinaryStreamOut(const string &fileName, int &r) {
+        r = openFile(fileName);
+    }
+
+private:
+    vector<T> samplesBuffer;
+
     virtual int openFile(const string &fileName) override;
 };
 

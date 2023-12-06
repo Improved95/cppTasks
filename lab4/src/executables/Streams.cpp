@@ -10,16 +10,21 @@ void StreamIn::setPointer(size_t pos) {
 */
 
 
-int StreamIn::openFile(const string &fileName) {
+int BinaryStreamIn::openFile(const string &fileName) {
     this->stream.open(fileName, std::ios::in | std::ios::binary);
     return checkFileOpen(fileName);
 }
 
-int StreamOut::openFile(const string &fileName) {
+template<class T>
+int BinaryStreamOut<T>::openFile(const string &fileName) {
     this->stream.open(fileName, std::ios::out | std::ios::binary);
     return checkFileOpen(fileName);
 }
 
+int StreamIn::openFile(const std::string &fileName) {
+    this->stream.open(fileName, std::ios::in);
+    return checkFileOpen(fileName);
+}
 
 int Stream::checkFileOpen(const string &fileName) {
     try {
@@ -33,3 +38,5 @@ int Stream::checkFileOpen(const string &fileName) {
 
     return 0;
 }
+
+

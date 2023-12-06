@@ -23,16 +23,12 @@ int NsuSoundProcessorConfigParser::parse(StreamIn &config, vector<NsuConverterI*
     NsuConvertersFactory factory;
 
     while (getline(config.getStream(), parameterStr)) {
-        if (parameterStr[0] == '#') {
+        if (parameterStr[0] == '#' || parameterStr == "") {
             if (!getline(config.getStream(), parameterStr)) {
                 return 0;
             };
         }
-
-        if (parameterStr[parameterStr.size() - 1] == '\r') {
-            parameterStr = parameterStr.substr(0, parameterStr.size() - 1);
-        }
-
+        
         string nameConverter;
         try {
             nameConverter = checkConverterName(parameterStr);
