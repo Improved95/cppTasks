@@ -34,13 +34,18 @@ private:
     virtual int openFile(const string &fileName) override;
 };
 
+class Sample;
 class BinaryStreamIn : public Stream {
 public:
     BinaryStreamIn(const string &fileName, int &r) {
         r = openFile(fileName);
     }
 
+    vector<Sample*> getSamplesInOneSecond(const size_t second, const size_t frequency,
+                                          const size_t sampleSizeInByte, const size_t metadataSize);
+
 private:
+
     virtual int openFile(const string &fileName) override;
 };
 
@@ -50,10 +55,23 @@ public:
         r = openFile(fileName);
     }
 
-private:
-//    todo
+    void pushSample();
 
+private:
     virtual int openFile(const string &fileName) override;
+};
+
+class Sample {
+public:
+    Sample(size_t sampleSize) {
+        bytesArray = new char[sampleSize];
+    }
+    ~Sample() {
+        delete bytesArray;
+    }
+
+private:
+    char *bytesArray;
 };
 
 #endif

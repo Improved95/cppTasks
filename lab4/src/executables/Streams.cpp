@@ -1,7 +1,9 @@
 #include "Streams.h"
 #include "Exceptions.h"
+#include <vector>
 using std::cerr;
 using std::endl;
+using std::vector;
 
 /*
 void StreamIn::setPointer(size_t pos) {
@@ -37,4 +39,14 @@ int Stream::checkFileOpen(const string &fileName) {
     return 0;
 }
 
+vector<Sample*> BinaryStreamIn::getSamplesInOneSecond(const size_t second, const size_t frequency,
+                                                      const size_t sampleSizeInByte, const size_t metadataSize) {
+    this->stream.seekg(metadataSize + frequency * sampleSizeInByte * second, this->stream.beg);
 
+        vector<Sample*> samplesVector(frequency);
+        for (size_t i = 0; i < frequency; i++) {
+        samplesVector.push_back(new Sample(sampleSizeInByte));
+    }
+
+    return samplesVector;
+}

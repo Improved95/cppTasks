@@ -22,14 +22,14 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
     }
 
     const size_t frequency = 44100;
-    const size_t sampleSize = 16;
+    const size_t sampleSizeInByte = 2;
     const size_t metadataSizeInWav = 44;
 
+    NsuConverterI::setFrequency(frequency);
+    NsuConverterI::setSizeOfSample(sampleSizeInByte);
+    NsuConverterI::setMetadataSize(metadataSizeInWav);
     if ((r = NsuConverterI::initialInputStreams(convertersVector, arguments)) != 0) { return r; }
     if ((r = NsuConverterI::initialOutputStreams(arguments)) != 0) { return r; }
-    NsuConverterI::setFrequency(frequency);
-    NsuConverterI::setSizeOfSample(sampleSize);
-    NsuConverterI::setMetadataSize(metadataSizeInWav);
 
 //    convert(convertersVector);
 
@@ -123,11 +123,14 @@ int NsuConverterI::initialOutputStreams(vector<string> &arguments) {
 }
 
 size_t NsuConverterI::frequency = 0;
-size_t NsuConverterI::sampleSize = 0;
+size_t NsuConverterI::sampleSizeInByte = 0;
 size_t NsuConverterI::metadataSize = 0;
 size_t NsuConverterI::secondNumber = 0;
 void NsuMute::convert() {
+    if (secondNumber >= this->usingStream.second.first && secondNumber <= this->usingStream.second.second) {
+//        vector<> = inputsVector[this->usingStream.first]->getSamplesInOneSecond();
 
+    }
 }
 
 void NsuMix::convert() {

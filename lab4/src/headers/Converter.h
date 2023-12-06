@@ -33,7 +33,7 @@ public:
     }
 
     static void setFrequency(const size_t frequency_) { frequency = frequency_; }
-    static void setSizeOfSample(const size_t sampleSize_) { sampleSize = sampleSize_; }
+    static void setSizeOfSample(const size_t sampleSize_) { sampleSizeInByte = sampleSize_; }
     static void setMetadataSize(const size_t metadataSize_) { metadataSize = metadataSize_; }
 
     virtual int parseParameters() = 0;
@@ -55,7 +55,7 @@ protected:
     pair<size_t, pair<size_t, size_t>> usingStream;
 
     static size_t frequency;
-    static size_t sampleSize;
+    static size_t sampleSizeInByte;
     static size_t metadataSize;
     static size_t secondNumber;
     static vector<BinaryStreamIn*> inputsVector;
