@@ -132,13 +132,15 @@ int NsuMute::convert() {
         char *samplesArray = inputsVector[this->usingStream.first]->getSamplesInOneSecond(secondNumber, frequency,
                                                                                           sampleSizeInByte, metadataSize);
         try {
-            if (samplesArray) {
+            if (!inputsVector[this->usingStream.first]) {
                 throw RangeException(this->parameters);
             }
         } catch (RangeException &ex) {
             cerr << ex.ex_what() << endl;
             return ex.getErrorCode();
         }
+
+        cerr << samplesArray << endl;
     }
 
     return 0;

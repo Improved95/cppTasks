@@ -43,7 +43,7 @@ int Stream::checkFileOpen(const string &fileName) {
 char * BinaryStreamIn::samplesInOneSecond = nullptr;
 char *BinaryStreamIn::getSamplesInOneSecond(const size_t second, const size_t frequency,
                                             const size_t sampleSizeInByte, const size_t metadataSize) {
-    this->stream.seekg(metadataSize + frequency * sampleSizeInByte * second, this->stream.beg);
+    this->stream.seekg(metadataSize + (frequency * sampleSizeInByte * second), this->stream.beg);
     this->stream.read(samplesInOneSecond, frequency * sampleSizeInByte);
 
     return samplesInOneSecond;
