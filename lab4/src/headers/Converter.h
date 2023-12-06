@@ -11,11 +11,13 @@ using std::string;
 using std::unordered_map;
 using std::pair;
 
+class NsuSoundProcessorManager;
+
 class NsuConvertersInfo {
 public:
     static const string * getConvertersName() { return convertersNames; }
     static const string & getConvertersNamesPatterns() { return ConvertersNamesPatterns; }
-    static const size_t getConvertersQuantity() { return convertersQuantity; };
+    static size_t getConvertersQuantity() { return convertersQuantity; }
 protected:
     static const size_t convertersQuantity = 2;
     static const string convertersNames[convertersQuantity];
@@ -33,23 +35,24 @@ public:
     virtual int parseParameters() = 0;
     virtual void convert() = 0;
 
-    int fillUsingThreads(size_t parametersQuantity,
-                         cxxopts::Options &options, cxxopts::ParseResult &result);
+    static int initialInputStreams(vector<NsuConverterI*> &convertersVector, vector<string> &arguments);
+    static int initialOutputStreams(vector<string> &arguments);
     static bool convertersIsOver(const vector<NsuConverterI*> &convertersVector);
-    static int createInputStreams(vector<NsuConverterI*> &convertersVector,
-                                        vector<string> &arguments);
 
 private:
     static size_t orderCreation;
+    virtual int createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen) = 0;
 
 protected:
     string parameters;
     size_t priority = 0;
     bool convertingIsComplete = false;
     pair<size_t, pair<size_t, size_t>> usingStream;
-
     static size_t positionConverting;
-    static vector<BinaryStreamIn*> inputStreamsVector;
+    static vector<BinaryStreamIn*> inputsVector;
+
+    int fillUsingThreads(size_t parametersQuantity,
+                         cxxopts::Options &options, cxxopts::ParseResult &result);
 };
 
 class NsuMute : public NsuConverterI {
@@ -61,6 +64,8 @@ public:
 
 private:
     static const string parametersPattern;
+
+    int createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen) override;
 };
 
 class NsuMix : public NsuConverterI {
@@ -73,24 +78,34 @@ public:
 private:
     pair<size_t, size_t> mixStream;
     static const string parametersPattern;
+
+    int createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen) override;
 };
 
+
+// ========================================== Converters Manager  ==========================================
 class ConvertesManagers {
 public:
     ConvertesManagers(vector<string> &arguments_) {
         this->arguments = std::move(arguments_);
     }
 
-    virtual int convert() = 0;
+    virtual int initializeConvertersAndInitialConvert() = 0;
 
 protected:
     vector<string> arguments;
+
+    virtual int convert(vector<NsuConverterI*> &convertersVector) = 0;
 };
 
 class NsuSoundProcessorManager : public ConvertesManagers{
 public:
     NsuSoundProcessorManager(vector<string> &arguments_) : ConvertesManagers(arguments_){}
-    virtual int convert() override;
+
+    virtual int initializeConvertersAndInitialConvert() override;
+
+private:
+    virtual int convert(vector<NsuConverterI*> &convertersVector) override;
 };
 
 #endif

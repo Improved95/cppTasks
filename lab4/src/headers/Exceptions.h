@@ -6,6 +6,7 @@
 #include "Messages.h"
 using std::string;
 using std::exception;
+using std::to_string;
 
 class SoundProcessorException : public exception {
 public:
@@ -118,6 +119,17 @@ public:
     IncorrectParametersFormatException(const string &parameters)
         : FilesParserException() {
         this->msg = "Incorrect format parameters in '" + parameters + "'.";
+    }
+};
+
+class NotEnoughInputsException : public SoundProcessorException {
+public:
+    NotEnoughInputsException(const size_t mes_) : SoundProcessorException("default mes") {
+        this->msg = "Not enought inputs. You didn't enter '" + to_string(mes_ + 1) + "' input.";
+        this->code = 5;
+    }
+    NotEnoughInputsException() : SoundProcessorException("default message") {
+        this->code = 5;
     }
 };
 

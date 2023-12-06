@@ -1,12 +1,12 @@
-#include <regex>
 #include "FilesParser.h"
 #include "Converter.h"
 #include "Streams.h"
+#include "Exceptions.h"
 using std::ifstream;
 using std::cerr;
 using std::endl;
 
-int NsuSoundProcessorManager::convert() {
+int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
     int r;
     NsuSoundProcessorConfigParser filesParser;
 
@@ -20,15 +20,22 @@ int NsuSoundProcessorManager::convert() {
     for (auto &el : convertersVector) {
         if ((r = el->parseParameters()) != 0) { return r; }
     }
-    if ((r = NsuConverterI::createInputStreams(convertersVector, arguments)) != 0) { return r; }
 
-    /*while(!NsuConverterI::convertersIsOver(convertersVector)) {
+    if ((r = NsuConverterI::initialInputStreams(convertersVector, arguments)) != 0) { return r; }
+    if ((r = NsuConverterI::initialOutputStreams(arguments)) != 0) { return r; }
+
+//    convert(convertersVector);
+
+    return r;
+}
+
+int NsuSoundProcessorManager::convert(vector<NsuConverterI*> &convertersVector) {
+    while(!NsuConverterI::convertersIsOver(convertersVector)) {
         for (auto &el : convertersVector) {
             el->convert();
         }
-    }*/
-
-    return r;
+    }
+    return 0;
 }
 
 bool NsuConverterI::convertersIsOver(const vector<NsuConverterI*> &convertersVector) {
@@ -40,22 +47,65 @@ bool NsuConverterI::convertersIsOver(const vector<NsuConverterI*> &convertersVec
     return true;
 }
 
-vector<BinaryStreamIn*> NsuConverterI::inputStreamsVector = {};
-int NsuConverterI::createInputStreams(vector<NsuConverterI*> &convertersVector, vector<string> &arguments) {
-    int r;
-    vector<bool> inputIsOpen(arguments.size(), false);
-
+vector<BinaryStreamIn*> NsuConverterI::inputsVector = {};
+int NsuConverterI::initialInputStreams(vector<NsuConverterI*> &convertersVector, vector<string> &arguments) {
+    int r = 0;
+    vector<bool> inputIsOpen(arguments.size() - 2, false); // -2 потому что первые два аргумента это конфиг и аутпут
     for (auto &el : convertersVector) {
-        if (inputIsOpen[el->usingStream.first + 2]) {
-            continue;
+
+        try {
+            if (el->usingStream.first > arguments.size() - 3) {
+                throw NotEnoughInputsException(el->usingStream.first);
+            }
+        } catch (NotEnoughInputsException &ex) {
+            cerr << ex.ex_what() << endl;
+            return ex.getErrorCode();
         }
-        BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->usingStream.first + 2], r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
-        if (r != 0) { return r; }
-        inputStreamsVector.push_back(temp);
-        inputIsOpen[el->usingStream.first + 2] = true;
+
+        if (!inputIsOpen[el->usingStream.first]) {
+            BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->usingStream.first + 2], r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
+            if (r != 0) { return r; }
+            inputsVector.push_back(temp);
+            inputIsOpen[el->usingStream.first] = true;
+        }
+
+        if ((el->createInputStreams(arguments, inputIsOpen)) != 0) { return r; }
     }
     return r;
 }
+
+int NsuMute::createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen) {
+    // функция пустышка
+    int r;
+    if (arguments[0] == "") { r = 0; }
+    if (inputIsOpen[0] == false) { r = 0; }
+    r = 0;
+    return r;
+}
+
+int NsuMix::createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen) {
+    int r = 0;
+
+    try {
+        if (this->mixStream.first > arguments.size() - 3) {
+            throw NotEnoughInputsException(this->mixStream.first);
+        }
+    } catch (NotEnoughInputsException &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
+
+    if (!inputIsOpen[this->mixStream.first]) {
+        BinaryStreamIn *temp = new BinaryStreamIn(arguments[this->mixStream.first + 2], r);
+        if (r != 0) { return r; }
+        inputsVector.push_back(temp);
+        inputIsOpen[this->mixStream.first] = true;
+    }
+
+    return r;
+}
+
+
 
 size_t NsuConverterI::positionConverting = 0;
 void NsuMute::convert() {

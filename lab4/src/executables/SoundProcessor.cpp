@@ -15,7 +15,7 @@ int SoundProcessor::convertWithConsoleArguments(int argc, char **argv) {
     }
 
     NsuSoundProcessorManager nsuSoundProcessorManager(arguments);
-    if ((r = nsuSoundProcessorManager.convert()) != 0) {
+    if ((r = nsuSoundProcessorManager.initializeConvertersAndInitialConvert()) != 0) {
         return r;
     }
 

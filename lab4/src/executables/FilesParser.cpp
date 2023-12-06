@@ -79,7 +79,8 @@ int NsuMute::parseParameters() {
     options.parse_positional({"begin", "end"});
 
     cxxopts::ParseResult result;
-    if ((r = fillUsingThreads(2, options, result)) != 0) {
+    const size_t parametersQuantity = 2;
+    if ((r = fillUsingThreads(parametersQuantity, options, result)) != 0) {
         return r;
     }
     this->usingStream = pair(0, pair(result["begin"].as<int>(), result["end"].as<int>()));
@@ -110,7 +111,8 @@ int NsuMix::parseParameters() {
     options.parse_positional({"begin", "end", "input", "beginInMixInput"});
 
     cxxopts::ParseResult result;
-    if ((r = fillUsingThreads(5, options, result)) != 0) {
+    const size_t parametersQuantity = 5;
+    if ((r = fillUsingThreads(parametersQuantity, options, result)) != 0) {
         return r;
     }
 
@@ -121,14 +123,17 @@ int NsuMix::parseParameters() {
 }
 
 size_t NsuConverterI::orderCreation = 0;
-int NsuConverterI::fillUsingThreads(size_t parametersQuantity, cxxopts::Options &options, cxxopts::ParseResult &result) {
+int NsuConverterI::fillUsingThreads(const size_t parametersQuantity,
+                                    cxxopts::Options &options, cxxopts::ParseResult &result) {
     istringstream iss(this->parameters);
     vector<string> words;
     string word;
     while (iss >> word) {
         words.push_back(word);
     }
-    const char* charArray[parametersQuantity + 1];
+//    const char** charArray = new const char*[parametersQuantity + 1];
+/*написать проверку для массива в куче и использовать его, или все равно...*/
+    const char* charArray[10];
     for (size_t i = 0; i < words.size(); i++) {
         charArray[i + 1] = words[i].c_str();
     }

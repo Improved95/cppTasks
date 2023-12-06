@@ -9,7 +9,6 @@ void StreamIn::setPointer(size_t pos) {
 }
 */
 
-
 int BinaryStreamIn::openFile(const string &fileName) {
     this->stream.open(fileName, std::ios::in | std::ios::binary);
     return checkFileOpen(fileName);
