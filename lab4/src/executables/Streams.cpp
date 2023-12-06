@@ -14,8 +14,7 @@ int BinaryStreamIn::openFile(const string &fileName) {
     return checkFileOpen(fileName);
 }
 
-template<class T>
-int BinaryStreamOut<T>::openFile(const string &fileName) {
+int BinaryStreamOut::openFile(const string &fileName) {
     this->stream.open(fileName, std::ios::out | std::ios::binary);
     return checkFileOpen(fileName);
 }

@@ -32,6 +32,10 @@ public:
         this->parameters = parameters_;
     }
 
+    static void setFrequency(const size_t frequency_) { frequency = frequency_; }
+    static void setSizeOfSample(const size_t sampleSize_) { sampleSize = sampleSize_; }
+    static void setMetadataSize(const size_t metadataSize_) { metadataSize = metadataSize_; }
+
     virtual int parseParameters() = 0;
     virtual void convert() = 0;
 
@@ -45,11 +49,17 @@ private:
 
 protected:
     string parameters;
+
     size_t priority = 0;
     bool convertingIsComplete = false;
     pair<size_t, pair<size_t, size_t>> usingStream;
-    static size_t positionConverting;
+
+    static size_t frequency;
+    static size_t sampleSize;
+    static size_t metadataSize;
+    static size_t secondNumber;
     static vector<BinaryStreamIn*> inputsVector;
+    static BinaryStreamOut *output;
 
     int fillUsingThreads(size_t parametersQuantity,
                          cxxopts::Options &options, cxxopts::ParseResult &result);

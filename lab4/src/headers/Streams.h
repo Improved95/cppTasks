@@ -44,7 +44,6 @@ private:
     virtual int openFile(const string &fileName) override;
 };
 
-template<class T>
 class BinaryStreamOut : public Stream {
 public:
     BinaryStreamOut(const string &fileName, int &r) {
@@ -52,7 +51,7 @@ public:
     }
 
 private:
-    vector<T> samplesBuffer;
+//    todo
 
     virtual int openFile(const string &fileName) override;
 };
