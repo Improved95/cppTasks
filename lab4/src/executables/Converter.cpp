@@ -20,8 +20,7 @@ int NsuSoundProcessorManager::convert() {
     for (auto &el : convertersVector) {
         if ((r = el->parseParameters()) != 0) { return r; }
     }
-
-    if ((r = NsuConverterI::createInputStreams(arguments)) != 0) { return r; }
+    if ((r = NsuConverterI::createInputStreams(convertersVector, arguments)) != 0) { return r; }
 
     /*while(!NsuConverterI::convertersIsOver(convertersVector)) {
         for (auto &el : convertersVector) {
@@ -42,16 +41,23 @@ bool NsuConverterI::convertersIsOver(const vector<NsuConverterI*> &convertersVec
 }
 
 vector<BinaryStreamIn*> NsuConverterI::inputStreamsVector = {};
-int NsuConverterI::createInputStreams(vector<string> &fileNamesVector) {
+int NsuConverterI::createInputStreams(vector<NsuConverterI*> &convertersVector, vector<string> &arguments) {
     int r;
-    for (auto el = fileNamesVector.begin() + 2; el != fileNamesVector.end(); el++) {
-        BinaryStreamIn *temp = new BinaryStreamIn(*el, r);
+    vector<bool> inputIsOpen(arguments.size(), false);
+
+    for (auto &el : convertersVector) {
+        if (inputIsOpen[el->usingStream.first + 2]) {
+            continue;
+        }
+        BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->usingStream.first + 2], r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
         if (r != 0) { return r; }
         inputStreamsVector.push_back(temp);
+        inputIsOpen[el->usingStream.first + 2] = true;
     }
     return r;
 }
 
+size_t NsuConverterI::positionConverting = 0;
 void NsuMute::convert() {
 
 }

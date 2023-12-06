@@ -114,8 +114,8 @@ int NsuMix::parseParameters() {
         return r;
     }
 
-    this->usingStream = pair(0, pair(result["begin"].as<size_t>(), result["end"].as<size_t>()));
-    this->mixStream = pair(result["input"].as<size_t>(), result["beginInMixInput"].as<size_t>());
+    this->usingStream = pair(0, pair(result["begin"].as<size_t>(), result["end"].as<size_t>()));        // самый первый аргумент - индекс в векторе инпутов
+    this->mixStream = pair(result["input"].as<size_t>() - 1, result["beginInMixInput"].as<size_t>());   // то же самое
 
     return r;
 }

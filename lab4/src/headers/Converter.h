@@ -36,7 +36,8 @@ public:
     int fillUsingThreads(size_t parametersQuantity,
                          cxxopts::Options &options, cxxopts::ParseResult &result);
     static bool convertersIsOver(const vector<NsuConverterI*> &convertersVector);
-    static int createInputStreams(vector<string> &fileNamesVector);
+    static int createInputStreams(vector<NsuConverterI*> &convertersVector,
+                                        vector<string> &arguments);
 
 private:
     static size_t orderCreation;
@@ -47,6 +48,7 @@ protected:
     bool convertingIsComplete = false;
     pair<size_t, pair<size_t, size_t>> usingStream;
 
+    static size_t positionConverting;
     static vector<BinaryStreamIn*> inputStreamsVector;
 };
 
