@@ -37,7 +37,7 @@ public:
     static void setMetadataSize(const size_t metadataSize_) { metadataSize = metadataSize_; }
 
     virtual int parseParameters() = 0;
-    virtual void convert() = 0;
+    virtual int convert() = 0;
 
     static int initialInputStreams(vector<NsuConverterI*> &convertersVector, vector<string> &arguments);
     static int initialOutputStreams(vector<string> &arguments);
@@ -69,7 +69,7 @@ class NsuMute : public NsuConverterI {
 public:
     NsuMute(const string &parameters) : NsuConverterI(parameters) {}
 
-    virtual void convert() override;
+    virtual int convert() override;
     virtual int parseParameters() override;
 
 private:
@@ -82,7 +82,7 @@ class NsuMix : public NsuConverterI {
 public:
     NsuMix(const string &parameters) : NsuConverterI(parameters) {}
 
-    virtual void convert() override;
+    virtual int convert() override;
     virtual int parseParameters() override;
 
 private:

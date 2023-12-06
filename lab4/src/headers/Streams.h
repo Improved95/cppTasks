@@ -34,18 +34,27 @@ private:
     virtual int openFile(const string &fileName) override;
 };
 
-class Sample;
 class BinaryStreamIn : public Stream {
 public:
-    BinaryStreamIn(const string &fileName, int &r) {
+    BinaryStreamIn(const string &fileName, size_t frequency, size_t sampleSizeInByte, int &r) {
         r = openFile(fileName);
+
+        if (samplesInOneSecond == nullptr) {
+            samplesInOneSecond = new char[frequency * sampleSizeInByte];
+            if (samplesInOneSecond == NULL) { r = 6; }
+        }
+    }
+    ~BinaryStreamIn() {
+        if (this->samplesInOneSecond != nullptr && this->samplesInOneSecond != NULL) {
+            delete samplesInOneSecond;
+        }
     }
 
-    vector<Sample*> getSamplesInOneSecond(const size_t second, const size_t frequency,
-                                          const size_t sampleSizeInByte, const size_t metadataSize);
+    char * getSamplesInOneSecond(const size_t second, const size_t frequency,
+                                 const size_t sampleSizeInByte, const size_t metadataSize);
 
 private:
-
+    static char *samplesInOneSecond;
     virtual int openFile(const string &fileName) override;
 };
 
@@ -53,6 +62,7 @@ class BinaryStreamOut : public Stream {
 public:
     BinaryStreamOut(const string &fileName, int &r) {
         r = openFile(fileName);
+
     }
 
     void pushSample();
@@ -61,17 +71,5 @@ private:
     virtual int openFile(const string &fileName) override;
 };
 
-class Sample {
-public:
-    Sample(size_t sampleSize) {
-        bytesArray = new char[sampleSize];
-    }
-    ~Sample() {
-        delete bytesArray;
-    }
-
-private:
-    char *bytesArray;
-};
 
 #endif

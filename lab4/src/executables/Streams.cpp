@@ -16,6 +16,7 @@ int BinaryStreamIn::openFile(const string &fileName) {
     return checkFileOpen(fileName);
 }
 
+
 int BinaryStreamOut::openFile(const string &fileName) {
     this->stream.open(fileName, std::ios::out | std::ios::binary);
     return checkFileOpen(fileName);
@@ -39,14 +40,11 @@ int Stream::checkFileOpen(const string &fileName) {
     return 0;
 }
 
-vector<Sample*> BinaryStreamIn::getSamplesInOneSecond(const size_t second, const size_t frequency,
-                                                      const size_t sampleSizeInByte, const size_t metadataSize) {
+char * BinaryStreamIn::samplesInOneSecond = nullptr;
+char *BinaryStreamIn::getSamplesInOneSecond(const size_t second, const size_t frequency,
+                                            const size_t sampleSizeInByte, const size_t metadataSize) {
     this->stream.seekg(metadataSize + frequency * sampleSizeInByte * second, this->stream.beg);
+    this->stream.read(samplesInOneSecond, frequency * sampleSizeInByte);
 
-        vector<Sample*> samplesVector(frequency);
-        for (size_t i = 0; i < frequency; i++) {
-        samplesVector.push_back(new Sample(sampleSizeInByte));
-    }
-
-    return samplesVector;
+    return samplesInOneSecond;
 }

@@ -31,18 +31,19 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
     if ((r = NsuConverterI::initialInputStreams(convertersVector, arguments)) != 0) { return r; }
     if ((r = NsuConverterI::initialOutputStreams(arguments)) != 0) { return r; }
 
-//    convert(convertersVector);
+    convert(convertersVector);
 
     return r;
 }
 
 int NsuSoundProcessorManager::convert(vector<NsuConverterI*> &convertersVector) {
+    int r;
     while(!NsuConverterI::convertersIsOver(convertersVector)) {
         for (auto &el : convertersVector) {
-            el->convert();
+            if ((r = el->convert()) != 0) { return r; }
         }
     }
-    return 0;
+    return r;
 }
 
 bool NsuConverterI::convertersIsOver(const vector<NsuConverterI*> &convertersVector) {
@@ -70,7 +71,7 @@ int NsuConverterI::initialInputStreams(vector<NsuConverterI*> &convertersVector,
         }
 
         if (!inputIsOpen[el->usingStream.first]) {
-            BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->usingStream.first + 2], r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
+            BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->usingStream.first + 2], frequency, sampleSizeInByte, r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
             if (r != 0) { return r; }
             inputsVector.push_back(temp);
             inputIsOpen[el->usingStream.first] = true;
@@ -103,7 +104,7 @@ int NsuMix::createInputStreams(vector<string> &arguments, vector<bool> &inputIsO
     }
 
     if (!inputIsOpen[this->mixStream.first]) {
-        BinaryStreamIn *temp = new BinaryStreamIn(arguments[this->mixStream.first + 2], r);
+        BinaryStreamIn *temp = new BinaryStreamIn(arguments[this->mixStream.first + 2], frequency, sampleSizeInByte, r);
         if (r != 0) { return r; }
         inputsVector.push_back(temp);
         inputIsOpen[this->mixStream.first] = true;
@@ -126,13 +127,23 @@ size_t NsuConverterI::frequency = 0;
 size_t NsuConverterI::sampleSizeInByte = 0;
 size_t NsuConverterI::metadataSize = 0;
 size_t NsuConverterI::secondNumber = 0;
-void NsuMute::convert() {
+int NsuMute::convert() {
     if (secondNumber >= this->usingStream.second.first && secondNumber <= this->usingStream.second.second) {
-//        vector<> = inputsVector[this->usingStream.first]->getSamplesInOneSecond();
-
+        char *samplesArray = inputsVector[this->usingStream.first]->getSamplesInOneSecond(secondNumber, frequency,
+                                                                                          sampleSizeInByte, metadataSize);
+        try {
+            if (samplesArray) {
+                throw RangeException(this->parameters);
+            }
+        } catch (RangeException &ex) {
+            cerr << ex.ex_what() << endl;
+            return ex.getErrorCode();
+        }
     }
+
+    return 0;
 }
 
-void NsuMix::convert() {
-
+int NsuMix::convert() {
+    return 0;
 }

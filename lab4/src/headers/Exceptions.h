@@ -124,12 +124,30 @@ public:
 
 class NotEnoughInputsException : public SoundProcessorException {
 public:
-    NotEnoughInputsException(const size_t mes_) : SoundProcessorException("default mes") {
+    NotEnoughInputsException(const size_t mes_) : SoundProcessorException("default message") {
         this->msg = "Not enought inputs. You didn't enter '" + to_string(mes_ + 1) + "' input.";
         this->code = 5;
     }
     NotEnoughInputsException() : SoundProcessorException("default message") {
         this->code = 5;
+    }
+};
+
+class ConvertersExcetion : public SoundProcessorException {
+public:
+    ConvertersExcetion() : SoundProcessorException("default message") {
+        this->code = 6;
+    }
+    ConvertersExcetion(const string &msg_) : SoundProcessorException(msg_) {
+        this->code = 6;
+    }
+};
+
+class RangeException : public ConvertersExcetion {
+public:
+    RangeException(const string &msg_) : ConvertersExcetion() {
+        this->msg = "You going beyond the file boundaries, check the parameters and their correctness in' " +
+                msg_ + "'.";
     }
 };
 
