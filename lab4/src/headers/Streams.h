@@ -9,6 +9,7 @@ using std::ofstream;
 using std::fstream;
 using std::vector;
 using std::string;
+#define BITS_PER_BYTE 8
 
 class Stream {
 public:
@@ -36,13 +37,8 @@ private:
 
 class BinaryStreamIn : public Stream {
 public:
-    BinaryStreamIn(const string &fileName, size_t frequency, size_t sampleSizeInByte, int &r) {
+    BinaryStreamIn(const string &fileName, int &r) {
         r = openFile(fileName);
-
-        if (samplesInOneSecond == nullptr) {
-            samplesInOneSecond = new char[frequency * sampleSizeInByte];
-            if (samplesInOneSecond == NULL) { r = 6; }
-        }
     }
     ~BinaryStreamIn() {
         if (this->samplesInOneSecond != nullptr && this->samplesInOneSecond != NULL) {
@@ -51,18 +47,21 @@ public:
     }
 
     char * getSamplesInOneSecond(const size_t second, const size_t frequency,
-                                 const size_t sampleSizeInByte, const size_t metadataSize);
+                                 const size_t bitsPerSample);
 
 private:
+    size_t metadataSize = 0;
     static char *samplesInOneSecond;
+
     virtual int openFile(const string &fileName) override;
+    int checkCorrectFormatFile(const size_t frequency, const size_t bitsPerSample,
+                               const size_t channels, const size_t audioFormat);
 };
 
 class BinaryStreamOut : public Stream {
 public:
     BinaryStreamOut(const string &fileName, int &r) {
         r = openFile(fileName);
-
     }
 
     void pushSample();

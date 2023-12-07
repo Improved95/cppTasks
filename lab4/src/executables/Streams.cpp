@@ -5,15 +5,11 @@ using std::cerr;
 using std::endl;
 using std::vector;
 
-/*
-void StreamIn::setPointer(size_t pos) {
-    this->streamIn->seekg(pos, this->streamIn->beg);
-}
-*/
-
 int BinaryStreamIn::openFile(const string &fileName) {
+    int r;
     this->stream.open(fileName, std::ios::in | std::ios::binary);
-    return checkFileOpen(fileName);
+    r = checkFileOpen(fileName);
+    return r;
 }
 
 
@@ -42,9 +38,15 @@ int Stream::checkFileOpen(const string &fileName) {
 
 char * BinaryStreamIn::samplesInOneSecond = nullptr;
 char *BinaryStreamIn::getSamplesInOneSecond(const size_t second, const size_t frequency,
-                                            const size_t sampleSizeInByte, const size_t metadataSize) {
-    this->stream.seekg(metadataSize + (frequency * sampleSizeInByte * second), this->stream.beg);
-    this->stream.read(samplesInOneSecond, frequency * sampleSizeInByte);
+                                            const size_t bitsPerSample) {
+
+    this->stream.read(samplesInOneSecond, frequency * (bitsPerSample / BITS_PER_BYTE));
 
     return samplesInOneSecond;
+}
+
+int BinaryStreamIn::checkCorrectFormatFile(const size_t frequency, const size_t bitsPerSample,
+                       const size_t channels, const size_t audioFormat) {
+
+    return 0;
 }

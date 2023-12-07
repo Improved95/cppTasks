@@ -33,8 +33,9 @@ public:
     }
 
     static void setFrequency(const size_t frequency_) { frequency = frequency_; }
-    static void setSizeOfSample(const size_t sampleSize_) { sampleSizeInByte = sampleSize_; }
-    static void setMetadataSize(const size_t metadataSize_) { metadataSize = metadataSize_; }
+    static void setSizeOfSample(const size_t bitsPerSample_) { bitsPerSample = bitsPerSample_; }
+    static void setChannels(const size_t channels_) { channels = channels_; }
+    static void setAudioFormat(const size_t audioFormat_) { audioFormat = audioFormat_; }
 
     virtual int parseParameters() = 0;
     virtual int convert() = 0;
@@ -55,14 +56,17 @@ protected:
     pair<size_t, pair<size_t, size_t>> usingStream;
 
     static size_t frequency;
-    static size_t sampleSizeInByte;
-    static size_t metadataSize;
+    static size_t bitsPerSample;
+    static size_t channels;
+    static size_t audioFormat;
     static size_t secondNumber;
     static vector<BinaryStreamIn*> inputsVector;
     static BinaryStreamOut *output;
 
     int fillUsingThreads(size_t parametersQuantity,
                          cxxopts::Options &options, cxxopts::ParseResult &result);
+
+    friend NsuSoundProcessorManager;
 };
 
 class NsuMute : public NsuConverterI {
@@ -116,6 +120,8 @@ public:
 
 private:
     virtual int convert(vector<NsuConverterI*> &convertersVector) override;
+    int checkFilesFormatAndParametersOnCorrect(const size_t frequency, const size_t bitsPerSample,
+                                               const size_t channels, const size_t audioFormat);
 };
 
 #endif
