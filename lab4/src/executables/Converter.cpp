@@ -44,14 +44,14 @@ int NsuSoundProcessorManager::checkFilesFormatAndParametersOnCorrect(vector<NsuC
                                                                      const size_t channels, const size_t audioFormat) {
     int r;
     for (auto &el : NsuConverterI::inputsVector) {
-        try {
+        /*try {
             if (el->getSamplesArray() == nullptr || el->getSamplesArray() == NULL) {
                 throw MemoryException();
             }
         } catch (MemoryException &ex) {
             cerr << ex.ex_what() << endl;
             return ex.getErrorCode();
-        }
+        }*/
 
         if ((r = el->checkWavCorrectFormatFile(frequency, bitsPerSample, channels, audioFormat)) != 0) { return r; }
     }

@@ -48,45 +48,80 @@ char *BinaryStreamIn::getSamplesInOneSecond(const size_t second, const size_t fr
 }
 
 int BinaryStreamIn::checkWavCorrectFormatFile(const size_t frequency, const size_t bitsPerSample,
-                                           const size_t channels, const size_t audioFormat) {
-
-    int r;
-    function<int(void(*foo)(char data[4], BinaryStreamIn *ptr))> tryCatch;
-
+                                           const size_t numberOfChannels, const size_t compressingCode) {
     this->metadataSize = 8;
+    function<bool(const string &s1, const string &s2)> strIsEqual = [](const string &s1, const string &s2) {
+        if (s1 == s2) {
+            return true;
+        }
+        return false;
+    };
 
+    //RIFF
     char data[4];
     this->stream.read(data, 4);
     try {
-        if (data != "RIFF") {
+        if (!strIsEqual(data, "RIFF")) {
             throw IncorrectFileFormat(this->fileName);
         }
-    } catch (IncorrectFileFormat  &ex) {
+    } catch (IncorrectFileFormat &ex) {
         cerr << ex.ex_what() << endl;
         return ex.getErrorCode();
     }
 
+    //Считываю размер файла
     this->stream.read(data, 4);
     unsigned int fileSize =  *reinterpret_cast<int*>(data) + 8;
 
-
+    //проверяю WAVE
     this->stream.read(data, 4);
-    if ((r = tryCatch([](char data[4], BinaryStreamIn *ptr) { if (data != "fmt ") {
-        throw IncorrectFileFormat(ptr->fileName);
-    } })) != 0) { return r; }
-
-    this->stream.read(data, 4);
-
-
-    tryCatch = [&data, this](void(*foo)(char data[4], BinaryStreamIn *ptr)) {
-        try {
-            foo(data, this);
-        } catch (IncorrectFileFormat  &ex) {
-            cerr << ex.ex_what() << endl;
-            return ex.getErrorCode();
+    try {
+        if (strIsEqual(data, "WAVE")) {
+            throw IncorrectFileFormat(this->fileName);
         }
-        return 0;
-    };
+    } catch (IncorrectFileFormat &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
+
+    //проверяю fmt
+    this->stream.read(data, 4);
+    try {
+        if (strIsEqual(data, "fmt ")) {
+            throw IncorrectFileFormat(this->fileName);
+        }
+    } catch (IncorrectFileFormat &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
+
+    //считываю размер данных блока fmt
+    this->stream.read(data, 4);
+    this->metadataSize += *reinterpret_cast<int*>(data);
+
+    //считываю код сжатия
+    this->stream.read(data, 2);
+    int dataInt = *reinterpret_cast<int*>(data);
+    try {
+        if (dataInt != compressingCode) {
+            throw IncorrectFileFormat(this->fileName, "compressing code");
+        }
+    } catch (IncorrectFileFormat &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
+
+    //считываю количество каналов
+    this->stream.read(data, 2);
+    dataInt = *reinterpret_cast<int*>(data);
+    try {
+        if (dataInt != compressingCode) {
+            throw IncorrectFileFormat(this->fileName, "number of channels");
+        }
+    } catch (IncorrectFileFormat &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
 
     this->stream.seekg(0, this->stream.beg);
     return 0;

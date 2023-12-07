@@ -10,9 +10,12 @@ using std::to_string;
 
 class SoundProcessorException : public exception {
 public:
-    SoundProcessorException(const string &msg_) {
-        this->msg = msg_;
+    SoundProcessorException() {
         this->code = 0;
+        this->msg = "error happend";
+    }
+    SoundProcessorException(const string &msg_) : SoundProcessorException() {
+        this->msg = msg_;
     }
 
     virtual const string & ex_what() throw() { return msg; };
@@ -25,20 +28,14 @@ protected:
 
 class ArgumentException : public SoundProcessorException {
 public:
-    ArgumentException(const cxxopts::Options *options_)
-            : SoundProcessorException("default_message") {
+    ArgumentException(const cxxopts::Options *options_) {
         this->code = 1;
         this->options = options_;
     }
 
     ArgumentException(const string &msg_, const cxxopts::Options *options_)
         : ArgumentException(options_) {
-        this->msg = msg_;
-    }
-
-    virtual const string & ex_what() throw() override {
-        this->msg += ("\nHelp list:\n" + this->options->help());
-        return this->msg;
+        this->msg = msg_ + ("\nHelp list:\n" + this->options->help());;
     }
 
 protected:
@@ -164,12 +161,15 @@ public:
     FilesException() : SoundProcessorException("default message") {
         this->code = 8;
     }
+    FilesException(const string &msg_) : FilesException() {
+        this->msg = msg;
+    }
 };
 
 class IncorrectFileFormat : public FilesException {
 public:
-    IncorrectFileFormat(const string &msg_) {
-        this->msg = "Incorrect format in'" + msg_ + "' file.";
+    IncorrectFileFormat(const string &msg_) : FilesException(msg_) {
+//        this->msg = "Incorrect format in file.";
     }
     IncorrectFileFormat(const string &msg_1, const string &msg_2) : IncorrectFileFormat(msg_1) {
         this->msg += " Incorrect " + msg_2 + " .";
