@@ -117,11 +117,4 @@ public:
     }
 };
 
-class FilesException : public SoundProcessorException {
-public:
-    FilesException() {
-        this->msg = "file exception";
-    }
-};
-
 #endif

@@ -1,6 +1,7 @@
 #include "Streams.h"
 #include "Exceptions.h"
 #include <vector>
+#include <cstring>
 #include "functional"
 using std::function;
 using std::cerr;
@@ -48,116 +49,59 @@ char *BinaryStreamIn::getSamplesInOneSecond(const size_t second, const size_t fr
 
 int BinaryStreamIn::parseMetadataInWavFile(const size_t frequency, const size_t bitsPerSample,
                                            const size_t numberOfChannels, const size_t compressingCode) {
+    /*эксепшоны в этом методе не работают, поэтому здесь не будет,
+     * здесь вообще ничего не работает, если быть честным, strcmp тоже не работает*/
     this->metadataSize = 8;
-    function<bool(const string &s1, const string &s2)> strIsEqual = [](const string &s1, const string &s2) {
-        for (size_t i = 0; i < s2.size(); i++) {
-            if (s1[i] != s2[i]) {
-                return false;
-            }
-        }
-        return true;
-    };
 
     //RIFF
     char data[4];
     this->stream.read(data, 4);
-    try {
-        if (!strIsEqual(data, "RIFF")) {
-            throw FilesException();
-        }
-    } catch (FilesException &ex) {
-        cerr << ex.ex_what() << endl;
-        return ex.getErrorCode();
-    }
 
-    //Считываю размер файла
+    if (strcmp(data, "RIFF") != 0) { return 8; }
+
+    //размер файла
     this->stream.read(data, 4);
     unsigned int fileSize =  *reinterpret_cast<int*>(data) + 8;
 
-    //проверяю WAVE
+    //WAVE
     this->stream.read(data, 4);
-    try {
-        if (!strIsEqual(data, "WAVE")) {
-            throw FilesException();
-        }
-    } catch (FilesException &ex) {
-        cerr << ex.ex_what() << endl;
-        return ex.getErrorCode();
-    }
+    if (strcmp(data, "WAVE") != 0) { return 8; }
 
-    //проверяю fmt
+    //fmt
     this->stream.read(data, 4);
-    try {
-        if (!strIsEqual(data, "fmt ")) {
-            throw FilesException();
-        }
-    } catch (FilesException &ex) {
-        cerr << ex.ex_what() << endl;
-        return ex.getErrorCode();
-    }
+    if (strcmp(data, "fmt ") != 0) { return 8; }
 
-    //считываю размер данных блока fmt
+    //размер данных блока fmt
     this->stream.read(data, 4);
     this->metadataSize += *reinterpret_cast<int*>(data);
 
-    //считываю код сжатия
+    //код сжатия
     this->stream.read(data, 2);
     int dataInt = *reinterpret_cast<int*>(data);
-    try {
-        if (dataInt != compressingCode) {
-            throw FilesException();
-        }
-    } catch (FilesException &ex) {
-        cerr << ex.ex_what() << endl;
-        return ex.getErrorCode();
-    }
+    if (dataInt != compressingCode) { return 8; }
 
-    //считываю количество каналов
+    //количество каналов
     this->stream.read(data, 2);
     dataInt = *reinterpret_cast<int*>(data);
-    try {
-        if (dataInt != compressingCode) {
-            throw FilesException();
-        }
-    } catch (FilesException &ex) {
-        cerr << ex.ex_what() << endl;
-        return ex.getErrorCode();
-    }
+    if (dataInt != compressingCode) { return 8; }
 
     //частота дискретизации
     this->stream.read(data, 4);
     dataInt = *reinterpret_cast<int*>(data);
-    try {
-        if (dataInt != frequency) {
-            throw FilesException();
-        }
-    } catch (FilesException &ex) {
-        cerr << ex.ex_what() << endl;
-        return ex.getErrorCode();
-    }
+    if (dataInt != frequency) { return 8; }
 
-    //количество бит в сэмпле
+    //количество байт в секунде
     this->stream.read(data, 4);
     dataInt = *reinterpret_cast<int*>(data);
-    try {
-        if (dataInt != frequency) {
-            throw FilesException();
-        }
-    } catch (FilesException &ex) {
-        cerr << ex.ex_what() << endl;
-        return ex.getErrorCode();
-    }
+    if (dataInt != frequency * bitsPerSample / BITS_PER_BYTE) { return 8; }
+
+    /*в первых двух байтах лежит некий размер блока, а во вторых двух
+     * лежит количество значащих бит на выборку, чтобы это все не значило*/
+    this->stream.read(data, 4);
 
     //list или data
     this->stream.read(data, 4);
-    try {
-        if (!strIsEqual(data, "data") && !strIsEqual(data, "LIST")) {
-            throw FilesException();
-        }
-    } catch (FilesException &ex) {
-        cerr << ex.ex_what() << endl;
-        return ex.getErrorCode();
-    }
+    if (strcmp(data, "data") != 0 && strcmp(data, "LIST") != 0) { return 8; }
 
     this->stream.seekg(0, this->stream.beg);
     return 0;
