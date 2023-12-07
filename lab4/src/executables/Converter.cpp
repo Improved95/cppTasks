@@ -96,7 +96,7 @@ int NsuConverterI::initialInputStreams(vector<NsuConverterI*> &convertersVector,
             inputIsOpen[el->usingStream.first] = true;
         }
 
-        if ((el->createInputStreams(arguments, inputIsOpen)) != 0) { return r; }
+        if ((r = el->createInputStreams(arguments, inputIsOpen)) != 0) { return r; }
     }
     return r;
 }
