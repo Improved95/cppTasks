@@ -37,8 +37,9 @@ private:
 
 class BinaryStreamIn : public Stream {
 public:
-    BinaryStreamIn(const string &fileName, int &r) {
-        r = openFile(fileName);
+    BinaryStreamIn(const string &fileName_, int &r) {
+        r = openFile(fileName_);
+        this->fileName = fileName_;
     }
     ~BinaryStreamIn() {
         if (this->samplesInOneSecond != nullptr && this->samplesInOneSecond != NULL) {
@@ -46,16 +47,18 @@ public:
         }
     }
 
+    char * getSamplesArray() const { return this->samplesInOneSecond; }
+
     char * getSamplesInOneSecond(const size_t second, const size_t frequency,
                                  const size_t bitsPerSample);
-
+    int checkWavCorrectFormatFile(const size_t frequency, const size_t bitsPerSample,
+                               const size_t channels, const size_t audioFormat);
 private:
     size_t metadataSize = 0;
+    string fileName;
     static char *samplesInOneSecond;
 
     virtual int openFile(const string &fileName) override;
-    int checkCorrectFormatFile(const size_t frequency, const size_t bitsPerSample,
-                               const size_t channels, const size_t audioFormat);
 };
 
 class BinaryStreamOut : public Stream {

@@ -151,4 +151,29 @@ public:
     }
 };
 
+class MemoryException : public SoundProcessorException {
+public:
+    MemoryException() : SoundProcessorException("default message") {
+        this->msg = "Error when working with memory ¯\\_(-_-)_/¯.";
+        this->code = 7;
+    }
+};
+
+class FilesException : public SoundProcessorException {
+public:
+    FilesException() : SoundProcessorException("default message") {
+        this->code = 8;
+    }
+};
+
+class IncorrectFileFormat : public FilesException {
+public:
+    IncorrectFileFormat(const string &msg_) {
+        this->msg = "Incorrect format in'" + msg_ + "' file.";
+    }
+    IncorrectFileFormat(const string &msg_1, const string &msg_2) : IncorrectFileFormat(msg_1) {
+        this->msg += " Incorrect " + msg_2 + " .";
+    }
+};
+
 #endif

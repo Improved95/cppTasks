@@ -1,6 +1,8 @@
 #include "Streams.h"
 #include "Exceptions.h"
 #include <vector>
+#include "functional"
+using std::function;
 using std::cerr;
 using std::endl;
 using std::vector;
@@ -45,8 +47,47 @@ char *BinaryStreamIn::getSamplesInOneSecond(const size_t second, const size_t fr
     return samplesInOneSecond;
 }
 
-int BinaryStreamIn::checkCorrectFormatFile(const size_t frequency, const size_t bitsPerSample,
-                       const size_t channels, const size_t audioFormat) {
+int BinaryStreamIn::checkWavCorrectFormatFile(const size_t frequency, const size_t bitsPerSample,
+                                           const size_t channels, const size_t audioFormat) {
 
+    int r;
+    function<int(void(*foo)(char data[4], BinaryStreamIn *ptr))> tryCatch;
+
+    this->metadataSize = 8;
+
+    char data[4];
+    this->stream.read(data, 4);
+    try {
+        if (data != "RIFF") {
+            throw IncorrectFileFormat(this->fileName);
+        }
+    } catch (IncorrectFileFormat  &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
+
+    this->stream.read(data, 4);
+    unsigned int fileSize =  *reinterpret_cast<int*>(data) + 8;
+
+
+    this->stream.read(data, 4);
+    if ((r = tryCatch([](char data[4], BinaryStreamIn *ptr) { if (data != "fmt ") {
+        throw IncorrectFileFormat(ptr->fileName);
+    } })) != 0) { return r; }
+
+    this->stream.read(data, 4);
+
+
+    tryCatch = [&data, this](void(*foo)(char data[4], BinaryStreamIn *ptr)) {
+        try {
+            foo(data, this);
+        } catch (IncorrectFileFormat  &ex) {
+            cerr << ex.ex_what() << endl;
+            return ex.getErrorCode();
+        }
+        return 0;
+    };
+
+    this->stream.seekg(0, this->stream.beg);
     return 0;
 }

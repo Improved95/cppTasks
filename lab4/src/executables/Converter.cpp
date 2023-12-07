@@ -32,16 +32,29 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
     NsuConverterI::setAudioFormat(audioFormat);
     if ((r = NsuConverterI::initialInputStreams(convertersVector, arguments)) != 0) { return r; }
     if ((r = NsuConverterI::initialOutputStreams(arguments)) != 0) { return r; }
-    r = checkFilesFormatAndParametersOnCorrect();
+    r = checkFilesFormatAndParametersOnCorrect(convertersVector, frequency, bitsPerSample, channels, audioFormat);
 
     convert(convertersVector);
 
     return r;
 }
 
-int NsuSoundProcessorManager::checkFilesFormatAndParametersOnCorrect(, const size_t frequency, const size_t bitsPerSample,
+int NsuSoundProcessorManager::checkFilesFormatAndParametersOnCorrect(vector<NsuConverterI*> convertersVector,
+                                                                     const size_t frequency, const size_t bitsPerSample,
                                                                      const size_t channels, const size_t audioFormat) {
     int r;
+    for (auto &el : NsuConverterI::inputsVector) {
+        try {
+            if (el->getSamplesArray() == nullptr || el->getSamplesArray() == NULL) {
+                throw MemoryException();
+            }
+        } catch (MemoryException &ex) {
+            cerr << ex.ex_what() << endl;
+            return ex.getErrorCode();
+        }
+
+        if ((r = el->checkWavCorrectFormatFile(frequency, bitsPerSample, channels, audioFormat)) != 0) { return r; }
+    }
 
     /*if (samplesInOneSecond == nullptr) {
         samplesInOneSecond = new char[frequency * bitsPerSample / BITS_PER_BYTE];
@@ -86,8 +99,7 @@ int NsuConverterI::initialInputStreams(vector<NsuConverterI*> &convertersVector,
         }
 
         if (!inputIsOpen[el->usingStream.first]) {
-            BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->usingStream.first + 2], frequency, bitsPerSample,
-                                                      channels, audioFormat, r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
+            BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->usingStream.first + 2], r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
             if (r != 0) { return r; }
             inputsVector.push_back(temp);
             inputIsOpen[el->usingStream.first] = true;
@@ -120,8 +132,7 @@ int NsuMix::createInputStreams(vector<string> &arguments, vector<bool> &inputIsO
     }
 
     if (!inputIsOpen[this->mixStream.first]) {
-        BinaryStreamIn *temp = new BinaryStreamIn(arguments[this->mixStream.first + 2], frequency, bitsPerSample,
-                                                  channels, audioFormat, r);
+        BinaryStreamIn *temp = new BinaryStreamIn(arguments[this->mixStream.first + 2], r);
         if (r != 0) { return r; }
         inputsVector.push_back(temp);
         inputIsOpen[this->mixStream.first] = true;

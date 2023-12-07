@@ -120,7 +120,8 @@ public:
 
 private:
     virtual int convert(vector<NsuConverterI*> &convertersVector) override;
-    int checkFilesFormatAndParametersOnCorrect(const size_t frequency, const size_t bitsPerSample,
+    int checkFilesFormatAndParametersOnCorrect(vector<NsuConverterI*> convertersVector,
+                                               const size_t frequency, const size_t bitsPerSample,
                                                const size_t channels, const size_t audioFormat);
 };
 
