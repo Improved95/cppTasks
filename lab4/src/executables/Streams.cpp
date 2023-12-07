@@ -34,7 +34,6 @@ int Stream::checkFileOpen(const string &fileName) {
         cerr << ex.ex_what() << endl;
         return ex.getErrorCode();
     }
-
     return 0;
 }
 
@@ -61,10 +60,10 @@ int BinaryStreamIn::checkWavCorrectFormatFile(const size_t frequency, const size
     char data[4];
     this->stream.read(data, 4);
     try {
-        if (!strIsEqual(data, "RIFF")) {
-            throw IncorrectFileFormat(this->fileName);
+        if (strIsEqual(data, "RIFF")) {
+            throw FilesException();
         }
-    } catch (IncorrectFileFormat &ex) {
+    } catch (FilesException &ex) {
         cerr << ex.ex_what() << endl;
         return ex.getErrorCode();
     }
@@ -76,10 +75,10 @@ int BinaryStreamIn::checkWavCorrectFormatFile(const size_t frequency, const size
     //проверяю WAVE
     this->stream.read(data, 4);
     try {
-        if (strIsEqual(data, "WAVE")) {
-            throw IncorrectFileFormat(this->fileName);
+        if (!strIsEqual(data, "WAVE")) {
+            throw FilesException();
         }
-    } catch (IncorrectFileFormat &ex) {
+    } catch (FilesException &ex) {
         cerr << ex.ex_what() << endl;
         return ex.getErrorCode();
     }
@@ -88,9 +87,9 @@ int BinaryStreamIn::checkWavCorrectFormatFile(const size_t frequency, const size
     this->stream.read(data, 4);
     try {
         if (strIsEqual(data, "fmt ")) {
-            throw IncorrectFileFormat(this->fileName);
+            throw FilesException();
         }
-    } catch (IncorrectFileFormat &ex) {
+    } catch (FilesException &ex) {
         cerr << ex.ex_what() << endl;
         return ex.getErrorCode();
     }
@@ -104,9 +103,9 @@ int BinaryStreamIn::checkWavCorrectFormatFile(const size_t frequency, const size
     int dataInt = *reinterpret_cast<int*>(data);
     try {
         if (dataInt != compressingCode) {
-            throw IncorrectFileFormat(this->fileName, "compressing code");
+            throw FilesException();
         }
-    } catch (IncorrectFileFormat &ex) {
+    } catch (FilesException &ex) {
         cerr << ex.ex_what() << endl;
         return ex.getErrorCode();
     }
@@ -116,9 +115,9 @@ int BinaryStreamIn::checkWavCorrectFormatFile(const size_t frequency, const size
     dataInt = *reinterpret_cast<int*>(data);
     try {
         if (dataInt != compressingCode) {
-            throw IncorrectFileFormat(this->fileName, "number of channels");
+            throw FilesException();
         }
-    } catch (IncorrectFileFormat &ex) {
+    } catch (FilesException &ex) {
         cerr << ex.ex_what() << endl;
         return ex.getErrorCode();
     }

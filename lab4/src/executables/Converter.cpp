@@ -44,15 +44,6 @@ int NsuSoundProcessorManager::checkFilesFormatAndParametersOnCorrect(vector<NsuC
                                                                      const size_t channels, const size_t audioFormat) {
     int r;
     for (auto &el : NsuConverterI::inputsVector) {
-        /*try {
-            if (el->getSamplesArray() == nullptr || el->getSamplesArray() == NULL) {
-                throw MemoryException();
-            }
-        } catch (MemoryException &ex) {
-            cerr << ex.ex_what() << endl;
-            return ex.getErrorCode();
-        }*/
-
         if ((r = el->checkWavCorrectFormatFile(frequency, bitsPerSample, channels, audioFormat)) != 0) { return r; }
     }
 
@@ -159,15 +150,15 @@ size_t NsuConverterI::secondNumber = 0;
 int NsuMute::convert() {
     if (secondNumber >= this->usingStream.second.first && secondNumber <= this->usingStream.second.second) {
         char *samplesArray = inputsVector[this->usingStream.first]->getSamplesInOneSecond(secondNumber, frequency, bitsPerSample);
-        try {
-            if (!inputsVector[this->usingStream.first]) {
-                throw RangeException(this->parameters);
-            }
-        } catch (RangeException &ex) {
-            cerr << ex.ex_what() << endl;
-            return ex.getErrorCode();
-        }
-        cerr << samplesArray << endl;
+//        try {
+//            if (!inputsVector[this->usingStream.first]) {
+//                throw RangeException(this->parameters);
+//            }
+//        } catch (RangeException &ex) {
+//            cerr << ex.ex_what() << endl;
+//            return ex.getErrorCode();
+//        }
+//        cerr << samplesArray << endl;
     }
 
     return 0;

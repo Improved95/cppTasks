@@ -14,9 +14,6 @@ public:
         this->code = 0;
         this->msg = "error happend";
     }
-    SoundProcessorException(const string &msg_) : SoundProcessorException() {
-        this->msg = msg_;
-    }
 
     virtual const string & ex_what() throw() { return msg; };
     int getErrorCode() const { return this->code; }
@@ -68,7 +65,7 @@ public:
 class FileNameException : public ArgumentException {
 public:
     FileNameException(const cxxopts::Options *options_)
-        : ArgumentException("default_message", options_) {
+        : ArgumentException(options_) {
         this->code = 2;
     }
 
@@ -80,24 +77,18 @@ public:
 
 class FilesParserException : public SoundProcessorException {
 public:
-    FilesParserException() : SoundProcessorException("default_message") {
+    FilesParserException() {
         this->code = 3;
     }
-    FilesParserException(const string &msg_)
-        : FilesParserException() {
+    FilesParserException(const string &msg_) : FilesParserException() {
         this->msg = msg_;
         this->code = 3;
-    }
-
-    virtual const string & ex_what() throw() override {
-        return this->msg;
     }
 };
 
 class FileNotOpenException : public FilesParserException {
 public:
-    FileNotOpenException(const string &fileName)
-        : FilesParserException() {
+    FileNotOpenException(const string &fileName) {
         this->msg = "File '" + fileName + "' couldn't open.";
         this->code = 4;
     }
@@ -105,74 +96,31 @@ public:
 
 class noExistConverterException : public FilesParserException {
 public:
-    noExistConverterException(const string &converterName)
-        : FilesParserException() {
+    noExistConverterException(const string &converterName) {
         this->msg = "Converter '" + converterName + "' doesn't exist.";
     }
 };
 
 class IncorrectParametersFormatException : public FilesParserException {
 public:
-    IncorrectParametersFormatException(const string &parameters)
-        : FilesParserException() {
+    IncorrectParametersFormatException(const string &parameters) {
         this->msg = "Incorrect format parameters in '" + parameters + "'.";
     }
 };
 
 class NotEnoughInputsException : public SoundProcessorException {
 public:
-    NotEnoughInputsException(const size_t mes_) : SoundProcessorException("default message") {
-        this->msg = "Not enought inputs. You didn't enter '" + to_string(mes_ + 1) + "' input.";
+    NotEnoughInputsException(const size_t mes_) {
+        this->msg = "Not enought inputs. You didn't enter '" +
+                to_string(mes_ + 1) + "' input.";
         this->code = 5;
-    }
-    NotEnoughInputsException() : SoundProcessorException("default message") {
-        this->code = 5;
-    }
-};
-
-class ConvertersExcetion : public SoundProcessorException {
-public:
-    ConvertersExcetion() : SoundProcessorException("default message") {
-        this->code = 6;
-    }
-    ConvertersExcetion(const string &msg_) : SoundProcessorException(msg_) {
-        this->code = 6;
-    }
-};
-
-class RangeException : public ConvertersExcetion {
-public:
-    RangeException(const string &msg_) : ConvertersExcetion() {
-        this->msg = "You going beyond the file boundaries, check the parameters and their correctness in' " +
-                msg_ + "'.";
-    }
-};
-
-class MemoryException : public SoundProcessorException {
-public:
-    MemoryException() : SoundProcessorException("default message") {
-        this->msg = "Error when working with memory ¯\\_(-_-)_/¯.";
-        this->code = 7;
     }
 };
 
 class FilesException : public SoundProcessorException {
 public:
-    FilesException() : SoundProcessorException("default message") {
-        this->code = 8;
-    }
-    FilesException(const string &msg_) : FilesException() {
-        this->msg = msg;
-    }
-};
-
-class IncorrectFileFormat : public FilesException {
-public:
-    IncorrectFileFormat(const string &msg_) : FilesException(msg_) {
-//        this->msg = "Incorrect format in file.";
-    }
-    IncorrectFileFormat(const string &msg_1, const string &msg_2) : IncorrectFileFormat(msg_1) {
-        this->msg += " Incorrect " + msg_2 + " .";
+    FilesException() {
+        this->msg = "file exception";
     }
 };
 
