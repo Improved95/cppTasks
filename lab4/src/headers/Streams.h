@@ -51,7 +51,7 @@ public:
 
     char * getSamplesInOneSecond(const size_t second, const size_t frequency,
                                  const size_t bitsPerSample);
-    int checkWavCorrectFormatFile(const size_t frequency, const size_t bitsPerSample,
+    int parseMetadataInWavFile(const size_t frequency, const size_t bitsPerSample,
                                const size_t channels, const size_t audioFormat);
 private:
     size_t metadataSize = 0;

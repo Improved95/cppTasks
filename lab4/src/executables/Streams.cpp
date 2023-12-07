@@ -46,21 +46,23 @@ char *BinaryStreamIn::getSamplesInOneSecond(const size_t second, const size_t fr
     return samplesInOneSecond;
 }
 
-int BinaryStreamIn::checkWavCorrectFormatFile(const size_t frequency, const size_t bitsPerSample,
+int BinaryStreamIn::parseMetadataInWavFile(const size_t frequency, const size_t bitsPerSample,
                                            const size_t numberOfChannels, const size_t compressingCode) {
     this->metadataSize = 8;
     function<bool(const string &s1, const string &s2)> strIsEqual = [](const string &s1, const string &s2) {
-        if (s1 == s2) {
-            return true;
+        for (size_t i = 0; i < s2.size(); i++) {
+            if (s1[i] != s2[i]) {
+                return false;
+            }
         }
-        return false;
+        return true;
     };
 
     //RIFF
     char data[4];
     this->stream.read(data, 4);
     try {
-        if (strIsEqual(data, "RIFF")) {
+        if (!strIsEqual(data, "RIFF")) {
             throw FilesException();
         }
     } catch (FilesException &ex) {
@@ -86,7 +88,7 @@ int BinaryStreamIn::checkWavCorrectFormatFile(const size_t frequency, const size
     //проверяю fmt
     this->stream.read(data, 4);
     try {
-        if (strIsEqual(data, "fmt ")) {
+        if (!strIsEqual(data, "fmt ")) {
             throw FilesException();
         }
     } catch (FilesException &ex) {
@@ -115,6 +117,41 @@ int BinaryStreamIn::checkWavCorrectFormatFile(const size_t frequency, const size
     dataInt = *reinterpret_cast<int*>(data);
     try {
         if (dataInt != compressingCode) {
+            throw FilesException();
+        }
+    } catch (FilesException &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
+
+    //частота дискретизации
+    this->stream.read(data, 4);
+    dataInt = *reinterpret_cast<int*>(data);
+    try {
+        if (dataInt != frequency) {
+            throw FilesException();
+        }
+    } catch (FilesException &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
+
+    //количество бит в сэмпле
+    this->stream.read(data, 4);
+    dataInt = *reinterpret_cast<int*>(data);
+    try {
+        if (dataInt != frequency) {
+            throw FilesException();
+        }
+    } catch (FilesException &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
+
+    //list или data
+    this->stream.read(data, 4);
+    try {
+        if (!strIsEqual(data, "data") && !strIsEqual(data, "LIST")) {
             throw FilesException();
         }
     } catch (FilesException &ex) {
