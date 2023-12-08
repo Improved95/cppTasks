@@ -38,6 +38,8 @@ int ParserRIFF::parse(BinaryStreamIn &streamInObj) {
 }
 
 int ParserFmt::parse(BinaryStreamIn &streamInObj) {
+
+
     return 0;
 }
 
@@ -59,6 +61,8 @@ int BinaryStreamIn::parseMetadataInWavFile(const size_t frequency, const size_t 
     do {
         this->stream.read(data, SIZE_OF_CHUNK_NAME);
         WavMetadataParser *parser =  parsersFactory.create(data);
+        if (parser == nullptr) { return 6; }
+
         if ((r = parser->parse(*this)) != 0) { return r; }
     } while (!compareString(data, "data"));
 

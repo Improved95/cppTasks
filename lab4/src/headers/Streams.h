@@ -30,6 +30,7 @@ struct WAVHeader {
     char riff[4]; //RIFF
     uint32_t chunkSize; //размер файла минус 8
     char format[4]; //формат (WAVE)
+
     char subchunk1ID[4]; // название секции, должна быть fmt
     uint32_t subchunk1Size; //размер данных fmt
     uint16_t audioFormat; //формат аудиоданных
@@ -38,6 +39,7 @@ struct WAVHeader {
     uint32_t byteRate; //байтовая скорость
     uint16_t bytePerSample; //кол-во байтов для одного сэмпла
     uint16_t bitsPerSample; //кол-во битов для сэмпла
+
     char subchunk2ID[4]; //идентификатор второй подчасти
     uint32_t subchunk2Size; //размер данных в этой подчасти
 };
