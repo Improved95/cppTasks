@@ -42,7 +42,7 @@ struct WAVHeader {
     uint32_t subchunk2Size; //размер данных в этой подчасти
 };
 
-class BinaryStreamIn : public Stream {
+class BinaryStreamIn : public Stream, public CompareString {
 public:
     BinaryStreamIn(const string &fileName_, int &r) {
         r = openFile(fileName_);

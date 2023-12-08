@@ -6,15 +6,20 @@
 using std::unordered_map;
 using std::fstream;
 using std::string;
+#define SIZE_OF_CHUNK_NAME 4 // в байтах
 
 class BinaryStreamIn;
 
-class WavMetadataParser {
+class CompareString {
+public:
+    bool compareString(const string &s1, const string &s2);
+};
+
+class WavMetadataParser : public CompareString {
 public:
     WavMetadataParser() {}
 
     virtual int parse(BinaryStreamIn &streamInObj) = 0;
-    bool compareString(const string &s1, const string &s2);
 };
 
 class ParserRIFF : public WavMetadataParser {
@@ -61,7 +66,7 @@ public:
         }
     }
 
-    WavMetadataParser * create(const string &parserName) {
+    WavMetadataParser * create(const char parserName[SIZE_OF_CHUNK_NAME]) {
         auto it = this->WavMetadataParsersRegistry.find(parserName);
         if (it != this->WavMetadataParsersRegistry.end()) {
             return it->second->createParser();
