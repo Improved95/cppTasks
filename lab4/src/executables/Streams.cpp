@@ -38,7 +38,5 @@ int Stream::checkFileOpen(const string &fileName) {
 
 char *BinaryStreamIn::getSamplesInOneSecond() {
 
-//    this->stream.read(samplesInOneSecond, frequency * (bitsPerSample / BITS_PER_BYTE));
-
-//    return samplesInOneSecond;
+return nullptr;
 }

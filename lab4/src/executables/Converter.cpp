@@ -6,7 +6,6 @@ using std::ifstream;
 using std::cerr;
 using std::endl;
 
-WAVHeader * NsuConverterI::wavInfo = nullptr;
 int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
     int r;
     NsuSoundProcessorConfigParser filesParser;
@@ -29,7 +28,7 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
 
     if ((r = NsuConverterI::initialInputStreams(convertersVector, arguments, frequency, bytePerSample, numberOfchannels, compressedCode)) != 0) { return r; }
     if ((r = NsuConverterI::initialOutputStreams(arguments)) != 0) { return r; }
-    r = checkFilesFormatAndParameters(convertersVector);
+
     convert(convertersVector);
 
     return r;
@@ -63,19 +62,19 @@ int NsuConverterI::initialInputStreams(vector<NsuConverterI*> &convertersVector,
     for (auto &el : convertersVector) {
 
         try {
-            if (el->usingStream.first > arguments.size() - 3) {
-                throw NotEnoughInputsException(el->usingStream.first);
+            if (el->inputStreamInfo.first > arguments.size() - 3) {
+                throw NotEnoughInputsException(el->inputStreamInfo.first);
             }
         } catch (NotEnoughInputsException &ex) {
             cerr << ex.ex_what() << endl;
             return ex.getErrorCode();
         }
 
-        if (!inputIsOpen[el->usingStream.first]) {
-            BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->usingStream.first + 2], frequency, bytePerSample, channels, audioFormat, r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
+        if (!inputIsOpen[el->inputStreamInfo.first]) {
+            BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->inputStreamInfo.first + 2], frequency, bytePerSample, channels, audioFormat, r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
             if (r != 0) { return r; }
             inputsVector.push_back(temp);
-            inputIsOpen[el->usingStream.first] = true;
+            inputIsOpen[el->inputStreamInfo.first] = true;
 
             //делаю различные проверки
             if ((r = temp->parseMetadataInWavFile()) != 0) { return r; }
@@ -139,10 +138,10 @@ int NsuConverterI::initialOutputStreams(vector<string> &arguments) {
 
 size_t NsuConverterI::secondNumber = 0;
 int NsuMute::convert() {
-    if (secondNumber >= this->usingStream.second.first && secondNumber <= this->usingStream.second.second) {
-//        char *samplesArray = inputsVector[this->usingStream.first]->getSamplesInOneSecond(secondNumber, 10, 10);
+    if (secondNumber >= this->inputStreamInfo.second.first && secondNumber <= this->inputStreamInfo.second.second) {
+//        char *samplesArray = inputsVector[this->inputStreamInfo.first]->getSamplesInOneSecond(secondNumber, 10, 10);
 //        try {
-//            if (!inputsVector[this->usingStream.first]) {
+//            if (!inputsVector[this->inputStreamInfo.first]) {
 //                throw RangeException(this->parameters);
 //            }
 //        } catch (RangeException &ex) {

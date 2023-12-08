@@ -105,9 +105,11 @@ class IncorrectParametersFormatException : public FilesParserException {
 public:
     IncorrectParametersFormatException(const string &parameters) {
         this->msg = "Incorrect format parameters in '" + parameters + "'.";
+        this->code = 7;
     }
     IncorrectParametersFormatException(const string &parameters, const string &what) {
         this->msg = "Incorrect format parameters in '" + parameters + "'" + what + ".";
+        this->code = 7;
     }
 };
 

@@ -32,11 +32,10 @@ public:
         this->parameters = parameters_;
     }
 
+    virtual int convert() = 0;
     virtual int parseParameters() = 0;
     int checkParameters();
-    virtual int checkUniqueParameters();
-
-    virtual int convert() = 0;
+    virtual int checkUniqueParameters() = 0;
 
     static int initialInputStreams(vector<NsuConverterI*> &convertersVector, vector<string> &arguments,
                                    const size_t frequency, const size_t bytePerSample,
@@ -55,12 +54,13 @@ protected:
 
     size_t numberOfCreate = 0;
     bool convertingIsComplete = false;
-    pair<size_t, pair<size_t, size_t>> usingStream;
+    /*первое значение: индекс потока в векторе входных потоков
+     второе значение: <начало(секунда), конец(секунда)>*/
+    pair<size_t, pair<size_t, size_t>> inputStreamInfo;
 
     static size_t secondNumber;
     static vector<BinaryStreamIn*> inputsVector;
     static BinaryStreamOut *output;
-    static WAVHeader *wavInfo;
 
     int fillUsingThreads(size_t parametersQuantity,
                          cxxopts::Options &options, cxxopts::ParseResult &result);
@@ -93,6 +93,8 @@ public:
     virtual int checkUniqueParameters() override;
 
 private:
+    /*первое значение: индекс потока в векторе входных потоков
+     второе значение: сколько секунд*/
     pair<size_t, size_t> mixStream;
     static const string parametersPattern;
 
@@ -125,7 +127,6 @@ public:
 
 private:
     virtual int convert(vector<NsuConverterI*> &convertersVector) override;
-    int checkFilesFormatAndParameters(vector<NsuConverterI*> convertersVector);
 };
 
 #endif

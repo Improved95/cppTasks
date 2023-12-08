@@ -83,7 +83,7 @@ int NsuMute::parseParameters() {
     if ((r = fillUsingThreads(parametersQuantity, options, result)) != 0) {
         return r;
     }
-    this->usingStream = pair(0, pair(result["begin"].as<int>(), result["end"].as<int>()));
+    this->inputStreamInfo = pair(0, pair(result["begin"].as<int>(), result["end"].as<int>()));
 
     return r;
 }
@@ -116,7 +116,7 @@ int NsuMix::parseParameters() {
         return r;
     }
 
-    this->usingStream = pair(0, pair(result["begin"].as<size_t>(), result["end"].as<size_t>()));        // самый первый аргумент - индекс в векторе инпутов
+    this->inputStreamInfo = pair(0, pair(result["begin"].as<size_t>(), result["end"].as<size_t>()));        // самый первый аргумент - индекс в векторе инпутов
     this->mixStream = pair(result["input"].as<size_t>() - 1, result["beginInMixInput"].as<size_t>());   // то же самое
 
     return r;
@@ -131,9 +131,8 @@ int NsuConverterI::fillUsingThreads(const size_t parametersQuantity,
     while (iss >> word) {
         words.push_back(word);
     }
-//    const char** charArray = new const char*[parametersQuantity + 1];
-/*написать проверку для массива в куче и использовать его, или все равно...*/
-    const char* charArray[10];
+
+    const char* charArray[10]; // максимум 10 символов параметр
     for (size_t i = 0; i < words.size(); i++) {
         charArray[i + 1] = words[i].c_str();
     }
@@ -149,8 +148,9 @@ int NsuConverterI::fillUsingThreads(const size_t parametersQuantity,
 }
 
 int NsuConverterI::checkParameters() {
+    WAVHeader *inputInfo = this->inputsVector[this->inputStreamInfo.first]->getHeader();
     try {
-        if (this->usingStream.second.first > this->usingStream.second.second) {
+        if (this->inputStreamInfo.second.first > this->inputStreamInfo.second.second) {
             throw IncorrectParametersFormatException(this->parameters, "Incorrect borders");
         }
     } catch (IncorrectParametersFormatException &ex) {
@@ -158,13 +158,14 @@ int NsuConverterI::checkParameters() {
         return ex.getErrorCode();
     }
     try {
-        if (this->usingStream.second.second > (this->wavInfo->dataSize / this->wavInfo->frequency / this->wavInfo->bytePerSample)) {
+        if (this->inputStreamInfo.second.second > (inputInfo->dataSize / inputInfo->frequency / inputInfo->bytePerSample)) {
             throw IncorrectParametersFormatException(this->parameters, "Incorrect borders, you out from file border.");
         }
     } catch (IncorrectParametersFormatException &ex) {
         cerr << ex.what() << endl;
         return ex.getErrorCode();
     }
+    return 0;
 }
 
 int NsuMute::checkUniqueParameters() {
@@ -172,16 +173,24 @@ int NsuMute::checkUniqueParameters() {
 }
 
 int NsuMix::checkUniqueParameters() {
+    WAVHeader *inputInfo = this->inputsVector[this->mixStream.first]->getHeader();
     try {
         if (this->mixStream.second >
-            (this->wavInfo->dataSize / this->wavInfo->frequency / this->wavInfo->bytePerSample)) {
+            (inputInfo->dataSize / inputInfo->frequency / inputInfo->bytePerSample)) {
             throw IncorrectParametersFormatException(this->parameters, "Incorrect borders, you out from file border.");
         }
     } catch (IncorrectParametersFormatException &ex) {
         cerr << ex.what() << endl;
         return ex.getErrorCode();
     }
-
-
-
+    try {
+        if (((this->inputStreamInfo.second.second - this->inputStreamInfo.second.second)+ this->mixStream.second) >
+            (inputInfo->dataSize / inputInfo->frequency / inputInfo->bytePerSample)) {
+            throw IncorrectParametersFormatException(this->parameters, "Incorrect borders, you out from file border.");
+        }
+    } catch (IncorrectParametersFormatException &ex) {
+        cerr << ex.what() << endl;
+        return ex.getErrorCode();
+    }
+    return 0;
 }
