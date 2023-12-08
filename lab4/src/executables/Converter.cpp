@@ -21,12 +21,12 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
         if ((r = el->parseParameters()) != 0) { return r; }
     }
 
-    const size_t frequency = 44100;
+    const size_t sampleRate = 44100;
     const size_t bytePerSample = 2;
     const size_t numberOfchannels = 1;
     const size_t compressedCode = 1;
 
-    if ((r = NsuConverterI::initialInputStreams(convertersVector, arguments, frequency, bytePerSample, numberOfchannels, compressedCode)) != 0) { return r; }
+    if ((r = NsuConverterI::initialInputStreams(convertersVector, arguments, sampleRate, bytePerSample, numberOfchannels, compressedCode)) != 0) { return r; }
     if ((r = NsuConverterI::initialOutputStreams(arguments)) != 0) { return r; }
 
     convert(convertersVector);
@@ -56,7 +56,7 @@ bool NsuConverterI::convertersIsOver(const vector<NsuConverterI*> &convertersVec
 
 vector<BinaryStreamIn*> NsuConverterI::inputsVector = {};
 int NsuConverterI::initialInputStreams(vector<NsuConverterI*> &convertersVector, vector<string> &arguments,
-                                       const size_t frequency, const size_t bytePerSample,
+                                       const size_t sampleRate, const size_t bytePerSample,
                                        const size_t channels, const size_t audioFormat) {
     int r = 0;
     vector<bool> inputIsOpen(arguments.size() - 2, false); // -2 потому что первые два аргумента это конфиг и аутпут
@@ -72,27 +72,27 @@ int NsuConverterI::initialInputStreams(vector<NsuConverterI*> &convertersVector,
         }
 
         if (!inputIsOpen[el->inputStreamInfo.first]) {
-            BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->inputStreamInfo.first + 2], frequency, bytePerSample, channels, audioFormat, r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
+            BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->inputStreamInfo.first + 2], sampleRate, bytePerSample, r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
             if (r != 0) { return r; }
             inputsVector.push_back(temp);
             inputIsOpen[el->inputStreamInfo.first] = true;
 
             //делаю различные проверки
-            if ((r = temp->parseMetadataInWavFile()) != 0) { return r; }
+            if ((r = temp->parseMetadataInWavFile(sampleRate, bytePerSample, channels, audioFormat)) != 0) { return r; }
             el->checkParameters();
         }
 
-        if ((r = el->createInputStreams(arguments, inputIsOpen, frequency, bytePerSample, channels, audioFormat)) != 0) { return r; }
+        if ((r = el->createInputStreams(arguments, inputIsOpen, sampleRate, bytePerSample, channels, audioFormat)) != 0) { return r; }
     }
     return r;
 }
 
 int NsuMute::createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen,
-                                const size_t frequency, const size_t bytePerSample,
+                                const size_t sampleRate, const size_t bytePerSample,
                                 const size_t channels, const size_t audioFormat) {
     // функция пустышка
     int r;
-    if (arguments[0] == "" && frequency == 0 && bytePerSample == 0
+    if (arguments[0] == "" && sampleRate == 0 && bytePerSample == 0
         && channels == 0 && audioFormat == 0) { r = 0; }
     if (inputIsOpen[0] == false) { r = 0; }
     r = 0;
@@ -100,7 +100,7 @@ int NsuMute::createInputStreams(vector<string> &arguments, vector<bool> &inputIs
 }
 
 int NsuMix::createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen,
-                               const size_t frequency, const size_t bytePerSample,
+                               const size_t sampleRate, const size_t bytePerSample,
                                const size_t channels, const size_t audioFormat) {
     int r = 0;
 
@@ -114,13 +114,13 @@ int NsuMix::createInputStreams(vector<string> &arguments, vector<bool> &inputIsO
     }
 
     if (!inputIsOpen[this->mixStream.first]) {
-        BinaryStreamIn *temp = new BinaryStreamIn(arguments[this->mixStream.first + 2], frequency, bytePerSample, channels, audioFormat, r);
+        BinaryStreamIn *temp = new BinaryStreamIn(arguments[this->mixStream.first + 2], sampleRate, bytePerSample, r);
         if (r != 0) { return r; }
         inputsVector.push_back(temp);
         inputIsOpen[this->mixStream.first] = true;
 
         //делаю различные проверки
-        if ((r = temp->parseMetadataInWavFile()) != 0) { return r; }
+        if ((r = temp->parseMetadataInWavFile(sampleRate, bytePerSample, channels, audioFormat)) != 0) { return r; }
         this->checkUniqueParameters();
     }
 

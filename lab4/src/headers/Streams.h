@@ -53,31 +53,26 @@ struct WAVNeedsParameters {
 
 class BinaryStreamIn : public Stream, public CompareString {
 public:
-    BinaryStreamIn(const string &fileName_, const size_t sampleRate_, const size_t bytePerSample_,
-    const size_t channels_, const size_t audioFormat_, int &r) {
+    BinaryStreamIn(const string &fileName_, const size_t sampleRate_, const size_t bytePerSample_, int &r) {
         r = openFile(fileName_);
-//        this->WAVparameters = new WAVNeedsParameters;
-//        this->WAVparameters->sampleRate = sampleRate_;
-//        this->WAVparameters->bytePerSample = bytePerSample_;
-//        this->WAVparameters->numberOfChannels = channels_;
-//        this->WAVparameters->audioFormat = audioFormat_;
         this->fileName = fileName_;
         if (this->samplesInOneSecond == nullptr) {
-            this->samplesInOneSecond = new char[this->WAVparameters->sampleRate * this->WAVparameters->bytePerSample];
+            this->samplesInOneSecond = new char[sampleRate_ * bytePerSample_];
         }
     }
     ~BinaryStreamIn() {
         if (this->samplesInOneSecond != nullptr && this->samplesInOneSecond != NULL) {
             delete this->samplesInOneSecond;
         }
-        if (this->header != nullptr) {
-            delete this->header;
+        if (this->WAVheader != nullptr) {
+            delete this->WAVheader;
         }
     }
-    WAVHeader * getHeader() { return header; }
+    WAVHeader * getHeader() { return WAVheader; }
 
     char * getSamplesInOneSecond();
-    int parseMetadataInWavFile();
+    int parseMetadataInWavFile(const size_t sampleRate, const size_t bytePerSample,
+                                const size_t channels, const size_t audioFormat);
 
 private:
     string fileName;

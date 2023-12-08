@@ -19,27 +19,37 @@ class WavMetadataParser : public CompareString {
 public:
     WavMetadataParser() {}
 
-    virtual int parse(BinaryStreamIn &streamInObj) = 0;
+    virtual int parse(BinaryStreamIn &streamInObj,
+                      const size_t sampleRate, const size_t bytePerSample,
+                      const size_t channels, const size_t audioFormat) = 0;
 };
 
 class ParserRIFF : public WavMetadataParser {
 public:
-    virtual int parse(BinaryStreamIn &streamInObj) override;
+    virtual int parse(BinaryStreamIn &streamInObj,
+                      const size_t sampleRate, const size_t bytePerSample,
+                      const size_t channels, const size_t audioFormat) override;
 };
 
 class ParserFmt : public WavMetadataParser {
 public:
-    virtual int parse(BinaryStreamIn &streamInObj) override;
+    virtual int parse(BinaryStreamIn &streamInObj,
+                      const size_t sampleRate, const size_t bytePerSample,
+                      const size_t channels, const size_t audioFormat) override;
 };
 
 class ParserLIST : public WavMetadataParser {
 public:
-    virtual int parse(BinaryStreamIn &streamInObj) override;
+    virtual int parse(BinaryStreamIn &streamInObj,
+                      const size_t sampleRate, const size_t bytePerSample,
+                      const size_t channels, const size_t audioFormat) override;
 };
 
 class ParserData : public WavMetadataParser {
 public:
-    virtual int parse(BinaryStreamIn &streamInObj) override;
+    virtual int parse(BinaryStreamIn &streamInObj,
+                      const size_t sampleRate, const size_t bytePerSample,
+                      const size_t channels, const size_t audioFormat) override;
 };
 
 class WavParserCreatorI {

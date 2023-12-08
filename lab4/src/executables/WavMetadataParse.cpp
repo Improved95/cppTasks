@@ -17,14 +17,15 @@ bool CompareString::compareString(const string &s1, const string &s2) {
     return true;
 }
 
-int ParserRIFF::parse(BinaryStreamIn &streamInObj) {
+int ParserRIFF::parse(BinaryStreamIn &streamInObj,
+                      const size_t, const size_t, const size_t, const size_t) {
     streamInObj.stream.seekg(0, streamInObj.stream.beg);
-    streamInObj.header = new WAVHeader;
+    streamInObj.WAVheader = new WAVHeader;
 
-    streamInObj.stream.read(reinterpret_cast<char*>(streamInObj.header), 12); // SIZE_OF_CHUNK_NAME + размер чанка + 'WAVE'
+    streamInObj.stream.read(reinterpret_cast<char*>(streamInObj.WAVheader), 12); // SIZE_OF_CHUNK_NAME + размер чанка + 'WAVE'
 
     /*try {
-        if (!compareString(streamInObj.header->riff, "RIFF") || !compareString(streamInObj.header->format, "WAVE")) {
+        if (!compareString(streamInObj.WAVheader->riff, "RIFF") || !compareString(streamInObj.WAVheader->format, "WAVE")) {
             throw FilesFormatExceptions(streamInObj.fileName);
         }
     } catch (FilesFormatExceptions &ex) {
@@ -37,15 +38,17 @@ int ParserRIFF::parse(BinaryStreamIn &streamInObj) {
     return 0;
 }
 
-int ParserFmt::parse(BinaryStreamIn &streamInObj) {
+int ParserFmt::parse(BinaryStreamIn &streamInObj,
+                     const size_t sampleRate, const size_t bytePerSample,
+                     const size_t channels, const size_t audioFormat) {
     streamInObj.stream.seekg(-4, streamInObj.stream.cur);
 
-    streamInObj.stream.read(reinterpret_cast<char*>(streamInObj.header) + 12, 24);
+    streamInObj.stream.read(reinterpret_cast<char*>(streamInObj.WAVheader) + 12, 24);
 
-    if (streamInObj.header->sampleRate != streamInObj.WAVparameters->sampleRate ||
-            streamInObj.header->bytePerSample != streamInObj.WAVparameters->bytePerSample ||
-            streamInObj.header->numberOfChannels != streamInObj.WAVparameters->numberOfChannels ||
-            streamInObj.header->audioFormat != streamInObj.WAVparameters->audioFormat) {
+    if (streamInObj.WAVheader->sampleRate != sampleRate ||
+            streamInObj.WAVheader->bytePerSample != bytePerSample ||
+            streamInObj.WAVheader->numberOfChannels != channels ||
+            streamInObj.WAVheader->audioFormat != audioFormat) {
         return 6;
     }
 
@@ -54,7 +57,8 @@ int ParserFmt::parse(BinaryStreamIn &streamInObj) {
     return 0;
 }
 
-int ParserLIST::parse(BinaryStreamIn &streamInObj) {
+int ParserLIST::parse(BinaryStreamIn &streamInObj,
+                      const size_t, const size_t, const size_t, const size_t) {
     char intData[4];
     streamInObj.stream.read(intData, 4);
 
@@ -65,11 +69,12 @@ int ParserLIST::parse(BinaryStreamIn &streamInObj) {
     return 0;
 }
 
-int ParserData::parse(BinaryStreamIn &streamInObj) {
+int ParserData::parse(BinaryStreamIn &streamInObj,
+                      const size_t, const size_t, const size_t, const size_t) {
     streamInObj.stream.seekg(-4, streamInObj.stream.cur);
 
-    streamInObj.stream.read(reinterpret_cast<char*>(streamInObj.header) + 36, 8);
-    if (!compareString(streamInObj.header->subchunkData, "data")) {
+    streamInObj.stream.read(reinterpret_cast<char*>(streamInObj.WAVheader) + 36, 8);
+    if (!compareString(streamInObj.WAVheader->subchunkData, "data")) {
         return 6;
     }
 
@@ -78,7 +83,8 @@ int ParserData::parse(BinaryStreamIn &streamInObj) {
     return 0;
 }
 
-int BinaryStreamIn::parseMetadataInWavFile() {
+int BinaryStreamIn::parseMetadataInWavFile(const size_t sampleRate, const size_t bytePerSample,
+                                           const size_t channels, const size_t audioFormat) {
     int r;
     WavMetadataParsersFactory parsersFactory;
     char data[SIZE_OF_CHUNK_NAME + 1];
@@ -86,14 +92,14 @@ int BinaryStreamIn::parseMetadataInWavFile() {
 
     this->stream.read(data, SIZE_OF_CHUNK_NAME);
     WavMetadataParser *parser =  parsersFactory.create("RIFF");
-    if ((r = parser->parse(*this)) != 0) { return r; }
+    if ((r = parser->parse(*this, sampleRate, bytePerSample, channels, audioFormat)) != 0) { return r; }
 
     do {
         this->stream.read(data, SIZE_OF_CHUNK_NAME);
         WavMetadataParser *parser =  parsersFactory.create(data);
         if (parser == nullptr) { return 6; }
 
-        if ((r = parser->parse(*this)) != 0) { return r; }
+        if ((r = parser->parse(*this, sampleRate, bytePerSample, channels, audioFormat)) != 0) { return r; }
     } while (!compareString(data, "data"));
 
     return 0;
