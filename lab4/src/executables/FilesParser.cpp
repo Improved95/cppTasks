@@ -122,7 +122,6 @@ int NsuMix::parseParameters() {
     return r;
 }
 
-size_t NsuConverterI::orderCreation = 0;
 int NsuConverterI::fillUsingThreads(const size_t parametersQuantity,
                                     cxxopts::Options &options, cxxopts::ParseResult &result) {
     istringstream iss(this->parameters);

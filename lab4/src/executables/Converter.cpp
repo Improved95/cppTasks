@@ -39,21 +39,12 @@ int NsuSoundProcessorManager::convert(vector<NsuConverterI*> &convertersVector) 
     int r;
 //    NsuConverterI::output->getStream().close();
 //    exit(-1);
-    while(!NsuConverterI::convertersIsOver(convertersVector)) {
+    while(!NsuConverterI::convertingIsComplete) {
         for (auto &el : convertersVector) {
             if ((r = el->convert()) != 0) { return r; }
         }
     }
     return r;
-}
-
-bool NsuConverterI::convertersIsOver(const vector<NsuConverterI*> &convertersVector) {
-    for (auto &el : convertersVector) {
-        if (!el->convertingIsComplete) {
-            return false;
-        }
-    }
-    return true;
 }
 
 vector<BinaryStreamIn*> NsuConverterI::inputsVector = {};

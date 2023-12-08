@@ -41,7 +41,6 @@ public:
                                    const size_t frequency, const size_t bytePerSample,
                                    const size_t channels, const size_t audioFormat);
     static int initialOutputStreams(vector<string> &arguments);
-    static bool convertersIsOver(const vector<NsuConverterI*> &convertersVector);
 
 private:
     virtual int createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen,
@@ -51,12 +50,12 @@ private:
 protected:
     string parameters;
     size_t numberOfCreate = 0;
-    static size_t orderCreation;
-    bool convertingIsComplete = false;
     /*первое значение: индекс потока в векторе входных потоков
      второе значение: <начало(секунда), конец(секунда)>*/
     pair<size_t, pair<size_t, size_t>> inputStreamInfo;
 
+    static size_t orderCreation;
+    static bool convertingIsComplete;
     static size_t secondNumber;
     static vector<BinaryStreamIn*> inputsVector;
     static BinaryStreamOut *output;
