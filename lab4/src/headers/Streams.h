@@ -25,15 +25,22 @@ protected:
     int checkFileOpen(const string &fileName);
 };
 
-class StreamIn : public Stream {
-public:
-    StreamIn(const string &fileName, int &r) {
-        r = openFile(fileName);
-    }
-
-private:
-    virtual int openFile(const string &fileName) override;
+struct WAVHeader {
+    char chunkID[4]; //RIFF
+    uint32_t chunkSize; //размер файла минус 8
+    char format[4]; //формат (WAVE)
+    char subchunk1ID[4]; // название секции, должна быть fmt
+    uint32_t subchunk1Size; //размер данных fmt
+    uint16_t audioFormat; //формат аудиоданных
+    uint16_t numChannels; //кол-во аудиоканалов
+    uint32_t sampleRate; //частота дискретизации
+    uint32_t byteRate; //байтовая скорость
+    uint16_t bytePerSample; //кол-во байтов для одного сэмпла
+    uint16_t bitsPerSample; //кол-во битов для сэмпла
+    char subchunk2ID[4]; //идентификатор второй подчасти
+    uint32_t subchunk2Size; //размер данных в этой подчасти
 };
+
 
 class BinaryStreamIn : public Stream {
 public:
@@ -47,16 +54,16 @@ public:
         }
     }
 
-    char * getSamplesArray() const { return this->samplesInOneSecond; }
-
     char * getSamplesInOneSecond(const size_t second, const size_t frequency,
                                  const size_t bitsPerSample);
     int parseMetadataInWavFile(const size_t frequency, const size_t bitsPerSample,
                                const size_t channels, const size_t audioFormat);
 private:
     size_t metadataSize = 0;
+    size_t fileSize;
     string fileName;
-    static char *samplesInOneSecond;
+    WAVHeader *header;
+    char *samplesInOneSecond;
 
     virtual int openFile(const string &fileName) override;
 };
@@ -73,5 +80,14 @@ private:
     virtual int openFile(const string &fileName) override;
 };
 
+class StreamIn : public Stream {
+public:
+    StreamIn(const string &fileName, int &r) {
+        r = openFile(fileName);
+    }
+
+private:
+    virtual int openFile(const string &fileName) override;
+};
 
 #endif

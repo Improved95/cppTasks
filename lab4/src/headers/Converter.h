@@ -27,7 +27,7 @@ protected:
 class NsuConverterI : public NsuConvertersInfo {
 public:
     NsuConverterI(const string &parameters_) {
-        this->priority = orderCreation;
+        this->numberOfCreate = orderCreation;
         this->orderCreation++;
         this->parameters = parameters_;
     }
@@ -51,7 +51,7 @@ private:
 protected:
     string parameters;
 
-    size_t priority = 0;
+    size_t numberOfCreate = 0;
     bool convertingIsComplete = false;
     pair<size_t, pair<size_t, size_t>> usingStream;
 
@@ -120,17 +120,9 @@ public:
 
 private:
     virtual int convert(vector<NsuConverterI*> &convertersVector) override;
-    int checkFilesFormatAndParametersOnCorrect(vector<NsuConverterI*> convertersVector,
+    int checkFilesFormatAndParameters(vector<NsuConverterI*> convertersVector,
                                                const size_t frequency, const size_t bitsPerSample,
                                                const size_t channels, const size_t audioFormat);
 };
 
 #endif
-
-/*
- * пусть конвертеры хранят приоритеты и то, с чем они работают, другие конвертеры будут
- * знать приоритеты других и с чем они работают
- * буду пускать streamOut по конвертерам aka по кругу и пусть каждый конвертер проверяет
- * может ли он сейчас отработать с сэмплом или нет, может ли он записать сейчас в output
- * отработанный сэмпл или нет
- * */

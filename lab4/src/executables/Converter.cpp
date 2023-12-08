@@ -32,17 +32,19 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
     NsuConverterI::setAudioFormat(audioFormat);
     if ((r = NsuConverterI::initialInputStreams(convertersVector, arguments)) != 0) { return r; }
     if ((r = NsuConverterI::initialOutputStreams(arguments)) != 0) { return r; }
-    r = checkFilesFormatAndParametersOnCorrect(convertersVector, frequency, bitsPerSample, channels, audioFormat);
+    r = checkFilesFormatAndParameters(convertersVector, frequency, bitsPerSample, channels, audioFormat);
 
     convert(convertersVector);
 
     return r;
 }
 
-int NsuSoundProcessorManager::checkFilesFormatAndParametersOnCorrect(vector<NsuConverterI*> convertersVector,
+int NsuSoundProcessorManager::checkFilesFormatAndParameters(vector<NsuConverterI*> convertersVector,
                                                                      const size_t frequency, const size_t bitsPerSample,
                                                                      const size_t channels, const size_t audioFormat) {
     int r;
+
+    WavMetadataParser;
     for (auto &el : NsuConverterI::inputsVector) {
         if ((r = el->parseMetadataInWavFile(frequency, bitsPerSample, channels, audioFormat)) != 0) { return r; }
     }

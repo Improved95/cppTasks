@@ -1,9 +1,7 @@
 #include "Streams.h"
 #include "Exceptions.h"
 #include <vector>
-#include <cstring>
-#include "functional"
-using std::function;
+#include "WavMetadataParse.h"
 using std::cerr;
 using std::endl;
 using std::vector;
@@ -38,18 +36,10 @@ int Stream::checkFileOpen(const string &fileName) {
     return 0;
 }
 
-char * BinaryStreamIn::samplesInOneSecond = nullptr;
 char *BinaryStreamIn::getSamplesInOneSecond(const size_t second, const size_t frequency,
                                             const size_t bitsPerSample) {
 
     this->stream.read(samplesInOneSecond, frequency * (bitsPerSample / BITS_PER_BYTE));
 
     return samplesInOneSecond;
-}
-
-int BinaryStreamIn::parseMetadataInWavFile(const size_t frequency, const size_t bitsPerSample,
-                                           const size_t numberOfChannels, const size_t compressingCode) {
-    
-    
-    return 0;
 }
