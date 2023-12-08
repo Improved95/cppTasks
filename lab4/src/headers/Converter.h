@@ -44,15 +44,14 @@ public:
     static bool convertersIsOver(const vector<NsuConverterI*> &convertersVector);
 
 private:
-    static size_t orderCreation;
     virtual int createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen,
                                    const size_t frequency, const size_t bytePerSample,
                                    const size_t channels, const size_t audioFormat) = 0;
 
 protected:
     string parameters;
-
     size_t numberOfCreate = 0;
+    static size_t orderCreation;
     bool convertingIsComplete = false;
     /*первое значение: индекс потока в векторе входных потоков
      второе значение: <начало(секунда), конец(секунда)>*/

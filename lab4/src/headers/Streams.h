@@ -10,7 +10,6 @@ using std::ofstream;
 using std::fstream;
 using std::vector;
 using std::string;
-#define BITS_PER_BYTE 8
 
 class Stream {
 public:
@@ -44,32 +43,20 @@ struct WAVHeader {
     uint32_t dataSize; //размер данных в этой подчасти
 };
 
-struct WAVNeedsParameters {
-    size_t sampleRate;
-    size_t bytePerSample;
-    size_t numberOfChannels;
-    size_t audioFormat;
-};
-
 class BinaryStreamIn : public Stream, public CompareString {
 public:
-    BinaryStreamIn(const string &fileName_, const size_t sampleRate_, const size_t bytePerSample_, int &r) {
+    BinaryStreamIn(const string &fileName_, int &r) {
         r = openFile(fileName_);
         this->fileName = fileName_;
-        if (this->samplesInOneSecond == nullptr) {
-            this->samplesInOneSecond = new char[sampleRate_ * bytePerSample_];
-        }
     }
     ~BinaryStreamIn() {
-        if (this->samplesInOneSecond != nullptr && this->samplesInOneSecond != NULL) {
-            delete this->samplesInOneSecond;
-        }
         if (this->WAVheader != nullptr) {
             delete this->WAVheader;
         }
     }
     WAVHeader * getHeader() { return WAVheader; }
 
+    char * getNewSamplesInOneSecond();
     char * getSamplesInOneSecond();
     int parseMetadataInWavFile(const size_t sampleRate, const size_t bytePerSample,
                                 const size_t channels, const size_t audioFormat);
@@ -77,9 +64,7 @@ public:
 private:
     string fileName;
     WAVHeader *WAVheader;
-//    WAVNeedsParameters *WAVNeedsparameters;
     size_t metadataSize = 0;
-    char *samplesInOneSecond;
 
     virtual int openFile(const string &fileName) override;
 
@@ -94,10 +79,19 @@ public:
     BinaryStreamOut(const string &fileName, int &r) {
         r = openFile(fileName);
     }
+    ~BinaryStreamOut() {
+        if (this->samplesBuffer != nullptr) {
+            delete this->samplesBuffer;
+        }
+    }
+    void setSamplesBuffer(char * samplesBuffer_) { samplesBuffer =  samplesBuffer_ ;}
+    char * getSamplesBuffer() { return samplesBuffer; }
 
     void push(char *data, const size_t dataSize);
 
 private:
+    char *samplesBuffer = nullptr;
+
     virtual int openFile(const string &fileName) override;
 };
 

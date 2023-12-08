@@ -73,7 +73,7 @@ int NsuConverterI::initialInputStreams(vector<NsuConverterI*> &convertersVector,
         }
 
         if (!inputIsOpen[el->inputStreamInfo.first]) {
-            BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->inputStreamInfo.first + 2], sampleRate, bytePerSample, r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
+            BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->inputStreamInfo.first + 2], r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
             if (r != 0) { return r; }
             inputsVector.push_back(temp);
             inputIsOpen[el->inputStreamInfo.first] = true;
@@ -115,7 +115,7 @@ int NsuMix::createInputStreams(vector<string> &arguments, vector<bool> &inputIsO
     }
 
     if (!inputIsOpen[this->mixStream.first]) {
-        BinaryStreamIn *temp = new BinaryStreamIn(arguments[this->mixStream.first + 2], sampleRate, bytePerSample, r);
+        BinaryStreamIn *temp = new BinaryStreamIn(arguments[this->mixStream.first + 2], r);
         if (r != 0) { return r; }
         inputsVector.push_back(temp);
         inputIsOpen[this->mixStream.first] = true;
@@ -135,6 +135,11 @@ int NsuConverterI::initialOutputStreams(vector<string> &arguments) {
     if (r != 0) { return r; }
     output = temp;
     output->push(reinterpret_cast<char*>(NsuConverterI::inputsVector[0]->getHeader()), sizeof(WAVHeader));
+    if (output->getSamplesBuffer() == nullptr) {
+        size_t sampleRate = NsuConverterI::inputsVector[0]->getHeader()->sampleRate;
+        size_t bytePerSample = NsuConverterI::inputsVector[0]->getHeader()->bytePerSample;
+        output->setSamplesBuffer(new char[sampleRate * bytePerSample]);
+    }
 
     return r;
 }
