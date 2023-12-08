@@ -32,7 +32,7 @@ int ParserRIFF::parse(BinaryStreamIn &streamInObj) {
         return ex.getErrorCode();
     }*/
 
-    streamInObj.WAVparameters->metadataSize += 12;
+    streamInObj.header->metadataSize += 12;
 
     return 0;
 }
@@ -49,7 +49,7 @@ int ParserFmt::parse(BinaryStreamIn &streamInObj) {
         return 6;
     }
 
-    streamInObj.WAVparameters->metadataSize += 24;
+    streamInObj.header->metadataSize += 24;
 
     return 0;
 }
@@ -59,7 +59,7 @@ int ParserLIST::parse(BinaryStreamIn &streamInObj) {
     streamInObj.stream.read(intData, 4);
 
     size_t sizeOfListChunk = *reinterpret_cast<int*>(intData);
-    streamInObj.WAVparameters->metadataSize += 8 + sizeOfListChunk;
+    streamInObj.header->metadataSize += 8 + sizeOfListChunk;
     streamInObj.stream.seekg(sizeOfListChunk, streamInObj.stream.cur);
 
     return 0;
@@ -73,7 +73,7 @@ int ParserData::parse(BinaryStreamIn &streamInObj) {
         return 6;
     }
 
-    streamInObj.WAVparameters->metadataSize += 8;
+    streamInObj.header->metadataSize += 8;
 
     return 0;
 }

@@ -29,22 +29,39 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
     if ((r = NsuConverterI::initialInputStreams(convertersVector, arguments, frequency, bytePerSample, numberOfchannels, compressedCode)) != 0) { return r; }
     if ((r = NsuConverterI::initialOutputStreams(arguments)) != 0) { return r; }
     r = checkFilesFormatAndParameters(convertersVector);
-
     convert(convertersVector);
 
     return r;
 }
 
+WAVHeader * NsuConverterI::wavInfo = nullptr;
 int NsuSoundProcessorManager::checkFilesFormatAndParameters(vector<NsuConverterI*> convertersVector) {
     int r;
     for (auto &el : NsuConverterI::inputsVector) {
         if ((r = el->parseMetadataInWavFile()) != 0) { return r; }
     }
 
-    /*if (samplesInOneSecond == nullptr) {
-        samplesInOneSecond = new char[frequency * bytePerSample / BITS_PER_BYTE];
-        if (samplesInOneSecond == NULL) { r = 6; }
-    }*/
+    for (auto &el : convertersVector) {
+        try {
+            if (el->usingStream.second.first > el->usingStream.second.second) {
+                throw IncorrectParametersFormatException(el->parameters, "Incorrect borders");
+            }
+        } catch (IncorrectParametersFormatException &ex) {
+            cerr << ex.what() << endl;
+            return ex.getErrorCode();
+        }
+
+        el->wavInfo = NsuConverterI::inputsVector[el->usingStream.first]->getHeader();;
+        try {
+            if (el->usingStream.second.second > (el->wavInfo->dataSize / el->wavInfo->frequency / el->wavInfo->bytePerSample)) {
+                throw IncorrectParametersFormatException(el->parameters, "Incorrect borders, you out from file border.");
+            }
+        } catch (IncorrectParametersFormatException &ex) {
+            cerr << ex.what() << endl;
+            return ex.getErrorCode();
+        }
+    }
+
 
     return r;
 }

@@ -106,6 +106,9 @@ public:
     IncorrectParametersFormatException(const string &parameters) {
         this->msg = "Incorrect format parameters in '" + parameters + "'.";
     }
+    IncorrectParametersFormatException(const string &parameters, const string &what) {
+        this->msg = "Incorrect format parameters in '" + parameters + "'" + what + ".";
+    }
 };
 
 class NotEnoughInputsException : public SoundProcessorException {

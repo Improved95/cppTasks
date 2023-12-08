@@ -57,6 +57,7 @@ protected:
     static size_t secondNumber;
     static vector<BinaryStreamIn*> inputsVector;
     static BinaryStreamOut *output;
+    static WAVHeader *wavInfo;
 
     int fillUsingThreads(size_t parametersQuantity,
                          cxxopts::Options &options, cxxopts::ParseResult &result);

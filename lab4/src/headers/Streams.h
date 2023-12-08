@@ -41,7 +41,8 @@ struct WAVHeader {
     uint16_t bitsPerSample; //кол-во битов для сэмпла
 
     char subchunkData[4]; //идентификатор второй подчасти
-    uint32_t subchunkDataSize; //размер данных в этой подчасти
+    uint32_t dataSize; //размер данных в этой подчасти
+    size_t metadataSize = 0;
 };
 
 struct WAVNeedsParameters {
@@ -49,7 +50,6 @@ struct WAVNeedsParameters {
     size_t bytePerSample;
     size_t numberOfChannels;
     size_t audioFormat;
-    size_t metadataSize = 0;
 };
 
 class BinaryStreamIn : public Stream, public CompareString {
@@ -62,8 +62,10 @@ public:
         this->WAVparameters->bytePerSample = bytePerSample_;
         this->WAVparameters->numberOfChannels = channels_;
         this->WAVparameters->audioFormat = audioFormat_;
-
         this->fileName = fileName_;
+        if (this->samplesInOneSecond == nullptr) {
+            this->samplesInOneSecond = new char[this->WAVparameters->frequency * this->WAVparameters->bytePerSample];
+        }
     }
     ~BinaryStreamIn() {
         if (this->samplesInOneSecond != nullptr && this->samplesInOneSecond != NULL) {
@@ -73,6 +75,7 @@ public:
             delete this->header;
         }
     }
+    WAVHeader * getHeader() { return header; }
 
     char * getSamplesInOneSecond();
     int parseMetadataInWavFile();
