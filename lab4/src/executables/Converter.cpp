@@ -28,6 +28,7 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
 
     if ((r = NsuConverterI::initialInputStreams(convertersVector, arguments, sampleRate, bytePerSample, numberOfchannels, compressedCode)) != 0) { return r; }
     if ((r = NsuConverterI::initialOutputStreams(arguments)) != 0) { return r; }
+    BinaryStream::setSampleBuffer(sampleRate * bytePerSample);
 
     convert(convertersVector);
 
@@ -36,11 +37,11 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
 
 int NsuSoundProcessorManager::convert(vector<NsuConverterI*> &convertersVector) {
     int r;
-    NsuConverterI::output->getStream().close();
-    exit(-1);
+//    NsuConverterI::output->getStream().close();
+//    exit(-1);
     while(!NsuConverterI::convertersIsOver(convertersVector)) {
         for (auto &el : convertersVector) {
-//            if ((r = el->convert()) != 0) { return r; }
+            if ((r = el->convert()) != 0) { return r; }
         }
     }
     return r;
@@ -134,12 +135,7 @@ int NsuConverterI::initialOutputStreams(vector<string> &arguments) {
     BinaryStreamOut *temp = new BinaryStreamOut(arguments[1], r);
     if (r != 0) { return r; }
     output = temp;
-    output->push(reinterpret_cast<char*>(NsuConverterI::inputsVector[0]->getHeader()), sizeof(WAVHeader));
-    if (output->getSamplesBuffer() == nullptr) {
-        size_t sampleRate = NsuConverterI::inputsVector[0]->getHeader()->sampleRate;
-        size_t bytePerSample = NsuConverterI::inputsVector[0]->getHeader()->bytePerSample;
-        output->setSamplesBuffer(new char[sampleRate * bytePerSample]);
-    }
+    output->pushInFile(reinterpret_cast<char*>(NsuConverterI::inputsVector[0]->getHeader()), sizeof(WAVHeader));
 
     return r;
 }

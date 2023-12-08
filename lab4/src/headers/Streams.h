@@ -43,7 +43,24 @@ struct WAVHeader {
     uint32_t dataSize; //размер данных в этой подчасти
 };
 
-class BinaryStreamIn : public Stream, public CompareString {
+class BinaryStream : public Stream {
+public:
+    ~BinaryStream() {
+        if (sampleBuffer != nullptr) {
+            delete sampleBuffer;
+        }
+    }
+    static void setSampleBuffer(const size_t bufferSize) {
+        sampleBuffer = new char[bufferSize];
+    }
+    static char * getSampleBuffer() {
+        return sampleBuffer;
+    }
+protected:
+    static char *sampleBuffer;
+};
+
+class BinaryStreamIn : public BinaryStream, public CompareString {
 public:
     BinaryStreamIn(const string &fileName_, int &r) {
         r = openFile(fileName_);
@@ -87,7 +104,7 @@ public:
     void setSamplesBuffer(char * samplesBuffer_) { samplesBuffer =  samplesBuffer_ ;}
     char * getSamplesBuffer() { return samplesBuffer; }
 
-    void push(char *data, const size_t dataSize);
+    void pushInFile(char *data, const size_t dataSize);
 
 private:
     char *samplesBuffer = nullptr;

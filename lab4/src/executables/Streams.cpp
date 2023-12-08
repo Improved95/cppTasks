@@ -36,15 +36,15 @@ int Stream::checkFileOpen(const string &fileName) {
     return 0;
 }
 
-char *BinaryStreamIn::getNewSamplesInOneSecond() {
-    this->stream.read(this->samplesListOneSecond, this->WAVheader->sampleRate * this->WAVheader->bytePerSample);
-    return samplesListOneSecond;
+char * BinaryStreamIn::getNewSamplesInOneSecond() {
+    this->stream.read(sampleBuffer, this->WAVheader->sampleRate * this->WAVheader->bytePerSample);
+    return sampleBuffer;
 }
 
 char *BinaryStreamIn::getSamplesInOneSecond() {
-    return samplesListOneSecond;
+    return sampleBuffer;
 }
 
-void BinaryStreamOut::push(char *data, const size_t dataSize) {
+void BinaryStreamOut::pushInFile(char *data, const size_t dataSize) {
     this->stream.write(data, dataSize);
 }
