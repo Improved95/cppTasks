@@ -27,11 +27,11 @@ protected:
 };
 
 struct WAVHeader {
-    char riff[4]; //RIFF
+    char subchunkRIFF[4]; //RIFF
     uint32_t chunkSize; //размер файла минус 8
     char format[4]; //формат (WAVE)
 
-    char subchunk1ID[4]; // название секции, должна быть fmt
+    char subchunkFmt[4]; // название секции, должна быть fmt
     uint32_t subchunk1Size; //размер данных fmt
     uint16_t audioFormat; //формат аудиоданных
     uint16_t numChannels; //кол-во аудиоканалов
@@ -44,33 +44,50 @@ struct WAVHeader {
     uint32_t subchunk2Size; //размер данных в этой подчасти
 };
 
+struct WAVNeedsParameters {
+    size_t frequency;
+    size_t bytePerSample;
+    size_t numberOfChannels;
+    size_t audioFormat;
+    size_t metadataSize;
+};
+
 class BinaryStreamIn : public Stream, public CompareString {
 public:
-    BinaryStreamIn(const string &fileName_, int &r) {
+    BinaryStreamIn(const string &fileName_, const size_t frequency_, const size_t bytePerSample_,
+    const size_t channels_, const size_t audioFormat_, int &r) {
         r = openFile(fileName_);
+        this->WAVparameters = new WAVNeedsParameters;
+        this->WAVparameters->frequency = frequency_;
+        this->WAVparameters->bytePerSample = bytePerSample_;
+        this->WAVparameters->numberOfChannels = channels_;
+        this->WAVparameters->audioFormat = audioFormat_;
+
         this->fileName = fileName_;
     }
     ~BinaryStreamIn() {
         if (this->samplesInOneSecond != nullptr && this->samplesInOneSecond != NULL) {
-            delete samplesInOneSecond;
+            delete this->samplesInOneSecond;
+        }
+        if (this->header != nullptr) {
+            delete this->header;
         }
     }
 
-    char * getSamplesInOneSecond(const size_t second, const size_t frequency,
-                                 const size_t bitsPerSample);
-    int parseMetadataInWavFile(const size_t frequency, const size_t bitsPerSample,
-                               const size_t channels, const size_t audioFormat);
+    char * getSamplesInOneSecond();
+    int parseMetadataInWavFile();
 
 private:
-    size_t metadataSize = 0;
-    size_t fileSize;
     string fileName;
     WAVHeader *header;
+    WAVNeedsParameters *WAVparameters;
     char *samplesInOneSecond;
 
     virtual int openFile(const string &fileName) override;
 
     friend ParserRIFF;
+    friend ParserFmt;
+    friend ParserLIST;
 };
 
 class BinaryStreamOut : public Stream {

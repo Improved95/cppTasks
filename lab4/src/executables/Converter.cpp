@@ -22,29 +22,27 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
     }
 
     const size_t frequency = 44100;
-    const size_t bitsPerSample = 16;
-    const size_t channels = 1;
-    const size_t audioFormat = 1;
+    const size_t bytePerSample = 2;
+    const size_t numberOfchannels = 1;
+    const size_t compressedCode = 1;
 
-    if ((r = NsuConverterI::initialInputStreams(convertersVector, arguments)) != 0) { return r; }
+    if ((r = NsuConverterI::initialInputStreams(convertersVector, arguments, frequency, bytePerSample, numberOfchannels, compressedCode)) != 0) { return r; }
     if ((r = NsuConverterI::initialOutputStreams(arguments)) != 0) { return r; }
-    r = checkFilesFormatAndParameters(convertersVector, frequency, bitsPerSample, channels, audioFormat);
+    r = checkFilesFormatAndParameters(convertersVector);
 
     convert(convertersVector);
 
     return r;
 }
 
-int NsuSoundProcessorManager::checkFilesFormatAndParameters(vector<NsuConverterI*> convertersVector,
-                                                                     const size_t frequency, const size_t bitsPerSample,
-                                                                     const size_t channels, const size_t audioFormat) {
+int NsuSoundProcessorManager::checkFilesFormatAndParameters(vector<NsuConverterI*> convertersVector) {
     int r;
     for (auto &el : NsuConverterI::inputsVector) {
-        if ((r = el->parseMetadataInWavFile(frequency, bitsPerSample, channels, audioFormat)) != 0) { return r; }
+        if ((r = el->parseMetadataInWavFile()) != 0) { return r; }
     }
 
     /*if (samplesInOneSecond == nullptr) {
-        samplesInOneSecond = new char[frequency * bitsPerSample / BITS_PER_BYTE];
+        samplesInOneSecond = new char[frequency * bytePerSample / BITS_PER_BYTE];
         if (samplesInOneSecond == NULL) { r = 6; }
     }*/
 
@@ -71,7 +69,9 @@ bool NsuConverterI::convertersIsOver(const vector<NsuConverterI*> &convertersVec
 }
 
 vector<BinaryStreamIn*> NsuConverterI::inputsVector = {};
-int NsuConverterI::initialInputStreams(vector<NsuConverterI*> &convertersVector, vector<string> &arguments) {
+int NsuConverterI::initialInputStreams(vector<NsuConverterI*> &convertersVector, vector<string> &arguments,
+                                       const size_t frequency, const size_t bytePerSample,
+                                       const size_t channels, const size_t audioFormat) {
     int r = 0;
     vector<bool> inputIsOpen(arguments.size() - 2, false); // -2 потому что первые два аргумента это конфиг и аутпут
     for (auto &el : convertersVector) {
@@ -86,27 +86,33 @@ int NsuConverterI::initialInputStreams(vector<NsuConverterI*> &convertersVector,
         }
 
         if (!inputIsOpen[el->usingStream.first]) {
-            BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->usingStream.first + 2], r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
+            BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->usingStream.first + 2], frequency, bytePerSample, channels, audioFormat, r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
             if (r != 0) { return r; }
             inputsVector.push_back(temp);
             inputIsOpen[el->usingStream.first] = true;
+
         }
 
-        if ((r = el->createInputStreams(arguments, inputIsOpen)) != 0) { return r; }
+        if ((r = el->createInputStreams(arguments, inputIsOpen, frequency, bytePerSample, channels, audioFormat)) != 0) { return r; }
     }
     return r;
 }
 
-int NsuMute::createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen) {
+int NsuMute::createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen,
+                                const size_t frequency, const size_t bytePerSample,
+                                const size_t channels, const size_t audioFormat) {
     // функция пустышка
     int r;
-    if (arguments[0] == "") { r = 0; }
+    if (arguments[0] == "" && frequency == 0 && bytePerSample == 0
+        && channels == 0 && audioFormat == 0) { r = 0; }
     if (inputIsOpen[0] == false) { r = 0; }
     r = 0;
     return r;
 }
 
-int NsuMix::createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen) {
+int NsuMix::createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen,
+                               const size_t frequency, const size_t bytePerSample,
+                               const size_t channels, const size_t audioFormat) {
     int r = 0;
 
     try {
@@ -119,7 +125,7 @@ int NsuMix::createInputStreams(vector<string> &arguments, vector<bool> &inputIsO
     }
 
     if (!inputIsOpen[this->mixStream.first]) {
-        BinaryStreamIn *temp = new BinaryStreamIn(arguments[this->mixStream.first + 2], r);
+        BinaryStreamIn *temp = new BinaryStreamIn(arguments[this->mixStream.first + 2], frequency, bytePerSample, channels, audioFormat, r);
         if (r != 0) { return r; }
         inputsVector.push_back(temp);
         inputIsOpen[this->mixStream.first] = true;
@@ -141,7 +147,7 @@ int NsuConverterI::initialOutputStreams(vector<string> &arguments) {
 size_t NsuConverterI::secondNumber = 0;
 int NsuMute::convert() {
     if (secondNumber >= this->usingStream.second.first && secondNumber <= this->usingStream.second.second) {
-        char *samplesArray = inputsVector[this->usingStream.first]->getSamplesInOneSecond(secondNumber, 10, 10);
+//        char *samplesArray = inputsVector[this->usingStream.first]->getSamplesInOneSecond(secondNumber, 10, 10);
 //        try {
 //            if (!inputsVector[this->usingStream.first]) {
 //                throw RangeException(this->parameters);

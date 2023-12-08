@@ -35,13 +35,17 @@ public:
     virtual int parseParameters() = 0;
     virtual int convert() = 0;
 
-    static int initialInputStreams(vector<NsuConverterI*> &convertersVector, vector<string> &arguments);
+    static int initialInputStreams(vector<NsuConverterI*> &convertersVector, vector<string> &arguments,
+                                   const size_t frequency, const size_t bytePerSample,
+                                   const size_t channels, const size_t audioFormat);
     static int initialOutputStreams(vector<string> &arguments);
     static bool convertersIsOver(const vector<NsuConverterI*> &convertersVector);
 
 private:
     static size_t orderCreation;
-    virtual int createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen) = 0;
+    virtual int createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen,
+                                   const size_t frequency, const size_t bytePerSample,
+                                   const size_t channels, const size_t audioFormat) = 0;
 
 protected:
     string parameters;
@@ -70,7 +74,9 @@ public:
 private:
     static const string parametersPattern;
 
-    int createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen) override;
+    int createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen,
+                           const size_t frequency, const size_t bytePerSample,
+                           const size_t channels, const size_t audioFormat) override;
 };
 
 class NsuMix : public NsuConverterI {
@@ -84,7 +90,9 @@ private:
     pair<size_t, size_t> mixStream;
     static const string parametersPattern;
 
-    int createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen) override;
+    int createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen,
+                           const size_t frequency, const size_t bytePerSample,
+                           const size_t channels, const size_t audioFormat) override;
 };
 
 
@@ -111,9 +119,7 @@ public:
 
 private:
     virtual int convert(vector<NsuConverterI*> &convertersVector) override;
-    int checkFilesFormatAndParameters(vector<NsuConverterI*> convertersVector,
-                                               const size_t frequency, const size_t bitsPerSample,
-                                               const size_t channels, const size_t audioFormat);
+    int checkFilesFormatAndParameters(vector<NsuConverterI*> convertersVector);
 };
 
 #endif

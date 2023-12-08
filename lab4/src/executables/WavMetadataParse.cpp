@@ -32,23 +32,28 @@ int ParserRIFF::parse(BinaryStreamIn &streamInObj) {
         return ex.getErrorCode();
     }*/
 
-    streamInObj.fileSize = streamInObj.header->chunkSize + 8;
+
 
     return 0;
 }
 
 int ParserFmt::parse(BinaryStreamIn &streamInObj) {
+    streamInObj.stream.seekg(-4, streamInObj.stream.cur);
+
+
+    streamInObj.stream.read(reinterpret_cast<char*>(streamInObj.header) + 12, 24);
+
 
 
     return 0;
 }
 
 int ParserLIST::parse(BinaryStreamIn &streamInObj) {
+
     return 0;
 }
 
-int BinaryStreamIn::parseMetadataInWavFile(const size_t frequency, const size_t bitsPerSample,
-                                           const size_t numberOfChannels, const size_t compressingCode) {
+int BinaryStreamIn::parseMetadataInWavFile() {
     int r;
     WavMetadataParsersFactory parsersFactory;
     char data[SIZE_OF_CHUNK_NAME + 1];
