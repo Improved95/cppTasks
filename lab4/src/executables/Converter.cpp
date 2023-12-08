@@ -6,6 +6,7 @@ using std::ifstream;
 using std::cerr;
 using std::endl;
 
+WAVHeader * NsuConverterI::wavInfo = nullptr;
 int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
     int r;
     NsuSoundProcessorConfigParser filesParser;
@@ -30,38 +31,6 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
     if ((r = NsuConverterI::initialOutputStreams(arguments)) != 0) { return r; }
     r = checkFilesFormatAndParameters(convertersVector);
     convert(convertersVector);
-
-    return r;
-}
-
-WAVHeader * NsuConverterI::wavInfo = nullptr;
-int NsuSoundProcessorManager::checkFilesFormatAndParameters(vector<NsuConverterI*> convertersVector) {
-    int r;
-    for (auto &el : NsuConverterI::inputsVector) {
-        if ((r = el->parseMetadataInWavFile()) != 0) { return r; }
-    }
-
-    for (auto &el : convertersVector) {
-        try {
-            if (el->usingStream.second.first > el->usingStream.second.second) {
-                throw IncorrectParametersFormatException(el->parameters, "Incorrect borders");
-            }
-        } catch (IncorrectParametersFormatException &ex) {
-            cerr << ex.what() << endl;
-            return ex.getErrorCode();
-        }
-
-        el->wavInfo = NsuConverterI::inputsVector[el->usingStream.first]->getHeader();;
-        try {
-            if (el->usingStream.second.second > (el->wavInfo->dataSize / el->wavInfo->frequency / el->wavInfo->bytePerSample)) {
-                throw IncorrectParametersFormatException(el->parameters, "Incorrect borders, you out from file border.");
-            }
-        } catch (IncorrectParametersFormatException &ex) {
-            cerr << ex.what() << endl;
-            return ex.getErrorCode();
-        }
-    }
-
 
     return r;
 }
@@ -108,6 +77,9 @@ int NsuConverterI::initialInputStreams(vector<NsuConverterI*> &convertersVector,
             inputsVector.push_back(temp);
             inputIsOpen[el->usingStream.first] = true;
 
+            //делаю различные проверки
+            if ((r = temp->parseMetadataInWavFile()) != 0) { return r; }
+            el->checkParameters();
         }
 
         if ((r = el->createInputStreams(arguments, inputIsOpen, frequency, bytePerSample, channels, audioFormat)) != 0) { return r; }
@@ -146,6 +118,10 @@ int NsuMix::createInputStreams(vector<string> &arguments, vector<bool> &inputIsO
         if (r != 0) { return r; }
         inputsVector.push_back(temp);
         inputIsOpen[this->mixStream.first] = true;
+
+        //делаю различные проверки
+        if ((r = temp->parseMetadataInWavFile()) != 0) { return r; }
+        this->checkUniqueParameters();
     }
 
     return r;

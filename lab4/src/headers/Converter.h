@@ -33,6 +33,9 @@ public:
     }
 
     virtual int parseParameters() = 0;
+    int checkParameters();
+    virtual int checkUniqueParameters();
+
     virtual int convert() = 0;
 
     static int initialInputStreams(vector<NsuConverterI*> &convertersVector, vector<string> &arguments,
@@ -71,6 +74,7 @@ public:
 
     virtual int convert() override;
     virtual int parseParameters() override;
+    virtual int checkUniqueParameters() override;
 
 private:
     static const string parametersPattern;
@@ -86,6 +90,7 @@ public:
 
     virtual int convert() override;
     virtual int parseParameters() override;
+    virtual int checkUniqueParameters() override;
 
 private:
     pair<size_t, size_t> mixStream;

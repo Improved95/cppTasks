@@ -147,3 +147,41 @@ int NsuConverterI::fillUsingThreads(const size_t parametersQuantity,
 
     return 0;
 }
+
+int NsuConverterI::checkParameters() {
+    try {
+        if (this->usingStream.second.first > this->usingStream.second.second) {
+            throw IncorrectParametersFormatException(this->parameters, "Incorrect borders");
+        }
+    } catch (IncorrectParametersFormatException &ex) {
+        cerr << ex.what() << endl;
+        return ex.getErrorCode();
+    }
+    try {
+        if (this->usingStream.second.second > (this->wavInfo->dataSize / this->wavInfo->frequency / this->wavInfo->bytePerSample)) {
+            throw IncorrectParametersFormatException(this->parameters, "Incorrect borders, you out from file border.");
+        }
+    } catch (IncorrectParametersFormatException &ex) {
+        cerr << ex.what() << endl;
+        return ex.getErrorCode();
+    }
+}
+
+int NsuMute::checkUniqueParameters() {
+    return 0;
+}
+
+int NsuMix::checkUniqueParameters() {
+    try {
+        if (this->mixStream.second >
+            (this->wavInfo->dataSize / this->wavInfo->frequency / this->wavInfo->bytePerSample)) {
+            throw IncorrectParametersFormatException(this->parameters, "Incorrect borders, you out from file border.");
+        }
+    } catch (IncorrectParametersFormatException &ex) {
+        cerr << ex.what() << endl;
+        return ex.getErrorCode();
+    }
+
+
+
+}
