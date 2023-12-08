@@ -26,10 +26,6 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
     const size_t channels = 1;
     const size_t audioFormat = 1;
 
-    NsuConverterI::setFrequency(frequency);
-    NsuConverterI::setSizeOfSample(bitsPerSample);
-    NsuConverterI::setChannels(channels);
-    NsuConverterI::setAudioFormat(audioFormat);
     if ((r = NsuConverterI::initialInputStreams(convertersVector, arguments)) != 0) { return r; }
     if ((r = NsuConverterI::initialOutputStreams(arguments)) != 0) { return r; }
     r = checkFilesFormatAndParameters(convertersVector, frequency, bitsPerSample, channels, audioFormat);
@@ -43,8 +39,6 @@ int NsuSoundProcessorManager::checkFilesFormatAndParameters(vector<NsuConverterI
                                                                      const size_t frequency, const size_t bitsPerSample,
                                                                      const size_t channels, const size_t audioFormat) {
     int r;
-
-    WavMetadataParser;
     for (auto &el : NsuConverterI::inputsVector) {
         if ((r = el->parseMetadataInWavFile(frequency, bitsPerSample, channels, audioFormat)) != 0) { return r; }
     }
@@ -144,14 +138,10 @@ int NsuConverterI::initialOutputStreams(vector<string> &arguments) {
     return r;
 }
 
-size_t NsuConverterI::frequency = 0;
-size_t NsuConverterI::bitsPerSample = 0;
-size_t NsuConverterI::channels = 0;
-size_t NsuConverterI::audioFormat = 0;
 size_t NsuConverterI::secondNumber = 0;
 int NsuMute::convert() {
     if (secondNumber >= this->usingStream.second.first && secondNumber <= this->usingStream.second.second) {
-        char *samplesArray = inputsVector[this->usingStream.first]->getSamplesInOneSecond(secondNumber, frequency, bitsPerSample);
+        char *samplesArray = inputsVector[this->usingStream.first]->getSamplesInOneSecond(secondNumber, 10, 10);
 //        try {
 //            if (!inputsVector[this->usingStream.first]) {
 //                throw RangeException(this->parameters);

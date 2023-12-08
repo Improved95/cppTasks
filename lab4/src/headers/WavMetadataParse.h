@@ -2,29 +2,32 @@
 #define WAV_METADATA_PARSE
 
 #include <unordered_map>
+#include <fstream>
 #include "Streams.h"
 using std::unordered_map;
+using std::fstream;
+using std::string;
 
 class WavMetadataParser {
 public:
     WavMetadataParser() {}
 
-    virtual int parse() = 0;
+    virtual int parse(fstream &input, BinaryStreamIn &streamInObj) = 0;
 };
 
 class ParserRIFF : public WavMetadataParser {
 public:
-    virtual int parse() override;
+    virtual int parse(fstream &input, BinaryStreamIn &streamInObj) override;
 };
 
 class ParserFmt : public WavMetadataParser {
 public:
-    virtual int parse() override;
+    virtual int parse(fstream &input, BinaryStreamIn &streamInObj) override;
 };
 
 class ParserLIST : public WavMetadataParser {
 public:
-    virtual int parse() override;
+    virtual int parse(fstream &input, BinaryStreamIn &streamInObj) override;
 };
 
 class WavParserCreatorI {
@@ -41,6 +44,7 @@ public:
 };
 
 class WavMetadataParsersFactory {
+public:
     WavMetadataParsersFactory() {
         add<ParserRIFF>("RIFF");
         add<ParserFmt>("fmt ");

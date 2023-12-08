@@ -32,11 +32,6 @@ public:
         this->parameters = parameters_;
     }
 
-    static void setFrequency(const size_t frequency_) { frequency = frequency_; }
-    static void setSizeOfSample(const size_t bitsPerSample_) { bitsPerSample = bitsPerSample_; }
-    static void setChannels(const size_t channels_) { channels = channels_; }
-    static void setAudioFormat(const size_t audioFormat_) { audioFormat = audioFormat_; }
-
     virtual int parseParameters() = 0;
     virtual int convert() = 0;
 
@@ -55,10 +50,6 @@ protected:
     bool convertingIsComplete = false;
     pair<size_t, pair<size_t, size_t>> usingStream;
 
-    static size_t frequency;
-    static size_t bitsPerSample;
-    static size_t channels;
-    static size_t audioFormat;
     static size_t secondNumber;
     static vector<BinaryStreamIn*> inputsVector;
     static BinaryStreamOut *output;

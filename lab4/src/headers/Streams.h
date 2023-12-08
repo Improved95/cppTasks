@@ -41,7 +41,6 @@ struct WAVHeader {
     uint32_t subchunk2Size; //размер данных в этой подчасти
 };
 
-
 class BinaryStreamIn : public Stream {
 public:
     BinaryStreamIn(const string &fileName_, int &r) {
@@ -58,6 +57,7 @@ public:
                                  const size_t bitsPerSample);
     int parseMetadataInWavFile(const size_t frequency, const size_t bitsPerSample,
                                const size_t channels, const size_t audioFormat);
+
 private:
     size_t metadataSize = 0;
     size_t fileSize;
@@ -66,6 +66,8 @@ private:
     char *samplesInOneSecond;
 
     virtual int openFile(const string &fileName) override;
+
+    friend class ParseRIFF;
 };
 
 class BinaryStreamOut : public Stream {
