@@ -28,20 +28,20 @@ protected:
 
 struct WAVHeader {
     char subchunkRIFF[4]; //RIFF
-    uint32_t chunkSize; //размер файла минус 8
+    uint32_t fileSize; //размер файла минус 8
     char format[4]; //формат (WAVE)
 
     char subchunkFmt[4]; // название секции, должна быть fmt
-    uint32_t subchunk1Size; //размер данных fmt
+    uint32_t subchunkFmtSize; //размер данных fmt
     uint16_t audioFormat; //формат аудиоданных
-    uint16_t numChannels; //кол-во аудиоканалов
-    uint32_t sampleRate; //частота дискретизации
+    uint16_t numberOfChannels; //кол-во аудиоканалов
+    uint32_t frequency; //частота дискретизации
     uint32_t byteRate; //байтовая скорость
     uint16_t bytePerSample; //кол-во байтов для одного сэмпла
     uint16_t bitsPerSample; //кол-во битов для сэмпла
 
-    char subchunk2ID[4]; //идентификатор второй подчасти
-    uint32_t subchunk2Size; //размер данных в этой подчасти
+    char subchunkData[4]; //идентификатор второй подчасти
+    uint32_t subchunkDataSize; //размер данных в этой подчасти
 };
 
 struct WAVNeedsParameters {
@@ -49,7 +49,7 @@ struct WAVNeedsParameters {
     size_t bytePerSample;
     size_t numberOfChannels;
     size_t audioFormat;
-    size_t metadataSize;
+    size_t metadataSize = 0;
 };
 
 class BinaryStreamIn : public Stream, public CompareString {
@@ -88,6 +88,7 @@ private:
     friend ParserRIFF;
     friend ParserFmt;
     friend ParserLIST;
+    friend ParserData;
 };
 
 class BinaryStreamOut : public Stream {

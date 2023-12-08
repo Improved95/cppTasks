@@ -37,6 +37,11 @@ public:
     virtual int parse(BinaryStreamIn &streamInObj) override;
 };
 
+class ParserData : public WavMetadataParser {
+public:
+    virtual int parse(BinaryStreamIn &streamInObj) override;
+};
+
 class WavParserCreatorI {
 public:
     virtual WavMetadataParser * createParser() const = 0;
@@ -56,6 +61,7 @@ public:
         add<ParserRIFF>("RIFF");
         add<ParserFmt>("fmt ");
         add<ParserLIST>("LIST");
+        add<ParserData>("data");
     }
 
     template <class T>

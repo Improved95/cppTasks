@@ -21,7 +21,7 @@ int ParserRIFF::parse(BinaryStreamIn &streamInObj) {
     streamInObj.stream.seekg(0, streamInObj.stream.beg);
     streamInObj.header = new WAVHeader;
 
-    streamInObj.stream.read(reinterpret_cast<char*>(streamInObj.header), 4 + 4 + 4); // SIZE_OF_CHUNK_NAME + размер чанка + 'WAVE'
+    streamInObj.stream.read(reinterpret_cast<char*>(streamInObj.header), 12); // SIZE_OF_CHUNK_NAME + размер чанка + 'WAVE'
 
     /*try {
         if (!compareString(streamInObj.header->riff, "RIFF") || !compareString(streamInObj.header->format, "WAVE")) {
@@ -32,7 +32,7 @@ int ParserRIFF::parse(BinaryStreamIn &streamInObj) {
         return ex.getErrorCode();
     }*/
 
-
+    streamInObj.WAVparameters->metadataSize += 12;
 
     return 0;
 }
@@ -40,15 +40,40 @@ int ParserRIFF::parse(BinaryStreamIn &streamInObj) {
 int ParserFmt::parse(BinaryStreamIn &streamInObj) {
     streamInObj.stream.seekg(-4, streamInObj.stream.cur);
 
-
     streamInObj.stream.read(reinterpret_cast<char*>(streamInObj.header) + 12, 24);
 
+    if (streamInObj.header->frequency != streamInObj.WAVparameters->frequency ||
+            streamInObj.header->bytePerSample != streamInObj.WAVparameters->bytePerSample ||
+            streamInObj.header->numberOfChannels != streamInObj.WAVparameters->numberOfChannels ||
+            streamInObj.header->audioFormat != streamInObj.WAVparameters->audioFormat) {
+        return 6;
+    }
 
+    streamInObj.WAVparameters->metadataSize += 24;
 
     return 0;
 }
 
 int ParserLIST::parse(BinaryStreamIn &streamInObj) {
+    char intData[4];
+    streamInObj.stream.read(intData, 4);
+
+    size_t sizeOfListChunk = *reinterpret_cast<int*>(intData);
+    streamInObj.WAVparameters->metadataSize += 8 + sizeOfListChunk;
+    streamInObj.stream.seekg(sizeOfListChunk, streamInObj.stream.cur);
+
+    return 0;
+}
+
+int ParserData::parse(BinaryStreamIn &streamInObj) {
+    streamInObj.stream.seekg(-4, streamInObj.stream.cur);
+
+    streamInObj.stream.read(reinterpret_cast<char*>(streamInObj.header) + 36, 8);
+    if (!compareString(streamInObj.header->subchunkData, "data")) {
+        return 6;
+    }
+
+    streamInObj.WAVparameters->metadataSize += 8;
 
     return 0;
 }
