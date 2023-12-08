@@ -37,7 +37,7 @@ int Stream::checkFileOpen(const string &fileName) {
 }
 
 char * BinaryStreamIn::getNewSamplesInOneSecond() {
-    this->stream.read(sampleBuffer, this->WAVheader->sampleRate * this->WAVheader->bytePerSample);
+    this->stream.read(sampleBuffer, this->WAVheader->bytePerSample);
     return sampleBuffer;
 }
 

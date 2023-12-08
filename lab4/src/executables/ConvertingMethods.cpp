@@ -23,10 +23,10 @@ int NsuMute::convert() {
     if (this->numberOfCreate == orderCreation - 1) {
         size_t sampleRate = this->inputsVector[this->inputStreamInfo.first]->getHeader()->sampleRate;
         size_t bytePerSample = this->inputsVector[this->inputStreamInfo.first]->getHeader()->bytePerSample;
-        this->output->pushInFile(samplesInSecond, sampleRate * bytePerSample);
+        this->output->pushInFile(samplesInSecond, bytePerSample);
 
-
-        if (secondNumber >= (this->inputsVector[this->inputStreamInfo.first]->getHeader()->dataSize / sampleRate / bytePerSample)) {
+        size_t dataSize = this->inputsVector[this->inputStreamInfo.first]->getHeader()->dataSize / bytePerSample;
+        if (secondNumber >= dataSize) {
             convertingIsComplete = true;
         }
         secondNumber++;
