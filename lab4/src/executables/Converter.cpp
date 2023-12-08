@@ -38,7 +38,7 @@ int NsuSoundProcessorManager::convert(vector<NsuConverterI*> &convertersVector) 
     int r;
     while(!NsuConverterI::convertersIsOver(convertersVector)) {
         for (auto &el : convertersVector) {
-            if ((r = el->convert()) != 0) { return r; }
+//            if ((r = el->convert()) != 0) { return r; }
         }
     }
     return r;
@@ -133,27 +133,6 @@ int NsuConverterI::initialOutputStreams(vector<string> &arguments) {
     if (r != 0) { return r; }
     output = temp;
 
+
     return r;
-}
-
-size_t NsuConverterI::secondNumber = 0;
-int NsuMute::convert() {
-    if (secondNumber >= this->inputStreamInfo.second.first && secondNumber <= this->inputStreamInfo.second.second) {
-//        char *samplesArray = inputsVector[this->inputStreamInfo.first]->getSamplesInOneSecond(secondNumber, 10, 10);
-//        try {
-//            if (!inputsVector[this->inputStreamInfo.first]) {
-//                throw RangeException(this->parameters);
-//            }
-//        } catch (RangeException &ex) {
-//            cerr << ex.ex_what() << endl;
-//            return ex.getErrorCode();
-//        }
-//        cerr << samplesArray << endl;
-    }
-
-    return 0;
-}
-
-int NsuMix::convert() {
-    return 0;
 }

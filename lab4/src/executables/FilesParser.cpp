@@ -158,7 +158,7 @@ int NsuConverterI::checkParameters() {
         return ex.getErrorCode();
     }
     try {
-        if (this->inputStreamInfo.second.second > (inputInfo->dataSize / inputInfo->frequency / inputInfo->bytePerSample)) {
+        if (this->inputStreamInfo.second.second > (inputInfo->dataSize / inputInfo->sampleRate / inputInfo->bytePerSample)) {
             throw IncorrectParametersFormatException(this->parameters, "Incorrect borders, you out from file border.");
         }
     } catch (IncorrectParametersFormatException &ex) {
@@ -176,7 +176,7 @@ int NsuMix::checkUniqueParameters() {
     WAVHeader *inputInfo = this->inputsVector[this->mixStream.first]->getHeader();
     try {
         if (this->mixStream.second >
-            (inputInfo->dataSize / inputInfo->frequency / inputInfo->bytePerSample)) {
+            (inputInfo->dataSize / inputInfo->sampleRate / inputInfo->bytePerSample)) {
             throw IncorrectParametersFormatException(this->parameters, "Incorrect borders, you out from file border.");
         }
     } catch (IncorrectParametersFormatException &ex) {
@@ -185,7 +185,7 @@ int NsuMix::checkUniqueParameters() {
     }
     try {
         if (((this->inputStreamInfo.second.second - this->inputStreamInfo.second.second)+ this->mixStream.second) >
-            (inputInfo->dataSize / inputInfo->frequency / inputInfo->bytePerSample)) {
+            (inputInfo->dataSize / inputInfo->sampleRate / inputInfo->bytePerSample)) {
             throw IncorrectParametersFormatException(this->parameters, "Incorrect borders, you out from file border.");
         }
     } catch (IncorrectParametersFormatException &ex) {

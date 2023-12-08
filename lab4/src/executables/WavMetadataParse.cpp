@@ -42,7 +42,7 @@ int ParserFmt::parse(BinaryStreamIn &streamInObj) {
 
     streamInObj.stream.read(reinterpret_cast<char*>(streamInObj.header) + 12, 24);
 
-    if (streamInObj.header->frequency != streamInObj.WAVparameters->frequency ||
+    if (streamInObj.header->sampleRate != streamInObj.WAVparameters->sampleRate ||
             streamInObj.header->bytePerSample != streamInObj.WAVparameters->bytePerSample ||
             streamInObj.header->numberOfChannels != streamInObj.WAVparameters->numberOfChannels ||
             streamInObj.header->audioFormat != streamInObj.WAVparameters->audioFormat) {

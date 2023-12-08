@@ -35,7 +35,7 @@ struct WAVHeader {
     uint32_t subchunkFmtSize; //размер данных fmt
     uint16_t audioFormat; //формат аудиоданных
     uint16_t numberOfChannels; //кол-во аудиоканалов
-    uint32_t frequency; //частота дискретизации
+    uint32_t sampleRate; //частота дискретизации
     uint32_t byteRate; //байтовая скорость
     uint16_t bytePerSample; //кол-во байтов для одного сэмпла
     uint16_t bitsPerSample; //кол-во битов для сэмпла
@@ -46,7 +46,7 @@ struct WAVHeader {
 };
 
 struct WAVNeedsParameters {
-    size_t frequency;
+    size_t sampleRate;
     size_t bytePerSample;
     size_t numberOfChannels;
     size_t audioFormat;
@@ -54,17 +54,17 @@ struct WAVNeedsParameters {
 
 class BinaryStreamIn : public Stream, public CompareString {
 public:
-    BinaryStreamIn(const string &fileName_, const size_t frequency_, const size_t bytePerSample_,
+    BinaryStreamIn(const string &fileName_, const size_t sampleRate_, const size_t bytePerSample_,
     const size_t channels_, const size_t audioFormat_, int &r) {
         r = openFile(fileName_);
         this->WAVparameters = new WAVNeedsParameters;
-        this->WAVparameters->frequency = frequency_;
+        this->WAVparameters->sampleRate = sampleRate_;
         this->WAVparameters->bytePerSample = bytePerSample_;
         this->WAVparameters->numberOfChannels = channels_;
         this->WAVparameters->audioFormat = audioFormat_;
         this->fileName = fileName_;
         if (this->samplesInOneSecond == nullptr) {
-            this->samplesInOneSecond = new char[this->WAVparameters->frequency * this->WAVparameters->bytePerSample];
+            this->samplesInOneSecond = new char[this->WAVparameters->sampleRate * this->WAVparameters->bytePerSample];
         }
     }
     ~BinaryStreamIn() {
