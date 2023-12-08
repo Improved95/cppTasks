@@ -27,7 +27,7 @@ protected:
 };
 
 struct WAVHeader {
-    char chunkID[4]; //RIFF
+    char riff[4]; //RIFF
     uint32_t chunkSize; //размер файла минус 8
     char format[4]; //формат (WAVE)
     char subchunk1ID[4]; // название секции, должна быть fmt

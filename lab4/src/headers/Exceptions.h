@@ -110,13 +110,18 @@ public:
 
 class NotEnoughInputsException : public SoundProcessorException {
 public:
-    NotEnoughInputsException(const size_t mes_) {
+    NotEnoughInputsException(const size_t msg_) {
         this->msg = "Not enought inputs. You didn't enter '" +
-                to_string(mes_ + 1) + "' input.";
+                to_string(msg_ + 1) + "' input.";
         this->code = 5;
     }
 };
 
-
+class FilesFormatExceptions : public FilesParserException {
+public:
+    FilesFormatExceptions(const string &fileName) {
+        this->msg = "Incorrect format in '" + fileName + "' file.";
+    }
+};
 
 #endif

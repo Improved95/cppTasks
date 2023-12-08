@@ -13,22 +13,23 @@ class WavMetadataParser {
 public:
     WavMetadataParser() {}
 
-    virtual int parse(fstream &input, BinaryStreamIn &streamInObj) = 0;
+    virtual int parse(BinaryStreamIn &streamInObj) = 0;
+    bool compareString(const string &s1, const string &s2);
 };
 
 class ParserRIFF : public WavMetadataParser {
 public:
-    virtual int parse(fstream &input, BinaryStreamIn &streamInObj) override;
+    virtual int parse(BinaryStreamIn &streamInObj) override;
 };
 
 class ParserFmt : public WavMetadataParser {
 public:
-    virtual int parse(fstream &input, BinaryStreamIn &streamInObj) override;
+    virtual int parse(BinaryStreamIn &streamInObj) override;
 };
 
 class ParserLIST : public WavMetadataParser {
 public:
-    virtual int parse(fstream &input, BinaryStreamIn &streamInObj) override;
+    virtual int parse(BinaryStreamIn &streamInObj) override;
 };
 
 class WavParserCreatorI {

@@ -1,22 +1,48 @@
 #include <iostream>
 #include <functional>
 #include <Streams.h>
-using std::function;
+#include "WavMetadataParse.h"
+#include "Exceptions.h"
 
-int ParserRIFF::parse(fstream &input, BinaryStreamIn &streamInObj) {
-    input.seekg(0, input.beg);
+using std::function;
+using std::cerr;
+using std::endl;
+
+bool WavMetadataParser::compareString(const string &s1, const string &s2) {
+    for (size_t i = 0; i < s2.size(); i++) {
+        if (s1[i] != s2[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+int ParserRIFF::parse(BinaryStreamIn &streamInObj) {
+    streamInObj.stream.seekg(0, streamInObj.stream.beg);
     streamInObj.header = new WAVHeader;
 
-    input.read(reinterpret_cast<char*>(&streamInObj.header), sizeof(WAVHeader));
+    streamInObj.stream.read(reinterpret_cast<char*>(streamInObj.header), 4 + 4 + 4);
+
+    try {
+        if (!compareString(streamInObj.header->riff, "RFF") || !compareString(streamInObj.header->format, "WAVE")) {
+//            throw FilesFormatExceptions(streamInObj.fileName);
+            throw();
+        }
+    } catch (FilesFormatExceptions &ex){
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
+
+    streamInObj.fileSize = streamInObj.header->chunkSize + 8;
 
     return 0;
 }
 
-int ParserFmt::parse(fstream &input, BinaryStreamIn &streamInObj) {
+int ParserFmt::parse(BinaryStreamIn &streamInObj) {
     return 0;
 }
 
-int ParserLIST::parse(fstream &input, BinaryStreamIn &streamInObj) {
+int ParserLIST::parse(BinaryStreamIn &streamInObj) {
     return 0;
 }
 
@@ -28,7 +54,7 @@ int BinaryStreamIn::parseMetadataInWavFile(const size_t frequency, const size_t 
 
     this->stream.read(data, 4);
     WavMetadataParser *parser =  parsersFactory.create("RIFF");
-    if ((r = parser->parse(this->stream, *this)) != 0) { return r; }
+    if ((r = parser->parse(*this)) != 0) { return r; }
 
     do {
         //
