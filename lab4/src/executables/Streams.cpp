@@ -42,5 +42,5 @@ return nullptr;
 }
 
 void BinaryStreamOut::push(char *data, const size_t dataSize) {
-    this->stream.write("hello", 6);
+    this->stream.write(data, dataSize);
 }

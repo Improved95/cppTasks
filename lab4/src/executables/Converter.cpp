@@ -36,6 +36,7 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
 
 int NsuSoundProcessorManager::convert(vector<NsuConverterI*> &convertersVector) {
     int r;
+    NsuConverterI::output->getStream().close();
     exit(-1);
     while(!NsuConverterI::convertersIsOver(convertersVector)) {
         for (auto &el : convertersVector) {
@@ -133,9 +134,7 @@ int NsuConverterI::initialOutputStreams(vector<string> &arguments) {
     BinaryStreamOut *temp = new BinaryStreamOut(arguments[1], r);
     if (r != 0) { return r; }
     output = temp;
-//    output->push(reinterpret_cast<char*>(NsuConverterI::inputsVector[0]->getHeader()), sizeof(WAVHeader));
+    output->push(reinterpret_cast<char*>(NsuConverterI::inputsVector[0]->getHeader()), sizeof(WAVHeader));
 
-    char msg[3] = {'h', 'e', 'l'};
-    output->push(msg, 3);
     return r;
 }
