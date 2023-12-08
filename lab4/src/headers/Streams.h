@@ -42,7 +42,6 @@ struct WAVHeader {
 
     char subchunkData[4]; //идентификатор второй подчасти
     uint32_t dataSize; //размер данных в этой подчасти
-    size_t metadataSize = 0;
 };
 
 struct WAVNeedsParameters {
@@ -57,11 +56,11 @@ public:
     BinaryStreamIn(const string &fileName_, const size_t sampleRate_, const size_t bytePerSample_,
     const size_t channels_, const size_t audioFormat_, int &r) {
         r = openFile(fileName_);
-        this->WAVparameters = new WAVNeedsParameters;
-        this->WAVparameters->sampleRate = sampleRate_;
-        this->WAVparameters->bytePerSample = bytePerSample_;
-        this->WAVparameters->numberOfChannels = channels_;
-        this->WAVparameters->audioFormat = audioFormat_;
+//        this->WAVparameters = new WAVNeedsParameters;
+//        this->WAVparameters->sampleRate = sampleRate_;
+//        this->WAVparameters->bytePerSample = bytePerSample_;
+//        this->WAVparameters->numberOfChannels = channels_;
+//        this->WAVparameters->audioFormat = audioFormat_;
         this->fileName = fileName_;
         if (this->samplesInOneSecond == nullptr) {
             this->samplesInOneSecond = new char[this->WAVparameters->sampleRate * this->WAVparameters->bytePerSample];
@@ -82,8 +81,9 @@ public:
 
 private:
     string fileName;
-    WAVHeader *header;
-    WAVNeedsParameters *WAVparameters;
+    WAVHeader *WAVheader;
+//    WAVNeedsParameters *WAVNeedsparameters;
+    size_t metadataSize = 0;
     char *samplesInOneSecond;
 
     virtual int openFile(const string &fileName) override;
@@ -100,7 +100,7 @@ public:
         r = openFile(fileName);
     }
 
-    void pushSample();
+    void push(char *data, const size_t dataSize);
 
 private:
     virtual int openFile(const string &fileName) override;
