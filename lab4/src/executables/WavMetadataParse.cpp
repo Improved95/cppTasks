@@ -1,11 +1,13 @@
 #include <iostream>
 #include <functional>
-#include "WavMetadataParse.h"
+#include <Streams.h>
 using std::function;
 
 int ParserRIFF::parse(fstream &input, BinaryStreamIn &streamInObj) {
     input.seekg(0, input.beg);
-//    input.read(reinterpret_cast<char*>(&header), sizeof(WAVHeader));
+    streamInObj.header = new WAVHeader;
+
+    input.read(reinterpret_cast<char*>(&streamInObj.header), sizeof(WAVHeader));
 
     return 0;
 }

@@ -1,12 +1,13 @@
 #ifndef WAV_METADATA_PARSE
 #define WAV_METADATA_PARSE
 
+#include <iostream>
 #include <unordered_map>
-#include <fstream>
-#include "Streams.h"
 using std::unordered_map;
 using std::fstream;
 using std::string;
+
+class BinaryStreamIn;
 
 class WavMetadataParser {
 public:

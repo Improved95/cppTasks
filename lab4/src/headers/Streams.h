@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include "WavMetadataParse.h"
 using std::ifstream;
 using std::ofstream;
 using std::fstream;
@@ -67,7 +68,7 @@ private:
 
     virtual int openFile(const string &fileName) override;
 
-    friend class ParseRIFF;
+    friend ParserRIFF;
 };
 
 class BinaryStreamOut : public Stream {
