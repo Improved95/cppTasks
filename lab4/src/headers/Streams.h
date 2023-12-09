@@ -43,24 +43,7 @@ struct WAVHeader {
     uint32_t dataSize;
 };
 
-class BinaryStream : public Stream {
-public:
-    ~BinaryStream() {
-        if (sampleBuffer != nullptr) {
-            delete sampleBuffer;
-        }
-    }
-    static void setSampleBuffer(const size_t bufferSize) {
-        sampleBuffer = new char[bufferSize];
-    }
-    static char * getSampleBuffer() {
-        return sampleBuffer;
-    }
-protected:
-    static char *sampleBuffer;
-};
-
-class BinaryStreamIn : public BinaryStream, public CompareString {
+class BinaryStreamIn : public Stream, public CompareString {
 public:
     BinaryStreamIn(const string &fileName_, int &r) {
         r = openFile(fileName_);
@@ -73,8 +56,8 @@ public:
     }
     WAVHeader * getHeader() { return WAVheader; }
 
-    char * getNewSamplesInOneSecond();
-    char * getSamplesInOneSecond();
+    int getNewSamplesInOneSecond(char *samplesBuffer);
+//    char * getSamplesInOneSecond();
     int parseMetadataInWavFile(const size_t sampleRate, const size_t bytePerSample,
                                 const size_t channels, const size_t audioFormat);
 
@@ -101,9 +84,6 @@ public:
             delete this->samplesBuffer;
         }
     }
-    void setSamplesBuffer(char * samplesBuffer_) { samplesBuffer =  samplesBuffer_ ;}
-    char * getSamplesBuffer() { return samplesBuffer; }
-
     void pushInFile(char *data, const size_t dataSize);
 
 private:

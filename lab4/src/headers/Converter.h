@@ -33,7 +33,7 @@ public:
 private:
     size_t createNumber = 0;
     bool convertingIsComplete;
-    size_t secondNumber;
+    size_t sampleNumber;
     vector<BinaryStreamIn*> inputsVector;
     BinaryStreamOut *output;
 
@@ -42,8 +42,6 @@ private:
                                    const size_t sampleRate, const size_t bytePerSample,
                                    const size_t channels, const size_t audioFormat);
     int initialOutputStreams(vector<string> &arguments);
-
-
 };
 
 // ======================================== Converters =============================================
@@ -56,7 +54,7 @@ public:
 
     pair<size_t, pair<size_t, size_t>> & getInputStreamInfo() { return this->inputStreamInfo; }
 
-    virtual int convert() = 0;
+    virtual int convert(char *samplesBuffer, const size_t bufferSize) = 0;
     virtual int parseParameters() = 0;
     int checkParameters(vector<BinaryStreamIn*> &inputsVector);
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) = 0;
@@ -72,13 +70,15 @@ protected:
 
     int getParseResult(size_t parametersQuantity,
                          cxxopts::Options &options, cxxopts::ParseResult &result);
+
+    friend NsuSoundProcessorManager;
 };
 
 class NsuMute : public NsuConverterI {
 public:
     NsuMute(const string &parameters, const size_t numberOfCreate) : NsuConverterI(parameters, numberOfCreate) {}
 
-    virtual int convert() override;
+    virtual int convert(char *samplesBuffer, const size_t bufferSize) override;
     virtual int parseParameters() override;
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) override;
     int initialUniqueInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,
@@ -90,7 +90,7 @@ class NsuMix : public NsuConverterI {
 public:
     NsuMix(const string &parameters, const size_t numberOfCreate) : NsuConverterI(parameters, numberOfCreate) {}
 
-    virtual int convert() override;
+    virtual int convert(char *samplesBuffer, const size_t bufferSize) override;
     virtual int parseParameters() override;
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) override;
     int initialUniqueInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,

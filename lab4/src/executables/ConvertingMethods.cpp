@@ -1,55 +1,49 @@
 #include <iostream>
 #include "Converter.h"
 
-char * BinaryStream::sampleBuffer = nullptr;
+//char * BinaryStream::sampleBuffer = nullptr;
 
 int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVector) {
     int r;
-    this->output->getStream().close();
-    exit(-1);
+//    this->output->getStream().close();
+//    exit(-1);
+
+    const size_t sampleRate = this->inputsVector[0]->getHeader()->sampleRate;
+    const size_t bytePerSample = this->inputsVector[0]->getHeader()->bytePerSample;
+    const size_t generalDataSize = this->inputsVector[0]->getHeader()->dataSize / bytePerSample;
+
+    char *samplesBuffer = new char[sampleRate * bytePerSample];
+    size_t readDataSize = 0;
     while(!this->convertingIsComplete) {
         for (auto &el : convertersVector) {
-            if ((r = el->convert()) != 0) { return r; }
+            if (el->createNumber == 0) {
+                readDataSize = this->inputsVector[el->inputStreamInfo.first]->getNewSamplesInOneSecond(samplesBuffer);
+                this->sampleNumber++;
+            }
+
+            if ((r = el->convert(samplesBuffer, readDataSize)) != 0) {
+                delete samplesBuffer;
+                return r;
+            }
+
+            if (el->createNumber == this->createNumber - 1) {
+                this->output->pushInFile(samplesBuffer, readDataSize);
+                if (this->sampleNumber >= generalDataSize) {
+                    convertingIsComplete = true;
+                }
+            }
         }
     }
 
+    delete samplesBuffer;
     return r;
 }
 
-int NsuMute::convert() {
-    char *samplesInSecond;
-
-    //если конвертер первый
-    /*if (this->numberOfCreate == 0) {
-        samplesInSecond = this->inputsVector[this->inputStreamInfo.first]->getNewSamplesInOneSecond();
-        secondNumber++;
-    } else {
-        samplesInSecond = this->inputsVector[this->inputStreamInfo.first]->getSampleBuffer();
-    }
-
-    if (secondNumber >= this->inputStreamInfo.second.first && secondNumber <= this->inputStreamInfo.second.second) {
-
-    }
-
-    //если конвертер последний
-    if (this->numberOfCreate == orderCreation - 1) {
-        size_t sampleRate = this->inputsVector[this->inputStreamInfo.first]->getHeader()->sampleRate;
-        size_t bytePerSample = this->inputsVector[this->inputStreamInfo.first]->getHeader()->bytePerSample;
-        this->output->pushInFile(samplesInSecond, bytePerSample);
-        t1 += 1;
-
-
-        size_t dataSize = this->inputsVector[this->inputStreamInfo.first]->getHeader()->dataSize / bytePerSample;
-        if (secondNumber >= dataSize) {
-            convertingIsComplete = true;
-        }
-    } else {
-
-    }*/
+int NsuMute::convert(char *samplesBuffer, const size_t bufferSize) {
 
     return 0;
 }
 
-int NsuMix::convert() {
+int NsuMix::convert(char *samplesBuffer, const size_t bufferSize) {
     return 0;
 }

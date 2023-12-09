@@ -28,7 +28,6 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert(vector<strin
 
     if ((r = initialInputStreams(convertersVector, arguments, sampleRate, bytePerSample, numberOfchannels, compressedCode)) != 0) { return r; }
     if ((r = initialOutputStreams(arguments)) != 0) { return r; }
-    BinaryStream::setSampleBuffer(bytePerSample);
 
     converting(convertersVector);
 
