@@ -14,7 +14,7 @@ endif()
 set(PATH_TO_EXECUTABLES src/executables/)
 add_executable(${exe_name} src/main.cpp)
 add_library(corelib OBJECT ${PATH_TO_EXECUTABLES}SoundProcessor.cpp ${PATH_TO_EXECUTABLES}ConsoleParser.cpp
-        ${PATH_TO_EXECUTABLES}Messages.cpp  ${PATH_TO_EXECUTABLES}Converter.cpp ${PATH_TO_EXECUTABLES}Streams.cpp
+        ${PATH_TO_EXECUTABLES}Messages.cpp  ${PATH_TO_EXECUTABLES}ConverterManager.cpp ${PATH_TO_EXECUTABLES}Streams.cpp
         ${PATH_TO_EXECUTABLES}FilesParser.cpp ${PATH_TO_EXECUTABLES}WavMetadataParse.cpp ${PATH_TO_EXECUTABLES}ConvertingMethods.cpp)
 target_include_directories(corelib PUBLIC src/executables)
 target_include_directories(corelib PUBLIC src/headers)

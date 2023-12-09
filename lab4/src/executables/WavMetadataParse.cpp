@@ -24,14 +24,14 @@ int ParserRIFF::parse(BinaryStreamIn &streamInObj,
 
     streamInObj.stream.read(reinterpret_cast<char*>(streamInObj.WAVheader), 12); // SIZE_OF_CHUNK_NAME + размер чанка + 'WAVE'
 
-    /*try {
-        if (!compareString(streamInObj.WAVheader->riff, "RIFF") || !compareString(streamInObj.WAVheader->format, "WAVE")) {
+    try {
+        if (!compareString(streamInObj.WAVheader->subchunkRIFF, "RIFF") || !compareString(streamInObj.WAVheader->format, "WAVE")) {
             throw FilesFormatExceptions(streamInObj.fileName);
         }
     } catch (FilesFormatExceptions &ex) {
         cerr << ex.ex_what() << endl;
         return ex.getErrorCode();
-    }*/
+    }
 
     streamInObj.metadataSize += 12;
 
@@ -45,11 +45,37 @@ int ParserFmt::parse(BinaryStreamIn &streamInObj,
 
     streamInObj.stream.read(reinterpret_cast<char*>(streamInObj.WAVheader) + 12, 24);
 
-    if (streamInObj.WAVheader->sampleRate != sampleRate ||
-            streamInObj.WAVheader->bytePerSample != bytePerSample ||
-            streamInObj.WAVheader->numberOfChannels != channels ||
-            streamInObj.WAVheader->audioFormat != audioFormat) {
-        return 6;
+    try {
+        if (streamInObj.WAVheader->sampleRate != sampleRate) {
+            throw FilesFormatExceptions(streamInObj.fileName, "Incorrect sampleRate");
+        }
+    } catch (FilesFormatExceptions &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
+    try {
+        if (streamInObj.WAVheader->bytePerSample != bytePerSample) {
+            throw FilesFormatExceptions(streamInObj.fileName, "Incorrect bytePerSample");
+        }
+    } catch (FilesFormatExceptions &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
+    try {
+        if (streamInObj.WAVheader->numberOfChannels != channels) {
+            throw FilesFormatExceptions(streamInObj.fileName, "Incorrect numberOfChannels");
+        }
+    } catch (FilesFormatExceptions &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
+    try {
+        if (streamInObj.WAVheader->audioFormat != audioFormat) {
+            throw FilesFormatExceptions(streamInObj.fileName, "Incorrect audioFormat");
+        }
+    } catch (FilesFormatExceptions &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
     }
 
     streamInObj.metadataSize += 24;

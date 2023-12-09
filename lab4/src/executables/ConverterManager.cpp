@@ -6,7 +6,7 @@ using std::ifstream;
 using std::cerr;
 using std::endl;
 
-int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
+int NsuSoundProcessorManager::initializeConvertersAndInitialConvert(vector<string> &arguments) {
     int r;
     NsuSoundProcessorConfigParser filesParser;
 
@@ -35,19 +35,6 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
     return r;
 }
 
-int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVector) {
-    int r;
-//    NsuConverterI::output->getStream().close();
-//    exit(-1);
-    while(!this->convertingIsComplete) {
-        for (auto &el : convertersVector) {
-            if ((r = el->convert()) != 0) { return r; }
-        }
-    }
-
-    return r;
-}
-
 int NsuSoundProcessorManager::initialInputStreams(vector<NsuConverterI*> &convertersVector, vector<string> &arguments,
                                        const size_t sampleRate, const size_t bytePerSample,
                                        const size_t channels, const size_t audioFormat) {
@@ -69,15 +56,11 @@ int NsuSoundProcessorManager::initialInputStreams(vector<NsuConverterI*> &conver
             this->inputsVector.push_back(temp);
             inputIsOpen[el->getInputStreamInfo().first] = true;
 
-            if ((r = temp->parseMetadataInWavFile(sampleRate, bytePerSample, channels, audioFormat)) != 0) {
-                return r;
-            }
+            if ((r = temp->parseMetadataInWavFile(sampleRate, bytePerSample, channels, audioFormat)) != 0) { return r; }
             el->checkParameters(this->inputsVector);
         }
 
-        if ((r = el->initialUniqueInputStreams(arguments, inputIsOpen, this->inputsVector, sampleRate, bytePerSample, channels, audioFormat)) != 0) {
-            return r;
-        }
+        if ((r = el->initialUniqueInputStreams(arguments, inputIsOpen, this->inputsVector, sampleRate, bytePerSample, channels, audioFormat)) != 0) { return r; }
     }
     return r;
 }

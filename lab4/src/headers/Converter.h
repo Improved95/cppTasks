@@ -28,12 +28,9 @@ protected:
 class NsuConverterI;
 class NsuSoundProcessorManager {
 public:
-    NsuSoundProcessorManager(vector<string> &arguments_) {}
-
-    int initializeConvertersAndInitialConvert();
+    int initializeConvertersAndInitialConvert(vector<string> &arguments);
 
 private:
-    vector<string> arguments;
     size_t createNumber = 0;
     bool convertingIsComplete;
     size_t secondNumber;

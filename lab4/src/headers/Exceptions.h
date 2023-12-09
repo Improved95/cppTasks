@@ -101,23 +101,11 @@ public:
     }
 };
 
-class IncorrectParametersFormatException : public FilesParserException {
-public:
-    IncorrectParametersFormatException(const string &parameters) {
-        this->msg = "Incorrect format parameters in '" + parameters + "'.";
-        this->code = 7;
-    }
-    IncorrectParametersFormatException(const string &parameters, const string &what) {
-        this->msg = "Incorrect format parameters in '" + parameters + "'" + what + ".";
-        this->code = 7;
-    }
-};
-
 class NotEnoughInputsException : public SoundProcessorException {
 public:
     NotEnoughInputsException(const size_t msg_) {
         this->msg = "Not enought inputs. You didn't enter '" +
-                to_string(msg_ + 1) + "' input.";
+                    to_string(msg_ + 1) + "' input.";
         this->code = 5;
     }
 };
@@ -125,7 +113,22 @@ public:
 class FilesFormatExceptions : public FilesParserException {
 public:
     FilesFormatExceptions(const string &fileName) {
-        this->msg = "Incorrect format in '" + fileName + "' file.";
+        this->msg = "Incorrect format at '" + fileName + "' file.";
+        this->code = 6;
+    }
+    FilesFormatExceptions(const string &fileName, const string &what) : FilesFormatExceptions(fileName) {
+        this->msg += "" + what + ".";
+    }
+};
+
+class IncorrectParametersFormatException : public FilesParserException {
+public:
+    IncorrectParametersFormatException(const string &parameters) {
+        this->msg = "Incorrect format parameters in '" + parameters + "'. ";
+        this->code = 7;
+    }
+    IncorrectParametersFormatException(const string &parameters, const string &what) {
+        this->msg += what + ".";
     }
 };
 

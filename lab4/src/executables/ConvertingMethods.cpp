@@ -3,6 +3,19 @@
 
 char * BinaryStream::sampleBuffer = nullptr;
 
+int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVector) {
+    int r;
+    this->output->getStream().close();
+    exit(-1);
+    while(!this->convertingIsComplete) {
+        for (auto &el : convertersVector) {
+            if ((r = el->convert()) != 0) { return r; }
+        }
+    }
+
+    return r;
+}
+
 int NsuMute::convert() {
     char *samplesInSecond;
 
