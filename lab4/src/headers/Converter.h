@@ -24,6 +24,21 @@ protected:
     static const string ConvertersNamesPatterns;
 };
 
+// ========================================== Converters Manager  ==========================================
+class NsuConverterI;
+class NsuSoundProcessorManager {
+public:
+    NsuSoundProcessorManager(vector<string> &arguments_) {}
+
+    int initializeConvertersAndInitialConvert();
+
+private:
+    vector<string> arguments;
+    int convert(vector<NsuConverterI*> &convertersVector);
+};
+
+// ======================================== Converters =============================================
+
 class NsuConverterI : public NsuConvertersInfo {
 public:
     static size_t t1;
@@ -102,32 +117,6 @@ private:
     int createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen,
                            const size_t frequency, const size_t bytePerSample,
                            const size_t channels, const size_t audioFormat) override;
-};
-
-
-// ========================================== Converters Manager  ==========================================
-class ConvertesManagers {
-public:
-    ConvertesManagers(vector<string> &arguments_) {
-        this->arguments = std::move(arguments_);
-    }
-
-    virtual int initializeConvertersAndInitialConvert() = 0;
-
-protected:
-    vector<string> arguments;
-
-    virtual int convert(vector<NsuConverterI*> &convertersVector) = 0;
-};
-
-class NsuSoundProcessorManager : public ConvertesManagers{
-public:
-    NsuSoundProcessorManager(vector<string> &arguments_) : ConvertesManagers(arguments_){}
-
-    virtual int initializeConvertersAndInitialConvert() override;
-
-private:
-    virtual int convert(vector<NsuConverterI*> &convertersVector) override;
 };
 
 #endif
