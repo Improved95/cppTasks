@@ -33,7 +33,6 @@ public:
 private:
     size_t createNumber = 0;
     bool convertingIsComplete;
-    size_t sampleNumber;
     vector<BinaryStreamIn*> inputsVector;
     BinaryStreamOut *output;
 
@@ -54,7 +53,7 @@ public:
 
     pair<size_t, pair<size_t, size_t>> & getInputStreamInfo() { return this->inputStreamInfo; }
 
-    virtual int convert(char *samplesBuffer, const size_t bufferSize) = 0;
+    virtual int convert(char *samplesBuffer, const size_t bufferSize, const size_t currentSecond) = 0;
     virtual int parseParameters() = 0;
     int checkParameters(vector<BinaryStreamIn*> &inputsVector);
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) = 0;
@@ -78,7 +77,7 @@ class NsuMute : public NsuConverterI {
 public:
     NsuMute(const string &parameters, const size_t numberOfCreate) : NsuConverterI(parameters, numberOfCreate) {}
 
-    virtual int convert(char *samplesBuffer, const size_t bufferSize) override;
+    virtual int convert(char *samplesBuffer, const size_t bufferSize, const size_t currentSecond) override;
     virtual int parseParameters() override;
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) override;
     int initialUniqueInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,
@@ -90,7 +89,7 @@ class NsuMix : public NsuConverterI {
 public:
     NsuMix(const string &parameters, const size_t numberOfCreate) : NsuConverterI(parameters, numberOfCreate) {}
 
-    virtual int convert(char *samplesBuffer, const size_t bufferSize) override;
+    virtual int convert(char *samplesBuffer, const size_t bufferSize, const size_t currentSecond) override;
     virtual int parseParameters() override;
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) override;
     int initialUniqueInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,
