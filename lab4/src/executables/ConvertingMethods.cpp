@@ -2,18 +2,12 @@
 #include "Converter.h"
 
 char * BinaryStream::sampleBuffer = nullptr;
-bool NsuConverterI::convertingIsComplete = false;
-size_t NsuConverterI::secondNumber = 0;
-size_t NsuConverterI::orderCreation = 0;
-size_t NsuConverterI::readDataSize = 0;
-
-size_t NsuConverterI::t1 = 0;
 
 int NsuMute::convert() {
     char *samplesInSecond;
 
     //если конвертер первый
-    if (this->numberOfCreate == 0) {
+    /*if (this->numberOfCreate == 0) {
         samplesInSecond = this->inputsVector[this->inputStreamInfo.first]->getNewSamplesInOneSecond();
         secondNumber++;
     } else {
@@ -38,7 +32,7 @@ int NsuMute::convert() {
         }
     } else {
 
-    }
+    }*/
 
     return 0;
 }

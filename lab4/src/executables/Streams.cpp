@@ -45,10 +45,6 @@ char *BinaryStreamIn::getSamplesInOneSecond() {
     return sampleBuffer;
 }
 
-size_t BinaryStreamOut::t2 = 0;
-size_t BinaryStreamOut::t3 = 0;
 void BinaryStreamOut::pushInFile(char *data, const size_t dataSize) {
     this->stream.write(data, dataSize);
-    t2 += 1;
-    t3 += dataSize;
 }

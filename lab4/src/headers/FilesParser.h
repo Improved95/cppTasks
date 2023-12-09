@@ -12,7 +12,7 @@ using std::vector;
 
 class NsuSoundProcessorConfigParser {
 public:
-    int parse(StreamIn &config, vector<NsuConverterI*> &convertersVector);
+    int parse(StreamIn &config, vector<NsuConverterI*> &convertersVector, size_t &createNumber);
 
 private:
     string checkConverterName(string &parameterStr);

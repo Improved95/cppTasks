@@ -14,7 +14,7 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
     if (r != 0) { return r; }
 
     vector<NsuConverterI*> convertersVector;
-    if ((r = filesParser.parse(configFile, convertersVector)) != 0) { return r; }
+    if ((r = filesParser.parse(configFile, convertersVector, this->createNumber)) != 0) { return r; }
     if (convertersVector.size() == 0) { return 0; }
 
     for (auto &el : convertersVector) {
@@ -26,79 +26,69 @@ int NsuSoundProcessorManager::initializeConvertersAndInitialConvert() {
     const size_t numberOfchannels = 1;
     const size_t compressedCode = 1;
 
-    if ((r = NsuConverterI::initialInputStreams(convertersVector, arguments, sampleRate, bytePerSample, numberOfchannels, compressedCode)) != 0) { return r; }
-    if ((r = NsuConverterI::initialOutputStreams(arguments)) != 0) { return r; }
+    if ((r = initialInputStreams(convertersVector, arguments, sampleRate, bytePerSample, numberOfchannels, compressedCode)) != 0) { return r; }
+    if ((r = initialOutputStreams(arguments)) != 0) { return r; }
     BinaryStream::setSampleBuffer(bytePerSample);
 
-    convert(convertersVector);
+    converting(convertersVector);
 
     return r;
 }
 
-int NsuSoundProcessorManager::convert(vector<NsuConverterI*> &convertersVector) {
+int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVector) {
     int r;
 //    NsuConverterI::output->getStream().close();
 //    exit(-1);
-    while(!NsuConverterI::convertingIsComplete) {
+    while(!this->convertingIsComplete) {
         for (auto &el : convertersVector) {
             if ((r = el->convert()) != 0) { return r; }
         }
     }
 
-    cerr << NsuConverterI::t1 << endl;
-    cerr << NsuConverterI::output->t2 << endl;
-    cerr << NsuConverterI::output->t3 << endl;
     return r;
 }
 
-vector<BinaryStreamIn*> NsuConverterI::inputsVector = {};
-int NsuConverterI::initialInputStreams(vector<NsuConverterI*> &convertersVector, vector<string> &arguments,
+int NsuSoundProcessorManager::initialInputStreams(vector<NsuConverterI*> &convertersVector, vector<string> &arguments,
                                        const size_t sampleRate, const size_t bytePerSample,
                                        const size_t channels, const size_t audioFormat) {
     int r = 0;
     vector<bool> inputIsOpen(arguments.size() - 2, false); // -2 потому что первые два аргумента это конфиг и аутпут
     for (auto &el : convertersVector) {
-
         try {
-            if (el->inputStreamInfo.first > arguments.size() - 3) {
-                throw NotEnoughInputsException(el->inputStreamInfo.first);
+            if (el->getInputStreamInfo().first > arguments.size() - 3) {
+                throw NotEnoughInputsException(el->getInputStreamInfo().first);
             }
         } catch (NotEnoughInputsException &ex) {
             cerr << ex.ex_what() << endl;
             return ex.getErrorCode();
         }
 
-        if (!inputIsOpen[el->inputStreamInfo.first]) {
-            BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->inputStreamInfo.first + 2], r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
+        if (!inputIsOpen[el->getInputStreamInfo().first]) {
+            BinaryStreamIn *temp = new BinaryStreamIn(arguments[el->getInputStreamInfo().first + 2], r); // +2 потому что в аргументах первыми двумя лежат config и аутпут
             if (r != 0) { return r; }
-            inputsVector.push_back(temp);
-            inputIsOpen[el->inputStreamInfo.first] = true;
+            this->inputsVector.push_back(temp);
+            inputIsOpen[el->getInputStreamInfo().first] = true;
 
-            //делаю различные проверки
-            if ((r = temp->parseMetadataInWavFile(sampleRate, bytePerSample, channels, audioFormat)) != 0) { return r; }
-            el->checkParameters();
+            if ((r = temp->parseMetadataInWavFile(sampleRate, bytePerSample, channels, audioFormat)) != 0) {
+                return r;
+            }
+            el->checkParameters(this->inputsVector);
         }
 
-        if ((r = el->createInputStreams(arguments, inputIsOpen, sampleRate, bytePerSample, channels, audioFormat)) != 0) { return r; }
+        if ((r = el->initialUniqueInputStreams(arguments, inputIsOpen, this->inputsVector, sampleRate, bytePerSample, channels, audioFormat)) != 0) {
+            return r;
+        }
     }
     return r;
 }
 
-int NsuMute::createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen,
-                                const size_t sampleRate, const size_t bytePerSample,
-                                const size_t channels, const size_t audioFormat) {
-    // функция пустышка
-    int r;
-    if (arguments[0] == "" && sampleRate == 0 && bytePerSample == 0
-        && channels == 0 && audioFormat == 0) { r = 0; }
-    if (inputIsOpen[0] == false) { r = 0; }
-    r = 0;
-    return r;
+int NsuMute::initialUniqueInputStreams(vector<string> &, vector<bool> &, vector<BinaryStreamIn*> &, const size_t, const size_t, const size_t, const size_t) {
+    return 0;
 }
 
-int NsuMix::createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen,
-                               const size_t sampleRate, const size_t bytePerSample,
-                               const size_t channels, const size_t audioFormat) {
+int NsuMix::initialUniqueInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,
+                                        const size_t sampleRate, const size_t bytePerSample,
+                                        const size_t channels, const size_t audioFormat) {
     int r = 0;
 
     try {
@@ -116,21 +106,19 @@ int NsuMix::createInputStreams(vector<string> &arguments, vector<bool> &inputIsO
         inputsVector.push_back(temp);
         inputIsOpen[this->mixStream.first] = true;
 
-        //делаю различные проверки
         if ((r = temp->parseMetadataInWavFile(sampleRate, bytePerSample, channels, audioFormat)) != 0) { return r; }
-        this->checkUniqueParameters();
+        this->checkUniqueParameters(inputsVector);
     }
 
     return r;
 }
 
-BinaryStreamOut * NsuConverterI::output = nullptr;
-int NsuConverterI::initialOutputStreams(vector<string> &arguments) {
+int NsuSoundProcessorManager::initialOutputStreams(vector<string> &arguments) {
     int r;
     BinaryStreamOut *temp = new BinaryStreamOut(arguments[1], r);
     if (r != 0) { return r; }
     output = temp;
-    output->pushInFile(reinterpret_cast<char*>(NsuConverterI::inputsVector[0]->getHeader()), sizeof(WAVHeader));
+    output->pushInFile(reinterpret_cast<char*>(NsuSoundProcessorManager::inputsVector[0]->getHeader()), sizeof(WAVHeader));
 
     return r;
 }

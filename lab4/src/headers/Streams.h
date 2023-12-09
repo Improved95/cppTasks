@@ -26,21 +26,21 @@ protected:
 };
 
 struct WAVHeader {
-    char subchunkRIFF[4]; //RIFF
-    uint32_t fileSize; //размер файла минус 8
-    char format[4]; //формат (WAVE)
+    char subchunkRIFF[4];
+    uint32_t fileSize;
+    char format[4];
 
-    char subchunkFmt[4]; // название секции, должна быть fmt
-    uint32_t subchunkFmtSize; //размер данных fmt
-    uint16_t audioFormat; //формат аудиоданных
-    uint16_t numberOfChannels; //кол-во аудиоканалов
-    uint32_t sampleRate; //частота дискретизации
-    uint32_t byteRate; //байтовая скорость
-    uint16_t bytePerSample; //кол-во байтов для одного сэмпла
-    uint16_t bitsPerSample; //кол-во битов для сэмпла
+    char subchunkFmt[4];
+    uint32_t subchunkFmtSize;
+    uint16_t audioFormat;
+    uint16_t numberOfChannels;
+    uint32_t sampleRate;
+    uint32_t byteRate;
+    uint16_t bytePerSample;
+    uint16_t bitsPerSample;
 
-    char subchunkData[4]; //идентификатор второй подчасти
-    uint32_t dataSize; //размер данных в этой подчасти
+    char subchunkData[4];
+    uint32_t dataSize;
 };
 
 class BinaryStream : public Stream {
@@ -93,9 +93,6 @@ private:
 
 class BinaryStreamOut : public Stream {
 public:
-    static size_t t2;
-    static size_t t3;
-
     BinaryStreamOut(const string &fileName, int &r) {
         r = openFile(fileName);
     }

@@ -18,7 +18,7 @@ const string NsuConvertersInfo::ConvertersNamesPatterns = "^(\\w+)";
 const string NsuConvertersInfo::convertersNames[convertersQuantity] = {"mute", "mix"};
 const string NsuSoundProcessorConfigParser::parametersPattrerm = "[ ]([\\s\\S])+";
 
-int NsuSoundProcessorConfigParser::parse(StreamIn &config, vector<NsuConverterI*> &convertersVector) {
+int NsuSoundProcessorConfigParser::parse(StreamIn &config, vector<NsuConverterI*> &convertersVector, size_t &numberCreate) {
     string parameterStr;
     NsuConvertersFactory factory;
 
@@ -40,7 +40,8 @@ int NsuSoundProcessorConfigParser::parse(StreamIn &config, vector<NsuConverterI*
         regex pattern(NsuSoundProcessorConfigParser::parametersPattrerm);
         smatch match;
         regex_search(parameterStr, match, pattern);
-        convertersVector.push_back(factory.create(nameConverter, ((string)match[0]).substr(1, ((string)match[0]).size())));
+        convertersVector.push_back(factory.create(nameConverter, ((string)match[0]).substr(1, ((string)match[0]).size()), numberCreate));
+        numberCreate++;
     }
 
     return 0;
@@ -58,9 +59,9 @@ string NsuSoundProcessorConfigParser::checkConverterName(string &parameterStr) {
     throw noExistConverterException((string)match[0]);
 }
 
-const string NsuMute::parametersPattern = "([\\d]+[ ][\\d]+){1}";
 int NsuMute::parseParameters() {
     int r;
+    const string parametersPattern = "([\\d]+[ ][\\d]+){1}";
 
     try {
         regex pattern(parametersPattern);
@@ -80,7 +81,7 @@ int NsuMute::parseParameters() {
 
     cxxopts::ParseResult result;
     const size_t parametersQuantity = 2;
-    if ((r = fillUsingThreads(parametersQuantity, options, result)) != 0) {
+    if ((r = getParseResult(parametersQuantity, options, result)) != 0) {
         return r;
     }
     this->inputStreamInfo = pair(0, pair(result["begin"].as<int>(), result["end"].as<int>()));
@@ -88,9 +89,9 @@ int NsuMute::parseParameters() {
     return r;
 }
 
-const string NsuMix::parametersPattern = "[\\d]+[\\s]{1}[\\d]+[\\s]{1}-i[\\s]{1}[\\d]+[\\s]{1}[\\d]+";
 int NsuMix::parseParameters() {
     int r;
+    const string parametersPattern = "[\\d]+[\\s]{1}[\\d]+[\\s]{1}-i[\\s]{1}[\\d]+[\\s]{1}[\\d]+";
 
     try {
         regex pattern(parametersPattern);
@@ -112,17 +113,17 @@ int NsuMix::parseParameters() {
 
     cxxopts::ParseResult result;
     const size_t parametersQuantity = 5;
-    if ((r = fillUsingThreads(parametersQuantity, options, result)) != 0) {
+    if ((r = getParseResult(parametersQuantity, options, result)) != 0) {
         return r;
     }
 
-    this->inputStreamInfo = pair(0, pair(result["begin"].as<size_t>(), result["end"].as<size_t>()));        // самый первый аргумент - индекс в векторе инпутов
-    this->mixStream = pair(result["input"].as<size_t>() - 1, result["beginInMixInput"].as<size_t>());   // то же самое
+    this->inputStreamInfo = pair(0, pair(result["begin"].as<size_t>(), result["end"].as<size_t>()));
+    this->mixStream = pair(result["input"].as<size_t>() - 1, result["beginInMixInput"].as<size_t>());
 
     return r;
 }
 
-int NsuConverterI::fillUsingThreads(const size_t parametersQuantity,
+int NsuConverterI::getParseResult(const size_t parametersQuantity,
                                     cxxopts::Options &options, cxxopts::ParseResult &result) {
     istringstream iss(this->parameters);
     vector<string> words;
@@ -131,7 +132,7 @@ int NsuConverterI::fillUsingThreads(const size_t parametersQuantity,
         words.push_back(word);
     }
 
-    const char* charArray[10]; // максимум 10 символов параметр
+    const char* charArray[10]; // parameter can be max in 10 symbols
     for (size_t i = 0; i < words.size(); i++) {
         charArray[i + 1] = words[i].c_str();
     }
@@ -146,8 +147,8 @@ int NsuConverterI::fillUsingThreads(const size_t parametersQuantity,
     return 0;
 }
 
-int NsuConverterI::checkParameters() {
-    WAVHeader *inputInfo = this->inputsVector[this->inputStreamInfo.first]->getHeader();
+int NsuConverterI::checkParameters(vector<BinaryStreamIn*> &inputsVector) {
+    WAVHeader *inputInfo = inputsVector[this->inputStreamInfo.first]->getHeader();
     try {
         if (this->inputStreamInfo.second.first > this->inputStreamInfo.second.second) {
             throw IncorrectParametersFormatException(this->parameters, "Incorrect borders");
@@ -167,12 +168,12 @@ int NsuConverterI::checkParameters() {
     return 0;
 }
 
-int NsuMute::checkUniqueParameters() {
+int NsuMute::checkUniqueParameters(vector<BinaryStreamIn*> &) {
     return 0;
 }
 
-int NsuMix::checkUniqueParameters() {
-    WAVHeader *inputInfo = this->inputsVector[this->mixStream.first]->getHeader();
+int NsuMix::checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) {
+    WAVHeader *inputInfo = inputsVector[this->mixStream.first]->getHeader();
     try {
         if (this->mixStream.second >
             (inputInfo->dataSize / inputInfo->sampleRate / inputInfo->bytePerSample)) {
