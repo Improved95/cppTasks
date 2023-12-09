@@ -5,8 +5,6 @@
 
 int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVector) {
     int r;
-//    this->output->getStream().close();
-//    exit(-1);
 
     const size_t sampleRate = this->inputsVector[0]->getHeader()->sampleRate;
     const size_t bytePerSample = this->inputsVector[0]->getHeader()->bytePerSample;
@@ -18,12 +16,11 @@ int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVecto
     while(!this->convertingIsComplete) {
         for (auto &el : convertersVector) {
             if (el->createNumber == 0) {
-                readDataSize = this->inputsVector[el->inputStreamInfo.first]->getNewSamplesInOneSecond(samplesBuffer);
+                readDataSize = this->inputsVector[el->inputStreamInfo.first]->getNewSamplesInOneSecond(samplesBuffer, secondNumber);
             }
 
-            if ((r = el->convert(samplesBuffer, readDataSize, secondNumber)) != 0) {
-                delete samplesBuffer;
-                return r;
+            if (secondNumber >= el->inputStreamInfo.second.first && secondNumber <= el->inputStreamInfo.second.second) {
+                el->convert(samplesBuffer, readDataSize, this->inputsVector);
             }
 
             if (el->createNumber == this->createNumber - 1) {
@@ -40,13 +37,18 @@ int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVecto
     return r;
 }
 
-int NsuMute::convert(char *samplesBuffer, const size_t bufferSize, const size_t currentSecond) {
-    if (currentSecond >= this->inputStreamInfo.second.first && currentSecond <= this->inputStreamInfo.second.second) {
+void NsuMute::convert(char *samplesBuffer, const size_t bufferSize, const vector<BinaryStreamIn*> &) {
         memset(samplesBuffer, 0, bufferSize);
-    }
-    return 0;
 }
 
-int NsuMix::convert(char *samplesBuffer, const size_t bufferSize, const size_t currentSecond) {
-    return 0;
+void NsuMix::convert(char *samplesBuffer, const size_t bufferSize, const vector<BinaryStreamIn*> &inputsVector) {
+    size_t readDataSize = inputsVector[this->mixStream.first]->getNewSamplesInOneSecond(this->mixStreamBuffer,
+                                                                                        this->mixStream.second + this->currentSecond);
+
+    for(size_t i = 0; i < bufferSize && i < readDataSize; i++) {
+        size_t tempSample = (samplesBuffer[i] + this->mixStreamBuffer[i]) / 2;
+        samplesBuffer[i] = (char)tempSample;
+    }
+
+    this->currentSecond++;
 }

@@ -56,7 +56,7 @@ public:
     }
     WAVHeader * getHeader() { return WAVheader; }
 
-    int getNewSamplesInOneSecond(char *samplesBuffer);
+    int getNewSamplesInOneSecond(char *samplesBuffer, const size_t filePlace);
 //    char * getSamplesInOneSecond();
     int parseMetadataInWavFile(const size_t sampleRate, const size_t bytePerSample,
                                 const size_t channels, const size_t audioFormat);

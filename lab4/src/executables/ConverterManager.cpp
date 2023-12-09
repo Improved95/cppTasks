@@ -90,6 +90,7 @@ int NsuMix::initialUniqueInputStreams(vector<string> &arguments, vector<bool> &i
 
         if ((r = temp->parseMetadataInWavFile(sampleRate, bytePerSample, channels, audioFormat)) != 0) { return r; }
         this->checkUniqueParameters(inputsVector);
+        this->mixStreamBuffer = new char[inputsVector[this->mixStream.first]->getHeader()->sampleRate * inputsVector[this->mixStream.first]->getHeader()->bytePerSample];
     }
 
     return r;
