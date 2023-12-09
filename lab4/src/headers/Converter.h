@@ -26,6 +26,8 @@ protected:
 
 class NsuConverterI : public NsuConvertersInfo {
 public:
+    static size_t t1;
+
     NsuConverterI(const string &parameters_) {
         this->numberOfCreate = orderCreation;
         this->orderCreation++;
@@ -42,6 +44,7 @@ public:
                                    const size_t channels, const size_t audioFormat);
     static int initialOutputStreams(vector<string> &arguments);
 
+    static BinaryStreamOut *output;
 private:
     virtual int createInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen,
                                    const size_t frequency, const size_t bytePerSample,
@@ -57,8 +60,8 @@ protected:
     static size_t orderCreation;
     static bool convertingIsComplete;
     static size_t secondNumber;
+    static size_t readDataSize;
     static vector<BinaryStreamIn*> inputsVector;
-    static BinaryStreamOut *output;
 
     int fillUsingThreads(size_t parametersQuantity,
                          cxxopts::Options &options, cxxopts::ParseResult &result);

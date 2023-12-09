@@ -93,6 +93,9 @@ private:
 
 class BinaryStreamOut : public Stream {
 public:
+    static size_t t2;
+    static size_t t3;
+
     BinaryStreamOut(const string &fileName, int &r) {
         r = openFile(fileName);
     }

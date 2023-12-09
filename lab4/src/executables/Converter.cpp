@@ -44,6 +44,10 @@ int NsuSoundProcessorManager::convert(vector<NsuConverterI*> &convertersVector) 
             if ((r = el->convert()) != 0) { return r; }
         }
     }
+
+    cerr << NsuConverterI::t1 << endl;
+    cerr << NsuConverterI::output->t2 << endl;
+    cerr << NsuConverterI::output->t3 << endl;
     return r;
 }
 

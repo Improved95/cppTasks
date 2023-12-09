@@ -5,12 +5,17 @@ char * BinaryStream::sampleBuffer = nullptr;
 bool NsuConverterI::convertingIsComplete = false;
 size_t NsuConverterI::secondNumber = 0;
 size_t NsuConverterI::orderCreation = 0;
+size_t NsuConverterI::readDataSize = 0;
+
+size_t NsuConverterI::t1 = 0;
+
 int NsuMute::convert() {
     char *samplesInSecond;
 
     //если конвертер первый
     if (this->numberOfCreate == 0) {
         samplesInSecond = this->inputsVector[this->inputStreamInfo.first]->getNewSamplesInOneSecond();
+        secondNumber++;
     } else {
         samplesInSecond = this->inputsVector[this->inputStreamInfo.first]->getSampleBuffer();
     }
@@ -24,12 +29,13 @@ int NsuMute::convert() {
         size_t sampleRate = this->inputsVector[this->inputStreamInfo.first]->getHeader()->sampleRate;
         size_t bytePerSample = this->inputsVector[this->inputStreamInfo.first]->getHeader()->bytePerSample;
         this->output->pushInFile(samplesInSecond, bytePerSample);
+        t1 += 1;
+
 
         size_t dataSize = this->inputsVector[this->inputStreamInfo.first]->getHeader()->dataSize / bytePerSample;
         if (secondNumber >= dataSize) {
             convertingIsComplete = true;
         }
-        secondNumber++;
     } else {
 
     }
