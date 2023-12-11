@@ -1,8 +1,6 @@
 #include <iostream>
 #include "Converter.h"
 
-//char * BinaryStream::sampleBuffer = nullptr;
-
 int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVector) {
     int r = 0;
 
