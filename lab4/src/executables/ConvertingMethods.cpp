@@ -4,7 +4,7 @@
 //char * BinaryStream::sampleBuffer = nullptr;
 
 int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVector) {
-    int r;
+    int r = 0;
 
     const size_t sampleRate = this->inputsVector[0]->getHeader()->sampleRate;
     const size_t bytePerSample = this->inputsVector[0]->getHeader()->bytePerSample;
@@ -33,7 +33,7 @@ int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVecto
         }
     }
 
-    delete samplesBuffer;
+    delete[] samplesBuffer;
     return r;
 }
 

@@ -127,7 +127,7 @@ public:
         this->msg = "Incorrect format parameters in '" + parameters + "'. ";
         this->code = 7;
     }
-    IncorrectParametersFormatException(const string &parameters, const string &what) {
+    IncorrectParametersFormatException(const string &parameters, const string &what) : IncorrectParametersFormatException(parameters) {
         this->msg += what + ".";
     }
 };
