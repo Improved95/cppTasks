@@ -59,20 +59,22 @@ int NsuSoundProcessorManager::initialInputStreams(vector<NsuConverterI*> &conver
             el->checkParameters(this->inputsVector);
         }
 
-        if ((r = el->initialUniqueInputStreams(arguments, inputIsOpen, this->inputsVector, sampleRate, bytePerSample, channels, audioFormat)) != 0) { return r; }
+        if ((r = el->initialUniqueFields(arguments, inputIsOpen, this->inputsVector, sampleRate, bytePerSample, channels, audioFormat)) != 0) { return r; }
     }
     return r;
 }
 
-int NsuMute::initialUniqueInputStreams(vector<string> &, vector<bool> &, vector<BinaryStreamIn*> &, const size_t, const size_t, const size_t, const size_t) {
+int NsuMute::initialUniqueFields(vector<string> &, vector<bool> &, vector<BinaryStreamIn*> &, const size_t,
+                                       const size_t, const size_t, const size_t) {
     return 0;
 }
 
-int NsuMix::initialUniqueInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,
+int NsuMix::initialUniqueFields(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,
                                         const size_t sampleRate, const size_t bytePerSample,
                                         const size_t channels, const size_t audioFormat) {
     int r = 0;
 
+    //initial unique mix stream
     try {
         if (this->mixStream.first > arguments.size() - 3) {
             throw NotEnoughInputsException(this->mixStream.first);
@@ -94,6 +96,11 @@ int NsuMix::initialUniqueInputStreams(vector<string> &arguments, vector<bool> &i
     }
 
     return r;
+}
+
+int Delay::initialUniqueFields(vector<string> &, vector<bool> &, vector<BinaryStreamIn*> &, const size_t,
+                                       const size_t, const size_t, const size_t) {
+    return 0;
 }
 
 int NsuSoundProcessorManager::initialOutputStreams(vector<string> &arguments) {

@@ -50,3 +50,8 @@ void NsuMix::convert(char *samplesBuffer, const size_t bufferSize, const vector<
 
     this->currentSecond++;
 }
+
+void Delay::convert(char *samplesBuffer, const size_t bufferSize, const vector<BinaryStreamIn*> &) {
+    static char cleanSoundBuffer[2];
+
+}

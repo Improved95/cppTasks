@@ -21,6 +21,7 @@ public:
     NsuConvertersFactory() {
         add<NsuMute>(NsuConvertersInfo::getConvertersName()[0]);
         add<NsuMix>(NsuConvertersInfo::getConvertersName()[1]);
+        add<Delay>(NsuConvertersInfo::getConvertersName()[2]);
     }
 
     template<class T>

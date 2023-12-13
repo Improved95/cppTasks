@@ -15,7 +15,7 @@ using std::regex_match;
 using std::istringstream;
 
 const string NsuConvertersInfo::ConvertersNamesPatterns = "^(\\w+)";
-const string NsuConvertersInfo::convertersNames[convertersQuantity] = {"mute", "mix"};
+const string NsuConvertersInfo::convertersNames[convertersQuantity] = {"mute", "mix", "delay"};
 const string NsuSoundProcessorConfigParser::parametersPattrerm = "[ ]([\\s\\S])+";
 
 int NsuSoundProcessorConfigParser::parse(StreamIn &config, vector<NsuConverterI*> &convertersVector, size_t &numberCreate) {
@@ -123,6 +123,42 @@ int NsuMix::parseParameters() {
     return r;
 }
 
+int Delay::parseParameters() {
+    int r;
+    const string parametersPattern = "[\\d]+[\\s]{1}[\\d]+[\\s]{1}[\\d]+[\\s]{1}[\\d]+[\\s]{1}[\\d]+";
+
+    try {
+        regex pattern(parametersPattern);
+        if (!regex_match(this->parameters, pattern)) {
+            throw IncorrectParametersFormatException(this->parameters);
+        }
+    } catch (IncorrectParametersFormatException &ex) {
+        cerr << ex.ex_what() << endl;
+        return ex.getErrorCode();
+    }
+
+    cxxopts::Options options("converters parameters parser");
+    options.add_options()
+            ("begin", "Begining second for delay.", cxxopts::value<size_t>())
+            ("dryWet", "Degree of mixing.", cxxopts::value<size_t>())
+            ("feedBack", "Number of repetitions.", cxxopts::value<size_t>())
+            ("temp", "Period of repetitions(ms).", cxxopts::value<size_t>())
+            ("timeOfDelay", "The time of one echo(ms).", cxxopts::value<size_t>());
+    options.parse_positional({"begin", "dryWet", "feedBack", "temp", "timeOfDelay"});
+
+    cxxopts::ParseResult result;
+    const size_t parametersQuantity = 5;
+    if ((r = getParseResult(parametersQuantity, options, result)) != 0) {
+        return r;
+    }
+
+    this->inputStreamInfo = pair(0, pair(result["begin"].as<size_t>(), 0));
+    this->dryWetDegree = result["dryWet"].as<size_t>();
+    this->feedBack = result["feedBack"].as<size_t>();
+    this->temp = result["temp"].as<size_t>();
+    this->timeOfDelay = result["timeOfDelay"].as<size_t>();
+}
+
 int NsuConverterI::getParseResult(const size_t parametersQuantity,
                                     cxxopts::Options &options, cxxopts::ParseResult &result) {
     istringstream iss(this->parameters);
@@ -132,7 +168,7 @@ int NsuConverterI::getParseResult(const size_t parametersQuantity,
         words.push_back(word);
     }
 
-    const char* charArray[10]; // parameter can be max in 10 symbols
+    const char* charArray[20]; // parameter can be max in 20 symbols
     for (size_t i = 0; i < words.size(); i++) {
         charArray[i + 1] = words[i].c_str();
     }
@@ -192,5 +228,9 @@ int NsuMix::checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) {
         cerr << ex.what() << endl;
         return ex.getErrorCode();
     }
+    return 0;
+}
+
+int Delay::checkUniqueParameters(vector<BinaryStreamIn *> &) {
     return 0;
 }

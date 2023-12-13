@@ -19,7 +19,7 @@ public:
     static const string & getConvertersNamesPatterns() { return ConvertersNamesPatterns; }
     static size_t getConvertersQuantity() { return convertersQuantity; }
 protected:
-    static const size_t convertersQuantity = 2;
+    static const size_t convertersQuantity = 3;
     static const string convertersNames[convertersQuantity];
     static const string ConvertersNamesPatterns;
 };
@@ -58,7 +58,7 @@ public:
     virtual int parseParameters() = 0;
     int checkParameters(vector<BinaryStreamIn*> &inputsVector);
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) = 0;
-    virtual int initialUniqueInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,
+    virtual int initialUniqueFields(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,
                                    const size_t sampleRate, const size_t bytePerSample,
                                    const size_t channels, const size_t audioFormat) = 0;
 
@@ -82,7 +82,7 @@ public:
                         const vector<BinaryStreamIn*> &inputsVector) override;
     virtual int parseParameters() override;
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) override;
-    int initialUniqueInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,
+    int initialUniqueFields(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,
                                   const size_t sampleRate, const size_t bytePerSample,
                                   const size_t channels, const size_t audioFormat) override;
 };
@@ -100,7 +100,7 @@ public:
                         const vector<BinaryStreamIn*> &inputsVector) override;
     virtual int parseParameters() override;
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) override;
-    int initialUniqueInputStreams(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,
+    int initialUniqueFields(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,
                                   const size_t sampleRate, const size_t bytePerSample,
                                   const size_t channels, const size_t audioFormat) override;
 
@@ -109,6 +109,25 @@ private:
     pair<size_t, size_t> mixStream;
     size_t currentSecond = 0;
     char *mixStreamBuffer = nullptr;
+};
+
+class Delay : public NsuConverterI {
+public:
+    Delay(const string &parameters, const size_t numberOfCreate) : NsuConverterI(parameters, numberOfCreate) {}
+
+    virtual void convert(char *samplesBuffer, const size_t bufferSize,
+                         const vector<BinaryStreamIn*> &inputsVector) override;
+    virtual int parseParameters() override;
+    virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) override;
+    int initialUniqueFields(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,
+                                  const size_t sampleRate, const size_t bytePerSample,
+                                  const size_t channels, const size_t audioFormat) override;
+
+private:
+    size_t dryWetDegree;
+    size_t feedBack;
+    size_t temp;
+    size_t timeOfDelay;
 };
 
 #endif
