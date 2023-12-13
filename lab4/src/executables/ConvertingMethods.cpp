@@ -55,14 +55,19 @@ void NsuMix::convert(char *samplesBuffer, const size_t bufferSize, const vector<
 
 void Delay::convert(char *samplesBuffer, const size_t bufferSize, const vector<BinaryStreamIn*> &inputsVector) {
     static size_t echoNumber = 0;
+    static size_t indexOfsamplesNumbersOfEcho = 0;
 
-    for (; echoNumber < this->feedBack; echoNumber++) {
-        size_t samplesNumbersOfEcho = (inputsVector[this->inputStreamInfo.first]->getHeader()->sampleRate * (this->timeOfDelay / 1000)) *
-                (1 - echoNumber / this->feedBack);
+    if () {
 
-        for () {
+        for (; echoNumber < this->feedBack; echoNumber++) {
+            size_t indexOfsamplesNumbersOfEcho =
+                    (inputsVector[this->inputStreamInfo.first]->getHeader()->sampleRate * (this->timeOfDelay / 1000)) *
+                    (1 - echoNumber / this->feedBack);
 
+            for (; indexOfsamplesNumbersOfEcho < indexOfsamplesNumbersOfEcho; indexOfsamplesNumbersOfEcho++) {
+
+            }
         }
-    }
 
+    }
 }
