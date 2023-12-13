@@ -157,6 +157,8 @@ int Delay::parseParameters() {
     this->feedBack = result["feedBack"].as<size_t>();
     this->temp = result["temp"].as<size_t>();
     this->timeOfDelay = result["timeOfDelay"].as<size_t>();
+
+    return r;
 }
 
 int NsuConverterI::getParseResult(const size_t parametersQuantity,

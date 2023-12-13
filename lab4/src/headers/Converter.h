@@ -32,7 +32,6 @@ public:
 
 private:
     size_t createNumber = 0;
-    bool convertingIsComplete;
     vector<BinaryStreamIn*> inputsVector;
     BinaryStreamOut *output;
 
@@ -92,7 +91,7 @@ public:
     NsuMix(const string &parameters, const size_t numberOfCreate) : NsuConverterI(parameters, numberOfCreate) {}
     ~NsuMix() {
         if (mixStreamBuffer != nullptr) {
-            delete mixStreamBuffer;
+            delete[] mixStreamBuffer;
         }
     }
 
@@ -107,13 +106,18 @@ public:
 private:
     /*first value: stream index in vector of streams second value: seconds*/
     pair<size_t, size_t> mixStream;
-    size_t currentSecond = 0;
+//    size_t currentSecond = 0;
     char *mixStreamBuffer = nullptr;
 };
 
 class Delay : public NsuConverterI {
 public:
     Delay(const string &parameters, const size_t numberOfCreate) : NsuConverterI(parameters, numberOfCreate) {}
+    ~Delay() {
+        if (sampleSoundBuffer != nullptr) {
+            delete[] sampleSoundBuffer;
+        }
+    }
 
     virtual void convert(char *samplesBuffer, const size_t bufferSize,
                          const vector<BinaryStreamIn*> &inputsVector) override;
@@ -128,6 +132,7 @@ private:
     size_t feedBack;
     size_t temp;
     size_t timeOfDelay;
+    char *sampleSoundBuffer = nullptr;
 };
 
 #endif
