@@ -125,7 +125,7 @@ int NsuMix::parseParameters() {
 
 int Delay::parseParameters() {
     int r;
-    const string parametersPattern = "[\\d]+[\\s]{1}[\\d]+[\\s]{1}[\\d]+[\\s]{1}[\\d]+[\\s]{1}[\\d]+";
+    const string parametersPattern = "[\\d]+[\\s]{1}[\\d]+[\\s]{1}[\\d]+[\\s]{1}[\\d]+[\\s]{1}[\\d]+[\\s]{1}[\\d]+";
 
     try {
         regex pattern(parametersPattern);
@@ -140,19 +140,20 @@ int Delay::parseParameters() {
     cxxopts::Options options("converters parameters parser");
     options.add_options()
             ("begin", "Begining second for delay.", cxxopts::value<size_t>())
+            ("end", "Ending second for mix.", cxxopts::value<size_t>())
             ("dryWet", "Degree of mixing.", cxxopts::value<size_t>())
             ("feedBack", "Number of repetitions.", cxxopts::value<size_t>())
             ("temp", "Period of repetitions(ms).", cxxopts::value<size_t>())
             ("timeOfDelay", "The time of one echo(ms).", cxxopts::value<size_t>());
-    options.parse_positional({"begin", "dryWet", "feedBack", "temp", "timeOfDelay"});
+    options.parse_positional({"begin", "end", "dryWet", "feedBack", "temp", "timeOfDelay"});
 
     cxxopts::ParseResult result;
-    const size_t parametersQuantity = 5;
+    const size_t parametersQuantity = 6;
     if ((r = getParseResult(parametersQuantity, options, result)) != 0) {
         return r;
     }
 
-    this->inputStreamInfo = pair(0, pair(result["begin"].as<size_t>(), 0));
+    this->inputStreamInfo = pair(0, pair(result["begin"].as<size_t>(), result["end"].as<size_t>()));
     this->dryWetDegree = result["dryWet"].as<size_t>();
     this->feedBack = result["feedBack"].as<size_t>();
     this->temp = result["temp"].as<size_t>();

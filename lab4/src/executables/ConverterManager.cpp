@@ -101,7 +101,12 @@ int NsuMix::initialUniqueFields(vector<string> &arguments, vector<bool> &inputIs
 int Delay::initialUniqueFields(vector<string> &, vector<bool> &, vector<BinaryStreamIn*> &inputsVector, const size_t,
                                        const size_t, const size_t, const size_t) {
 
-    this->sampleSoundBuffer = new char[inputsVector[this->inputStreamInfo.first]->getHeader()->bytePerSample];
+    WAVHeader *wavInfo =  inputsVector[this->inputStreamInfo.first]->getHeader();
+//    this->sampleSoundBuffer = new char[wavInfo->bytePerSample * wavInfo->sampleRate * (timeOfDelay / 1000)];
+    for (size_t i = 0; i < ; i++) {
+
+    }
+
     return 0;
 }
 

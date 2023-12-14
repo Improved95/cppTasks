@@ -18,9 +18,7 @@ int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVecto
                 readDataSize = this->inputsVector[el->inputStreamInfo.first]->getNewSamplesInOneSecond(samplesBuffer, secondNumber);
             }
 
-            if (secondNumber >= el->inputStreamInfo.second.first && secondNumber <= el->inputStreamInfo.second.second) {
-                el->convert(samplesBuffer, readDataSize, this->inputsVector);
-            }
+            el->convert(samplesBuffer, readDataSize, this->inputsVector, secondNumber);
 
             if (el->createNumber == this->createNumber - 1) {
                 this->output->pushInFile(samplesBuffer, readDataSize);
@@ -36,38 +34,55 @@ int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVecto
     return r;
 }
 
-void NsuMute::convert(char *samplesBuffer, const size_t bufferSize, const vector<BinaryStreamIn*> &) {
-        memset(samplesBuffer, 0, bufferSize);
-}
+void NsuMute::convert(char *samplesBuffer, const size_t inputBufferSize, const vector<BinaryStreamIn*> &, const size_t secondNumber) {
+    if (secondNumber >= this->inputStreamInfo.second.first && secondNumber <= this->inputStreamInfo.second.second) {
 
-void NsuMix::convert(char *samplesBuffer, const size_t bufferSize, const vector<BinaryStreamIn*> &inputsVector) {
-    static size_t currentSecond = 0;
-    size_t readDataSize = inputsVector[this->mixStream.first]->getNewSamplesInOneSecond(this->mixStreamBuffer,
-                                                                                        this->mixStream.second + currentSecond);
+        memset(samplesBuffer, 0, inputBufferSize);
 
-    for(size_t i = 0; i < bufferSize && i < readDataSize; i++) {
-        size_t tempSample = (samplesBuffer[i] + this->mixStreamBuffer[i]) / 2;
-        samplesBuffer[i] = (char)tempSample;
     }
-
-    currentSecond++;
 }
 
-void Delay::convert(char *samplesBuffer, const size_t bufferSize, const vector<BinaryStreamIn*> &inputsVector) {
-    static size_t echoNumber = 0;
+void NsuMix::convert(char *samplesBuffer, const size_t inputBufferSize, const vector<BinaryStreamIn*> &inputsVector, const size_t secondNumber) {
+    static size_t currentMixSecond = 0;
+    size_t readDataSize = inputsVector[this->mixStream.first]->getNewSamplesInOneSecond(this->mixStreamBuffer,
+                                                                                        this->mixStream.second + currentMixSecond);
+
+    if (secondNumber >= this->inputStreamInfo.second.first && secondNumber <= this->inputStreamInfo.second.second) {
+
+        for (size_t i = 0; i < inputBufferSize && i < readDataSize; i++) {
+            size_t tempSample = (samplesBuffer[i] + this->mixStreamBuffer[i]) / 2;
+            samplesBuffer[i] = (char) tempSample;
+        }
+
+    }
+    currentMixSecond++;
+}
+
+void Delay::convert(char *samplesBuffer, const size_t inputBufferSize, const vector<BinaryStreamIn*> &inputsVector, const size_t secondNumber) {
+    static WAVHeader *inputInfo = inputsVector[this->inputStreamInfo.first]->getHeader();
+    static char *delaySamplesBuffer = new char[(inputInfo->bytePerSample * inputInfo->sampleRate) *
+                                               (this->feedBack * (this->timeOfDelay + temp) / 1000 + 2)];
     static size_t indexOfsamplesNumbersOfEcho = 0;
 
-    if () {
+    // fill mix buffer
+    if (secondNumber - ((this->timeOfDelay + this->temp) / 1000) >= this->inputStreamInfo.second.first &&
+    secondNumber + ((this->timeOfDelay + this->temp) / 1000) <= this->inputStreamInfo.second.second) {
 
-        for (; echoNumber < this->feedBack; echoNumber++) {
-            size_t indexOfsamplesNumbersOfEcho =
-                    (inputsVector[this->inputStreamInfo.first]->getHeader()->sampleRate * (this->timeOfDelay / 1000)) *
-                    (1 - echoNumber / this->feedBack);
+        static size_t delaySampleIndex = 0;
+        for (; delaySampleIndex < inputBufferSize; delaySampleIndex++) {
 
-            for (; indexOfsamplesNumbersOfEcho < indexOfsamplesNumbersOfEcho; indexOfsamplesNumbersOfEcho++) {
+        }
+
+    }
+
+    //mixing
+    if (secondNumber >= this->inputStreamInfo.second.first &&
+        secondNumber <= this->inputStreamInfo.second.second) {
+
+        for (size_t i = 0; i < inputBufferSize; i++) {
+            for () {
 
             }
         }
-
     }
 }
