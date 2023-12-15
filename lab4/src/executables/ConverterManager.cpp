@@ -114,7 +114,7 @@ int NsuSoundProcessorManager::initialOutputStreams(vector<string> &arguments) {
     BinaryStreamOut *temp = new BinaryStreamOut(arguments[1], r);
     if (r != 0) { return r; }
     output = temp;
-    output->pushInFile(reinterpret_cast<char*>(NsuSoundProcessorManager::inputsVector[0]->getHeader()), sizeof(WAVHeader));
+    output->getStream().write(reinterpret_cast<char *>(NsuSoundProcessorManager::inputsVector[0]->getHeader()), sizeof(WAVHeader));
 
     return r;
 }

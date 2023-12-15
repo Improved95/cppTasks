@@ -56,7 +56,7 @@ public:
     }
     WAVHeader * getHeader() { return WAVheader; }
 
-    int getNewSamplesInOneSecond(char *samplesBuffer, const size_t filePlace);
+    int getNewSamplesInOneSecond(short int *samplesBuffer, const size_t filePlace);
 //    char * getSamplesInOneSecond();
     int parseMetadataInWavFile(const size_t sampleRate, const size_t bytePerSample,
                                 const size_t channels, const size_t audioFormat);
@@ -84,7 +84,7 @@ public:
             delete this->samplesBuffer;
         }
     }
-    void pushInFile(char *data, const size_t dataSize);
+    void pushInFile(short int *data, const size_t dataSize);
 
 private:
     char *samplesBuffer = nullptr;
