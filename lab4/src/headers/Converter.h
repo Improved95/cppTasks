@@ -89,11 +89,11 @@ public:
 class NsuMix : public NsuConverterI {
 public:
     NsuMix(const string &parameters, const size_t numberOfCreate) : NsuConverterI(parameters, numberOfCreate) {}
-    ~NsuMix() {
-        if (mixStreamBuffer != nullptr) {
-            delete[] mixStreamBuffer;
-        }
-    }
+//    ~NsuMix() {
+//        if (mixStreamBuffer != nullptr) {
+//            delete[] mixStreamBuffer;
+//        }
+//    }
 
     virtual void convert(char *samplesBuffer, const size_t bufferSize,
                         const vector<BinaryStreamIn*> &inputsVector, const size_t secondNumber) override;
@@ -107,7 +107,7 @@ private:
     /*first value: stream index in vector of streams second value: seconds*/
     pair<size_t, size_t> mixStream;
 //    size_t currentSecond = 0;
-    char *mixStreamBuffer = nullptr;
+//    char *mixStreamBuffer = nullptr;
 };
 
 class Delay : public NsuConverterI {
