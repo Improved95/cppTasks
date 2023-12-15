@@ -48,6 +48,7 @@ int ParseConsoleArguments::parseArgumentsAndInitialConvert(int argc, char *argv[
     if (mode == ParseConsoleArguments::mutuallyArguments[0]) {
         ShowInfo showInfo;
         showInfo.coutInstruction();
+        return -1;
     } else if (mode == ParseConsoleArguments::mutuallyArguments[1]) {
         ParseArgumentsForNsuSoundProcessor parseArgumentsForNsuSoundProcessor;
         r = parseArgumentsForNsuSoundProcessor.parseFilesArguments(argv, result, options, arguments);

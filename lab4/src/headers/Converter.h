@@ -52,7 +52,7 @@ public:
 
     pair<size_t, pair<size_t, size_t>> & getInputStreamInfo() { return this->inputStreamInfo; }
 
-    virtual void convert(short int *samplesBuffer, const size_t bufferSize,
+    virtual void convert(char *samplesBuffer, const size_t bufferSize,
                         const vector<BinaryStreamIn*> &inputsVector, const size_t secondNumber) = 0;
     virtual int parseParameters() = 0;
     int checkParameters(vector<BinaryStreamIn*> &inputsVector);
@@ -77,7 +77,7 @@ class NsuMute : public NsuConverterI {
 public:
     NsuMute(const string &parameters, const size_t numberOfCreate) : NsuConverterI(parameters, numberOfCreate) {}
 
-    virtual void convert(short int *samplesBuffer, const size_t bufferSize,
+    virtual void convert(char *samplesBuffer, const size_t bufferSize,
                         const vector<BinaryStreamIn*> &inputsVector, const size_t secondNumber) override;
     virtual int parseParameters() override;
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) override;
@@ -89,13 +89,13 @@ public:
 class NsuMix : public NsuConverterI {
 public:
     NsuMix(const string &parameters, const size_t numberOfCreate) : NsuConverterI(parameters, numberOfCreate) {}
-//    ~NsuMix() {
-//        if (mixStreamBuffer != nullptr) {
-//            delete[] mixStreamBuffer;
-//        }
-//    }
+    ~NsuMix() {
+        if (mixStreamBuffer != nullptr) {
+            delete[] mixStreamBuffer;
+        }
+    }
 
-    virtual void convert(short int *samplesBuffer, const size_t bufferSize,
+    virtual void convert(char *samplesBuffer, const size_t bufferSize,
                         const vector<BinaryStreamIn*> &inputsVector, const size_t secondNumber) override;
     virtual int parseParameters() override;
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) override;
@@ -107,7 +107,7 @@ private:
     /*first value: stream index in vector of streams second value: seconds*/
     pair<size_t, size_t> mixStream;
 //    size_t currentSecond = 0;
-//    char *mixStreamBuffer = nullptr;
+    char *mixStreamBuffer = nullptr;
 };
 
 class Delay : public NsuConverterI {
@@ -119,7 +119,7 @@ public:
         }
     }
 
-    virtual void convert(short int *samplesBuffer, const size_t bufferSize,
+    virtual void convert(char *samplesBuffer, const size_t bufferSize,
                          const vector<BinaryStreamIn*> &inputsVector, const size_t secondNumber) override;
     virtual int parseParameters() override;
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) override;
