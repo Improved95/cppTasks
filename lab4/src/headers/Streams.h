@@ -21,8 +21,8 @@ public:
         delete[] this->data;
     }
 
-    Sample * operator+(const Sample &s1);
-    void operator=(const Sample &s1);
+    void operator+=(const Sample &s1);
+    // void operator=(const Sample &s1);
 
     size_t getSampleSize() { return this->sampleSize; }
     char * getData() { return this->data; }
@@ -100,16 +100,10 @@ public:
     BinaryStreamOut(const string &fileName, int &r) {
         r = openFile(fileName);
     }
-    ~BinaryStreamOut() {
-        if (this->samplesBuffer != nullptr) {
-            delete this->samplesBuffer;
-        }
-    }
+    
     void pushInFile(char *data, const size_t dataSize);
 
 private:
-    char *samplesBuffer = nullptr;
-
     virtual int openFile(const string &fileName) override;
 };
 

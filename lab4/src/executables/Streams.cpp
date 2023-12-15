@@ -1,7 +1,7 @@
 #include "Streams.h"
 #include "Exceptions.h"
-#include <vector>
 #include "WavMetadataParse.h"
+#include <vector>
 using std::cerr;
 using std::endl;
 using std::vector;
@@ -49,4 +49,17 @@ int BinaryStreamIn::getSample(Sample &temp) {
 
 void BinaryStreamOut::pushInFile(char *data, const size_t dataSize) {
     this->stream.write(data, dataSize);
+}
+
+void Sample::operator+=(const Sample &s1) {
+    unsigned char c1 = this->data[0], c2 = this->data[1];
+    unsigned char c3 = s1.data[0], c4 = s1.data[1];
+
+//    short int a1 = (this->data[1] << 8) | this->data[0];
+    short int a1 = *reinterpret_cast<short int*>(this->data);
+    short int a2 = *reinterpret_cast<short int*>(this->data);
+//    short int a2 = (s1.data[1] << 8) | s1.data[0];
+
+    short int res = a1 / 2 + a2 / 2;
+    memset(this->data, (short int)res, 2);
 }

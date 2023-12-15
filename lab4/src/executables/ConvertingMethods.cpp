@@ -5,7 +5,7 @@ int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVecto
     int r = 0;
 
     const size_t bytePerSample = this->inputsVector[0]->getHeader()->bytePerSample;
-    const size_t generalTime = this->inputsVector[0]->getHeader()->dataSize / bytePerSample;
+    const size_t generalSamplesNumber = this->inputsVector[0]->getHeader()->dataSize / bytePerSample;
     Sample sample(bytePerSample);
     size_t sampleNumber = 0;
     bool convertingIsComplete = false;
@@ -20,7 +20,7 @@ int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVecto
 
             if (el->createNumber == this->createNumber - 1) {
                 this->output->pushInFile(sample.getData(), sample.getSampleSize());
-                if (sampleNumber >= generalTime) {
+                if (sampleNumber >= generalSamplesNumber) {
                     convertingIsComplete = true;
                 }
                 sampleNumber++;
@@ -31,36 +31,36 @@ int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVecto
     return r;
 }
 
-void NsuMute::convert(Sample &temp, const vector<BinaryStreamIn*> &inputsVector, 
+void NsuMute::convert(Sample &sample, const vector<BinaryStreamIn*> &inputsVector, 
                             const size_t sampleNumber) {
 
     static WAVHeader *wavInfo = inputsVector[this->inputStreamInfo.first]->getHeader();
     if (sampleNumber >= this->inputStreamInfo.second.first * wavInfo->sampleRate
         && sampleNumber <= this->inputStreamInfo.second.second * wavInfo->sampleRate) {
 
-        memset(temp.getData(), 0, temp.getSampleSize());
+        memset(sample.getData(), 0, sample.getSampleSize());
 
     }
 }
 
-void NsuMix::convert(Sample &temp, const vector<BinaryStreamIn*> &inputsVector, 
+void NsuMix::convert(Sample &sample, const vector<BinaryStreamIn*> &inputsVector, 
                             const size_t sampleNumber) {
 
-    static WAVHeader *wavInfo = inputsVector[this->inputStreamInfo.first]->getHeader();
-    // size_t readDataSize = inputsVector[this->mixStream.first]->getNewSamplesInOneSecond(this->mixStreamBuffer,
-                                                                                        // this->mixStream.second + this->currentMixSecond);
+    WAVHeader *wavInfo = inputsVector[this->inputStreamInfo.first]->getHeader();
 
     if (sampleNumber >= this->inputStreamInfo.second.first * wavInfo->sampleRate
         && sampleNumber <= this->inputStreamInfo.second.second * wavInfo->sampleRate) {
 
-        // size_t tempSample = (samplesBuffer[i] + this->mixStreamBuffer[i]) / 2;
-        // samplesBuffer[i] = (char) tempSample;
+        size_t readDataSize = inputsVector[this->mixStream.first]->getSample(*(this->mixSample), (sampleNumber + (this->currentMixSample * this->mixStream.second * wavInfo->sampleRate)) * wavInfo->bytePerSample);
+
+        sample += *(this->mixSample);
 
     }
-    this->currentMixSecond++;
+    
+    this->currentMixSample++;
 }
 
-void Delay::convert(Sample &temp, const vector<BinaryStreamIn*> &inputsVector, 
+void Delay::convert(Sample &sample, const vector<BinaryStreamIn*> &inputsVector, 
                             const size_t sampleNumber) {
     static WAVHeader *wavInfo = inputsVector[this->inputStreamInfo.first]->getHeader();
     static size_t indexOfsamplesNumbersOfEcho = 0;
