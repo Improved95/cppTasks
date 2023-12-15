@@ -11,6 +11,27 @@ using std::fstream;
 using std::vector;
 using std::string;
 
+class Sample {
+public:
+    Sample(const size_t sampleSize_) {
+       this->sampleSize = sampleSize_;
+       this->data = new char[this->sampleSize];
+    }
+    ~Sample() {
+        delete[] this->data;
+    }
+
+    Sample * operator+(const Sample &s1);
+    void operator=(const Sample &s1);
+
+    size_t getSampleSize() { return this->sampleSize; }
+    char * getData() { return this->data; }
+
+private:
+    size_t sampleSize;
+    char *data = nullptr;
+};
+
 class Stream {
 public:
     ~Stream() {
@@ -56,8 +77,8 @@ public:
     }
     WAVHeader * getHeader() { return WAVheader; }
 
-    int getNewSamplesInOneSecond(char *samplesBuffer, const size_t filePlace);
-//    char * getSamplesInOneSecond();
+    int getSample(Sample &temp, const size_t filePlace);
+    int getSample(Sample &temp);
     int parseMetadataInWavFile(const size_t sampleRate, const size_t bytePerSample,
                                 const size_t channels, const size_t audioFormat);
 

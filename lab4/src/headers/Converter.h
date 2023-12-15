@@ -52,8 +52,8 @@ public:
 
     pair<size_t, pair<size_t, size_t>> & getInputStreamInfo() { return this->inputStreamInfo; }
 
-    virtual void convert(char *samplesBuffer, const size_t bufferSize,
-                        const vector<BinaryStreamIn*> &inputsVector, const size_t secondNumber) = 0;
+    virtual void convert(Sample &temp, const vector<BinaryStreamIn*> &inputsVector, 
+                            const size_t sampleNumber) = 0;
     virtual int parseParameters() = 0;
     int checkParameters(vector<BinaryStreamIn*> &inputsVector);
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) = 0;
@@ -77,8 +77,8 @@ class NsuMute : public NsuConverterI {
 public:
     NsuMute(const string &parameters, const size_t numberOfCreate) : NsuConverterI(parameters, numberOfCreate) {}
 
-    virtual void convert(char *samplesBuffer, const size_t bufferSize,
-                        const vector<BinaryStreamIn*> &inputsVector, const size_t secondNumber) override;
+    virtual void convert(Sample &temp, const vector<BinaryStreamIn*> &inputsVector, 
+                            const size_t sampleNumber) override;
     virtual int parseParameters() override;
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) override;
     int initialUniqueFields(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,
@@ -95,8 +95,8 @@ public:
         }
     }
 
-    virtual void convert(char *samplesBuffer, const size_t bufferSize,
-                        const vector<BinaryStreamIn*> &inputsVector, const size_t secondNumber) override;
+    virtual void convert(Sample &temp, const vector<BinaryStreamIn*> &inputsVector, 
+                            const size_t sampleNumber) override;
     virtual int parseParameters() override;
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) override;
     int initialUniqueFields(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,
@@ -119,8 +119,8 @@ public:
         }
     }
 
-    virtual void convert(char *samplesBuffer, const size_t bufferSize,
-                         const vector<BinaryStreamIn*> &inputsVector, const size_t secondNumber) override;
+    virtual void convert(Sample &temp, const vector<BinaryStreamIn*> &inputsVector, 
+                            const size_t sampleNumber) override;
     virtual int parseParameters() override;
     virtual int checkUniqueParameters(vector<BinaryStreamIn*> &inputsVector) override;
     int initialUniqueFields(vector<string> &arguments, vector<bool> &inputIsOpen, vector<BinaryStreamIn*> &inputsVector,

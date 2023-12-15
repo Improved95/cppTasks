@@ -36,9 +36,14 @@ int Stream::checkFileOpen(const string &fileName) {
     return 0;
 }
 
-int BinaryStreamIn::getNewSamplesInOneSecond(char *samplesBuffer, const size_t filePlace) {
+int BinaryStreamIn::getSample(Sample &temp, const size_t filePlace) {
     this->stream.seekg(this->metadataSize + (filePlace * this->WAVheader->sampleRate * this->WAVheader->bytePerSample), this->stream.beg);
-    this->stream.read(samplesBuffer, this->WAVheader->sampleRate * this->WAVheader->bytePerSample);
+    this->stream.read(reinterpret_cast<char*>(temp.getData()), this->WAVheader->bytePerSample);
+    return this->stream.gcount();
+}
+
+int BinaryStreamIn::getSample(Sample &temp) {
+    this->stream.read(reinterpret_cast<char*>(temp.getData()), this->WAVheader->bytePerSample);
     return this->stream.gcount();
 }
 
