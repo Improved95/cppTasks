@@ -43,9 +43,8 @@ void NsuMute::convert(char *samplesBuffer, const size_t inputBufferSize, const v
 }
 
 void NsuMix::convert(char *samplesBuffer, const size_t inputBufferSize, const vector<BinaryStreamIn*> &inputsVector, const size_t secondNumber) {
-    static size_t currentMixSecond = 0;
     size_t readDataSize = inputsVector[this->mixStream.first]->getNewSamplesInOneSecond(this->mixStreamBuffer,
-                                                                                        this->mixStream.second + currentMixSecond);
+                                                                                        this->mixStream.second + this->currentMixSecond);
 
     if (secondNumber >= this->inputStreamInfo.second.first && secondNumber <= this->inputStreamInfo.second.second) {
 
@@ -55,34 +54,32 @@ void NsuMix::convert(char *samplesBuffer, const size_t inputBufferSize, const ve
         }
 
     }
-    currentMixSecond++;
+    this->currentMixSecond++;
 }
 
 void Delay::convert(char *samplesBuffer, const size_t inputBufferSize, const vector<BinaryStreamIn*> &inputsVector, const size_t secondNumber) {
-//    static WAVHeader *inputInfo = inputsVector[this->inputStreamInfo.first]->getHeader();
-//    static char *delaySamplesBuffer = new char[(inputInfo->bytePerSample * inputInfo->sampleRate) *
-//                                               (this->feedBack * (this->timeOfDelay + temp) / 1000 + 2)];
-//    static size_t indexOfsamplesNumbersOfEcho = 0;
-//
-//    // fill mix buffer
-//    if (secondNumber - ((this->timeOfDelay + this->temp) / 1000) >= this->inputStreamInfo.second.first &&
-//    secondNumber + ((this->timeOfDelay + this->temp) / 1000) <= this->inputStreamInfo.second.second) {
-//
-//        static size_t delaySampleIndex = 0;
-//        for (; delaySampleIndex < inputBufferSize; delaySampleIndex++) {
-//
-//        }
-//
-//    }
-//
-//    //mixing
-//    if (secondNumber >= this->inputStreamInfo.second.first &&
-//        secondNumber <= this->inputStreamInfo.second.second) {
-//
-//        for (size_t i = 0; i < inputBufferSize; i++) {
-//            for () {
-//
-//            }
-//        }
-//    }
+    static WAVHeader *wavInfo = inputsVector[this->inputStreamInfo.first]->getHeader();
+    static size_t indexOfsamplesNumbersOfEcho = 0;
+
+    // fill mix buffer
+    if (secondNumber - ((this->timeOfOneEcho + this->temp) / 1000) >= this->inputStreamInfo.second.first &&
+        secondNumber + ((this->timeOfOneEcho + this->temp) / 1000) <= this->inputStreamInfo.second.second) {
+
+        static size_t delaySampleIndex = 0;
+        for (; delaySampleIndex < inputBufferSize; delaySampleIndex++) {
+
+        }
+
+    }
+
+    //mixing
+    if (secondNumber >= this->inputStreamInfo.second.first &&
+        secondNumber <= this->inputStreamInfo.second.second) {
+
+        for (size_t i = 0; i < inputBufferSize; i++) {
+            for (size_t j = 0; j < this->echosInfo.size(); j++) {
+                size_t tempSample = samplesBuffer[j] + 1;
+            }
+        }
+    }
 }

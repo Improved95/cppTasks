@@ -106,7 +106,7 @@ public:
 private:
     /*first value: stream index in vector of streams second value: seconds*/
     pair<size_t, size_t> mixStream;
-//    size_t currentSecond = 0;
+    size_t currentMixSecond = 0;
     char *mixStreamBuffer = nullptr;
 };
 
@@ -114,8 +114,8 @@ class Delay : public NsuConverterI {
 public:
     Delay(const string &parameters, const size_t numberOfCreate) : NsuConverterI(parameters, numberOfCreate) {}
     ~Delay() {
-        if (sampleSoundBuffer != nullptr) {
-            delete[] sampleSoundBuffer;
+        if (echosSamplesBuffer != nullptr) {
+            delete[] echosSamplesBuffer;
         }
     }
 
@@ -131,9 +131,10 @@ private:
     size_t dryWetDegree;
     size_t feedBack;
     size_t temp;
-    size_t timeOfDelay;
+    size_t timeOfOneEcho;
     vector<pair<size_t, bool>> echosInfo;
-    char *sampleSoundBuffer = nullptr;
+    size_t samplesPerEcho;
+    char *echosSamplesBuffer = nullptr;
 };
 
 #endif

@@ -102,10 +102,11 @@ int Delay::initialUniqueFields(vector<string> &, vector<bool> &, vector<BinarySt
                                        const size_t, const size_t, const size_t) {
 
     WAVHeader *wavInfo =  inputsVector[this->inputStreamInfo.first]->getHeader();
-//    this->sampleSoundBuffer = new char[wavInfo->bytePerSample * wavInfo->sampleRate * (timeOfDelay / 1000)];
-//    for (size_t i = 0; i < ; i++) {
-//
-//    }
+    double a = (this->timeOfOneEcho + this->temp) / 1000.0;
+    this->samplesPerEcho = wavInfo->sampleRate * a;
+    for (size_t i = 0; i < (this->inputStreamInfo.second.second - this->inputStreamInfo.second.first) / (this->timeOfOneEcho / 1000); i++) {
+        this->echosInfo.push_back(pair(this->feedBack, false));
+    }
 
     return 0;
 }
