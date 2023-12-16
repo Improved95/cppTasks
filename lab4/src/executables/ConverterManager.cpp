@@ -93,6 +93,7 @@ int NsuMix::initialUniqueFields(vector<string> &arguments, vector<bool> &inputIs
         if ((r = temp->parseMetadataInWavFile(sampleRate, bytePerSample, channels, audioFormat)) != 0) { return r; }
         this->checkUniqueParameters(inputsVector);
         this->mixSample = new Sample(inputsVector[this->inputStreamInfo.first]->getHeader()->bytePerSample);
+        this->currentMixSample = this->mixStream.second * inputsVector[this->inputStreamInfo.first]->getHeader()->sampleRate;
     }
 
     return r;

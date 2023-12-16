@@ -51,13 +51,12 @@ void NsuMix::convert(Sample &sample, const vector<BinaryStreamIn*> &inputsVector
     if (sampleNumber >= this->inputStreamInfo.second.first * wavInfo->sampleRate
         && sampleNumber <= this->inputStreamInfo.second.second * wavInfo->sampleRate) {
 
-        size_t readDataSize = inputsVector[this->mixStream.first]->getSample(*(this->mixSample), (sampleNumber + (this->currentMixSample * this->mixStream.second * wavInfo->sampleRate)) * wavInfo->bytePerSample);
+        size_t readDataSize = inputsVector[this->mixStream.first]->getSample(*(this->mixSample), this->currentMixSample);
 
         sample += *(this->mixSample);
 
+        this->currentMixSample++;
     }
-    
-    this->currentMixSample++;
 }
 
 void Delay::convert(Sample &sample, const vector<BinaryStreamIn*> &inputsVector, 
