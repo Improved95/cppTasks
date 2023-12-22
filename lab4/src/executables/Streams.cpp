@@ -52,10 +52,13 @@ void BinaryStreamOut::pushInFile(char *data, const size_t dataSize) {
 }
 
 void Sample::operator+=(const Sample &s1) {
-    short int a1 = (this->data[1] << 8) | this->data[0];
+    char c1 = this->data[0], c2 = this->data[1];
+    char c3 = s1.data[0], c4 = s1.data[1];
+    unsigned short int a1 = (this->data[1] << 8);
+//    | this->data[0];
     short int a2 = (s1.data[1] << 8) | s1.data[0];
 
-    short int res = (size_t)(a1 + a2) / 2;
+    size_t res = (a1 + a2) / 2;
 
     std::memcpy(this->data, &res, 2);
 }
