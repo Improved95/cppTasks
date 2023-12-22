@@ -38,12 +38,12 @@ int Stream::checkFileOpen(const string &fileName) {
 
 int BinaryStreamIn::getSample(Sample &temp, const size_t sampleNumber) {
     this->stream.seekg(this->metadataSize + (sampleNumber * this->WAVheader->bytePerSample), this->stream.beg);
-    this->stream.read(reinterpret_cast<char*>(temp.getData()), this->WAVheader->bytePerSample);
+    this->stream.read(temp.getData(), this->WAVheader->bytePerSample);
     return this->stream.gcount();
 }
 
 int BinaryStreamIn::getSample(Sample &temp) {
-    this->stream.read(reinterpret_cast<char*>(temp.getData()), this->WAVheader->bytePerSample);
+    this->stream.read(temp.getData(), this->WAVheader->bytePerSample);
     return this->stream.gcount();
 }
 
@@ -52,13 +52,9 @@ void BinaryStreamOut::pushInFile(char *data, const size_t dataSize) {
 }
 
 void Sample::operator+=(const Sample &s1) {
-    char c1 = this->data[0], c2 = this->data[1];
-    char c3 = s1.data[0], c4 = s1.data[1];
-    unsigned short int a1 = (this->data[1] << 8);
-//    | this->data[0];
-    short int a2 = (s1.data[1] << 8) | s1.data[0];
+    short int a1 = (this->data[1] << 8) | (unsigned char)this->data[0];
+    short int a2 = (s1.data[1] << 8) | (unsigned char)s1.data[0];
 
     size_t res = (a1 + a2) / 2;
-
-    std::memcpy(this->data, &res, 2);
+    std::memcpy(this->data, &res, s1.sampleSize);
 }

@@ -22,7 +22,6 @@ public:
     }
 
     void operator+=(const Sample &s1);
-    // void operator=(const Sample &s1);
 
     size_t getSampleSize() { return this->sampleSize; }
     char * getData() { return this->data; }
