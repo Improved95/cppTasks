@@ -34,7 +34,7 @@ int NsuSoundProcessorManager::converting(vector<NsuConverterI*> &convertersVecto
 void NsuMute::convert(Sample &sample, const vector<BinaryStreamIn*> &inputsVector, 
                             const size_t sampleNumber) {
 
-    static WAVHeader *wavInfo = inputsVector[this->inputStreamInfo.first]->getHeader();
+    WAVHeader *wavInfo = inputsVector[this->inputStreamInfo.first]->getHeader();
     if (sampleNumber >= this->inputStreamInfo.second.first * wavInfo->sampleRate
         && sampleNumber <= this->inputStreamInfo.second.second * wavInfo->sampleRate) {
 
@@ -52,37 +52,18 @@ void NsuMix::convert(Sample &sample, const vector<BinaryStreamIn*> &inputsVector
         && sampleNumber <= this->inputStreamInfo.second.second * wavInfo->sampleRate) {
 
         size_t readDataSize = inputsVector[this->mixStream.first]->getSample(*(this->mixSample), this->currentMixSample);
+        if (readDataSize >= wavInfo->bytePerSample) {
+            sample += *(this->mixSample);
+            this->currentMixSample++;
+        }
 
-        sample += *(this->mixSample);
-
-        this->currentMixSample++;
     }
 }
 
 void Delay::convert(Sample &sample, const vector<BinaryStreamIn*> &inputsVector, 
                             const size_t sampleNumber) {
-    static WAVHeader *wavInfo = inputsVector[this->inputStreamInfo.first]->getHeader();
-    static size_t indexOfsamplesNumbersOfEcho = 0;
+    WAVHeader *wavInfo = inputsVector[this->inputStreamInfo.first]->getHeader();
 
-    // fill mix buffer
-    // if (secondNumber - ((this->timeOfOneEcho + this->temp) / 1000) >= this->inputStreamInfo.second.first &&
-    //     secondNumber + ((this->timeOfOneEcho + this->temp) / 1000) <= this->inputStreamInfo.second.second) {
 
-    //     static size_t delaySampleIndex = 0;
-    //     for (; delaySampleIndex < inputBufferSize; delaySampleIndex++) {
 
-    //     }
-
-    // }
-
-    //mixing
-    // if (secondNumber >= this->inputStreamInfo.second.first &&
-    //     secondNumber <= this->inputStreamInfo.second.second) {
-
-    //     for (size_t i = 0; i < inputBufferSize; i++) {
-    //         for (size_t j = 0; j < this->echosInfo.size(); j++) {
-    //             size_t tempSample = samplesBuffer[j] + 1;
-    //         }
-    //     }
-    // }
 }
