@@ -156,7 +156,7 @@ int Delay::parseParameters() {
     this->inputStreamInfo = pair(0, pair(result["begin"].as<size_t>(), result["end"].as<size_t>()));
     this->dryWetDegree = result["dryWet"].as<size_t>();
     this->feedBack = result["feedBack"].as<size_t>();
-    this->temp = result["temp"].as<size_t>();
+    this->timeOfDelayBetweenEcho = result["temp"].as<size_t>();
     this->timeOfOneEcho = result["timeOfDelay"].as<size_t>();
 
     return r;

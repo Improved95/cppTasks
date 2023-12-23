@@ -93,7 +93,7 @@ int NsuMix::initialUniqueFields(vector<string> &arguments, vector<bool> &inputIs
         if ((r = temp->parseMetadataInWavFile(sampleRate, bytePerSample, channels, audioFormat)) != 0) { return r; }
         this->checkUniqueParameters(inputsVector);
         this->mixSample = new Sample(inputsVector[this->inputStreamInfo.first]->getHeader()->bytePerSample);
-        this->currentMixSample = this->mixStream.second * inputsVector[this->inputStreamInfo.first]->getHeader()->sampleRate;
+        this->currentMixSampleNumber = this->mixStream.second * inputsVector[this->inputStreamInfo.first]->getHeader()->sampleRate;
     }
 
     return r;
@@ -103,11 +103,9 @@ int Delay::initialUniqueFields(vector<string> &, vector<bool> &, vector<BinarySt
                                        const size_t, const size_t, const size_t) {
 
     WAVHeader *wavInfo =  inputsVector[this->inputStreamInfo.first]->getHeader();
-    double a = (this->timeOfOneEcho + this->temp) / 1000.0;
-    this->samplesPerEcho = wavInfo->sampleRate * a;
-    for (size_t i = 0; i < (this->inputStreamInfo.second.second - this->inputStreamInfo.second.first) / (this->timeOfOneEcho / 1000); i++) {
-        this->echosInfo.push_back(pair(this->feedBack, false));
-    }
+
+    size_t periodSamples = wavInfo->sampleRate * (this->timeOfOneEcho / (double)1000 + this->timeOfDelayBetweenEcho / (double)1000 + 1);
+    this->bufferSize = this->feedBack * periodSamples;
 
     return 0;
 }
