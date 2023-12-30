@@ -33,11 +33,12 @@
 
 .DS_Store
 build
+**build_
+**build2
 out
 .vs
 CMakeSettings.json
 **idea
 **cmake-build-debug
 **out
-**build_
 *.md
