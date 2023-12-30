@@ -12,6 +12,6 @@ else()
 endif()
 
 add_executable(${exe_name} src/main.cpp)
-add_library(corelib OBJECT src/executables/tuple.cpp)
+add_library(corelib OBJECT src/executables/csvParser.cpp)
 target_include_directories(corelib PUBLIC src/headers)
 target_link_libraries(${exe_name} corelib)
