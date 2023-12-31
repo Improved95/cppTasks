@@ -3,19 +3,30 @@
 
 #include <iostream>
 #include <fstream>
+#include "exceptions.h"
 
+template <typename... Types>
 class CsvParser {
 public:
-    CsvParser(std::ifstream *input_, const size_t skipLinesNumber_, const char rowDelimeter_,
-              const char columnDelimeter_, const char screeningSymbol_) {
-        this->input = input_;
-        this->skipLinesNumber = skipLinesNumber_;
-        this->rowDelimeter = rowDelimeter_;
-        this->columnDelimeter = columnDelimeter_;
-        this->screeningSymbol = screeningSymbol_;
+    explicit CsvParser(std::ifstream *input_, const size_t skipLinesNumber_ = 0, const char rowDelimeter_ = '\n',
+              const char columnDelimeter_ = ';', const char screeningSymbol_ = '"')
+              : input(input_), skipLinesNumber(skipLinesNumber_), rowDelimeter(rowDelimeter_),
+              columnDelimeter(columnDelimeter_), screeningSymbol(screeningSymbol_) {
+
+        skipLines();
+
     }
 
-    int parse();
+    class CsvIterator {
+    public:
+        CsvIterator() {
+
+        }
+    private:
+        std::ifstream *input;
+    };
+
+    int print();
 
 private:
     std::ifstream *input;
@@ -24,7 +35,8 @@ private:
     char columnDelimeter;
     char screeningSymbol;
 
-
+    size_t getFileSize();
+    int skipLines();
 };
 
 #endif
