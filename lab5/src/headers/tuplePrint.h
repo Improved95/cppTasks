@@ -16,9 +16,9 @@ std::ostream& printTupleImp(std::ostream &os, const TupleT &tp, std::index_seque
     return os;
 }
 
-template <typename TupleT, size_t TupSize = std::tuple_size<TupleT>::value>
+template <typename TupleT, size_t tupleSize = std::tuple_size<TupleT>::value>
 std::ostream& operator <<(std::ostream &os, const TupleT &tp) {
-    return printTupleImp(os, tp, std::make_index_sequence<TupSize>{});
+    return printTupleImp(os, tp, std::make_index_sequence<tupleSize>{});
 }
 
 #endif

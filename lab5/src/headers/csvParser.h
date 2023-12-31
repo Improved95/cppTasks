@@ -2,6 +2,7 @@
 #define CSV_PARSER
 
 #include <iostream>
+#include <sstream>
 #include "exceptions.h"
 
 template <typename... Types>
@@ -11,19 +12,30 @@ public:
               const char columnDelimeter_ = ';', const char screeningSymbol_ = '"')
               : input(input_), rowDelimeter(rowDelimeter_),
               columnDelimeter(columnDelimeter_), screeningSymbol(screeningSymbol_) {
-
         skipLines(skipLinesNumber_);
+    }
+
+    std::tuple<Types...> & ParseLine(std::string &line) {
+        const size_t tupleSize = std::tuple_size<Types...>::value;
+        return { ParseField(std::make_index_sequence<tupleSize>{}) };
+    }
+
+    template<typename FieldType, std::size_t... Is>
+    FieldType ParseField(std::index_sequence<Is...>) {
+
     }
 
     class Iterator {
     public:
-        Iterator(const CsvParser &parser_, const size_t currentLineNumber_) :
-                parser(parser_), currentLineNumber(currentLineNumber_) {
-            (*this)++;
+        Iterator(CsvParser &parser_, size_t currentLineNumber_) :
+            parser(parser_), currentLineNumber(currentLineNumber_) {
+            ++(*this);
         }
 
         Iterator & operator ++ () {
-            return (*this);
+            std::string line;
+            std::getline(this->parser.input, line);
+            this->currentTuple = parser.ParseLine(line);
         }
         bool operator != (const Iterator &temp) const {
             return true;
@@ -33,18 +45,16 @@ public:
         }
 
     private:
-        CsvParser<Types ...> parser;
-        size_t currentLineNumber = 0;
         std::tuple<Types ...> currentTuple;
-
-        friend CsvParser<Types ...>;
+        CsvParser<Types ...> &parser;
+        size_t currentLineNumber = 0;
     };
 
-    Iterator & begin() {
-        return Iterator();
+    Iterator begin() {
+        return Iterator(*this, 0);
     }
-    Iterator & end() {
-        return Iterator();
+    Iterator end() {
+        return Iterator(*this, linesNumber);
     }
 
 private:
@@ -52,6 +62,7 @@ private:
     char rowDelimeter;
     char columnDelimeter;
     char screeningSymbol;
+    size_t linesNumber = 0;
 
     int skipLines(const size_t skipLinesNumber) {
         std::string line;
@@ -59,6 +70,7 @@ private:
             if (!getline(this->input, line, this->rowDelimeter)) {
                 throw std::out_of_range("You are out of file.");
             }
+            linesNumber++;
         }
         return 0;
     }
