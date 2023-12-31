@@ -1,8 +1,13 @@
-#include "tuplePrint.h"
+#include "csvParser.h"
 
 int main() {
-    std::tuple tp { 10, 21, "hello", 90.5};
-    std::cout << tp << '\n';
+    int r;
+    std::ifstream input;
+    input.open("test.csv");
 
-    return 0;
+    CsvParser parser(&input, 0, '\n', ';', '\"');
+    r = parser.parse();
+
+    input.close();
+    return r;
 }
