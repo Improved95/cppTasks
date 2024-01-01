@@ -16,42 +16,43 @@ public:
         skipLines(skipLinesNumber_);
     }
 
-    std::tuple<Types...> ParseLine(std::string &stringLine) {
+    template<typename ...FieldTypes, std::size_t ...Is>
+    std::tuple<FieldTypes...> ParseLine(std::string &stringLine, std::index_sequence<Is...>) {
         std::stringstream streamLine(stringLine);
-//        return std::make_tuple(ParseField<Types>()...);
-        return std::make_tuple<Types...>(1, "hello");
+
+        return std::make_tuple(ParseField<FieldTypes, Is>()...);
+//        return std::make_tuple<Types...>(1, "fsd");
     }
 
-    template<typename FieldType>
+    template<typename FieldType, size_t I>
     FieldType ParseField() {
-        if (typeid(FieldType) == typeid(int)) {
-
+        if constexpr (typeid(FieldType) == typeid(int)) {
+            return 5;
         } else {
-
+            return "hello";
         }
 
-        FieldType A;
-        return A;
+//        FieldType A;
+//        return A;
     }
 
     class Iterator {
     public:
-        Iterator(CsvParser &parser_, size_t currentLineNumber_) :
+        Iterator(CsvParser &parser_, size_t currentLineNumber_, const int isEnd) :
             parser(parser_), currentLineNumber(currentLineNumber_) {
-            ++(*this);
+            if (!isEnd) { ++(*this); } //if you can take end element, then happens nothing
         }
 
         void operator ++() {
             std::string line;
             if (std::getline(this->parser.input, line, this->parser.rowDelimeter)) {
-                this->currentTuple = parser.ParseLine(line);
+                this->currentTuple = parser.ParseLine<Types...>(line, std::index_sequence_for<Types...>{});
                 this->parser.linesNumber++;
-
             }
             currentLineNumber++;
         }
         bool operator !=(const Iterator &temp) {
-            return (this->currentLineNumber != this->parser.linesNumber);
+            return (this->currentLineNumber == this->parser.linesNumber);
         }
         std::tuple<Types...> & operator * () {
             return this->currentTuple;
@@ -64,10 +65,11 @@ public:
     };
 
     Iterator begin() {
-        return Iterator(*this, 0);
+        return Iterator(*this, 0, 0);
     }
+    //iterator end don't work specially
     Iterator end() {
-        return Iterator(*this, linesNumber);
+        return Iterator(*this, linesNumber, 1);
     }
 
 private:
