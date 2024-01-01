@@ -15,17 +15,15 @@ public:
         skipLines(skipLinesNumber_);
     }
 
-
     std::tuple<Types...> ParseLine(std::string &stringLine) {
         std::stringstream streamLine(stringLine);
-//        return { ( ParseField<Types>(), ... ) };
-//        return std::make_tuple<Types...>(1, "hello");
-        return std::make_tuple<Types...>((ParseField<Types>(), ...));
+        return std::make_tuple(ParseField<Types>()...);
     }
 
     template<typename FieldType>
     FieldType ParseField() {
-
+        FieldType a;
+        return a;
     }
 
     class Iterator {
@@ -35,11 +33,10 @@ public:
             ++(*this);
         }
 
-        Iterator & operator ++ () {
+        void operator ++ () {
             std::string line;
             std::getline(this->parser.input, line);
             this->currentTuple = parser.ParseLine(line);
-            return *this;
         }
         bool operator != (const Iterator &temp) {
             return true;
