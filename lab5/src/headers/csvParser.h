@@ -26,8 +26,8 @@ public:
 
     template<typename FieldType, size_t I>
     FieldType ParseField() {
-        if constexpr (typeid(FieldType) == typeid(int)) {
-            return 5;
+        if constexpr (std::is_same_v<FieldType, int>) {
+            return I;
         } else {
             return "hello";
         }
