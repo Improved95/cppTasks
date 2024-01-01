@@ -4,11 +4,12 @@
 #include <iostream>
 #include <ostream>
 #include <tuple>
+#include <iomanip>
 
 template <typename TupleT, std::size_t... Is>
 std::ostream& printTupleImp(std::ostream &os, const TupleT &tp, std::index_sequence<Is...>) {
     auto printElem = [&os](const auto& x, const size_t index) {
-        if (index > 0) { os << " "; }
+        if (index > 0) { os << std::setw(15); }
         os << x;
     };
 
