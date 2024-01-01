@@ -66,7 +66,7 @@ public:
             if (stringField[stringField.size() - 1] == this->quoteSymbol) {
                 stringField = stringField.substr(1, stringField.size() - 2);
             } else {
-                throw std::invalid_argument("Incorrect format of data in " + std::to_string(this->linesNumber) +
+                throw IncorrectDataFormat("Incorrect format of data in " + std::to_string(this->linesNumber + 1) +
                     " row, " + std::to_string(columnNumber) + " column.");
             }
         }
@@ -75,7 +75,7 @@ public:
             size_t converterCharsNumber;
             long long value = std::stoll(stringField, &converterCharsNumber);
             if (converterCharsNumber != stringField.size()) {
-                throw std::invalid_argument("Incorrect format of data in " + std::to_string(this->linesNumber) +
+                throw IncorrectDataFormat("Incorrect format of data in " + std::to_string(this->linesNumber) +
                                             " row, " + std::to_string(columnNumber) + " column.");
             }
             return value;
@@ -95,7 +95,7 @@ private:
         std::string line;
         for (size_t i = 0; i < skipLinesNumber; i++) {
             if (!getline(this->input, line, this->rowDelimeter)) {
-                throw std::out_of_range("You are out of file.");
+                throw OutOfRangeFile();
             }
             linesNumber++;
         }
