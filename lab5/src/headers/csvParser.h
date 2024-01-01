@@ -15,13 +15,16 @@ public:
         skipLines(skipLinesNumber_);
     }
 
-    std::tuple<Types...> & ParseLine(std::string &line) {
-        const size_t tupleSize = std::tuple_size<Types...>::value;
-        return { ParseField(std::make_index_sequence<tupleSize>{}) };
+
+    std::tuple<Types...> ParseLine(std::string &stringLine) {
+        std::stringstream streamLine(stringLine);
+//        return { ( ParseField<Types>(), ... ) };
+//        return std::make_tuple<Types...>(1, "hello");
+        return std::make_tuple<Types...>((ParseField<Types>(), ...));
     }
 
-    template<typename FieldType, std::size_t... Is>
-    FieldType ParseField(std::index_sequence<Is...>) {
+    template<typename FieldType>
+    FieldType ParseField() {
 
     }
 
@@ -36,8 +39,9 @@ public:
             std::string line;
             std::getline(this->parser.input, line);
             this->currentTuple = parser.ParseLine(line);
+            return *this;
         }
-        bool operator != (const Iterator &temp) const {
+        bool operator != (const Iterator &temp) {
             return true;
         }
         std::tuple<Types...> & operator * () {
