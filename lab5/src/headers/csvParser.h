@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <typeinfo>
 #include "exceptions.h"
 
 template <typename... Types>
@@ -22,8 +23,14 @@ public:
 
     template<typename FieldType>
     FieldType ParseField() {
-        FieldType a;
-        return a;
+        if (typeid(FieldType) == typeid(int)) {
+
+        } else {
+
+        }
+
+        FieldType A;
+        return A;
     }
 
     class Iterator {
@@ -33,12 +40,13 @@ public:
             ++(*this);
         }
 
-        void operator ++ () {
+        void operator ++() {
             std::string line;
-            std::getline(this->parser.input, line);
+            std::getline(this->parser.input, line, this->parser.rowDelimeter);
             this->currentTuple = parser.ParseLine(line);
+            currentLineNumber++;
         }
-        bool operator != (const Iterator &temp) {
+        bool operator !=(const Iterator &temp) {
             return true;
         }
         std::tuple<Types...> & operator * () {
