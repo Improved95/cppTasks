@@ -18,7 +18,8 @@ public:
 
     std::tuple<Types...> ParseLine(std::string &stringLine) {
         std::stringstream streamLine(stringLine);
-        return std::make_tuple(ParseField<Types>()...);
+//        return std::make_tuple(ParseField<Types>()...);
+        return std::make_tuple<Types...>(1, "hello");
     }
 
     template<typename FieldType>
@@ -42,12 +43,15 @@ public:
 
         void operator ++() {
             std::string line;
-            std::getline(this->parser.input, line, this->parser.rowDelimeter);
-            this->currentTuple = parser.ParseLine(line);
+            if (std::getline(this->parser.input, line, this->parser.rowDelimeter)) {
+                this->currentTuple = parser.ParseLine(line);
+                this->parser.linesNumber++;
+
+            }
             currentLineNumber++;
         }
         bool operator !=(const Iterator &temp) {
-            return true;
+            return (this->currentLineNumber != this->parser.linesNumber);
         }
         std::tuple<Types...> & operator * () {
             return this->currentTuple;
