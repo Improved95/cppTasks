@@ -16,11 +16,11 @@ public:
         skipLines(skipLinesNumber_);
     }
 
-    template<typename ...FieldTypes, std::size_t ...Is>
-    std::tuple<FieldTypes...> ParseLine(std::string &stringLine, std::index_sequence<Is...>) {
+    template<std::size_t ...Is>
+    std::tuple<Types...> ParseLine(std::string &stringLine, std::index_sequence<Is...>) {
         std::stringstream streamLine(stringLine);
 
-        return std::make_tuple(ParseField<FieldTypes, Is>()...);
+        return std::make_tuple(ParseField<Types, Is>()...);
 //        return std::make_tuple<Types...>(1, "fsd");
     }
 
@@ -46,7 +46,7 @@ public:
         void operator ++() {
             std::string line;
             if (std::getline(this->parser.input, line, this->parser.rowDelimeter)) {
-                this->currentTuple = parser.ParseLine<Types...>(line, std::index_sequence_for<Types...>{});
+                this->currentTuple = parser.ParseLine(line, std::index_sequence_for<Types...>{});
                 this->parser.linesNumber++;
             }
             currentLineNumber++;
