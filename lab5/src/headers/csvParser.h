@@ -19,13 +19,11 @@ public:
     template<std::size_t ...Is>
     std::tuple<Types...> ParseLine(std::string &stringLine, std::index_sequence<Is...>) {
         std::stringstream streamLine(stringLine);
-
-        return std::make_tuple(ParseField<Types, Is>()...);
-//        return std::make_tuple<Types...>(1, "fsd");
+        return std::make_tuple(ParseFieldType<Types, Is>(streamLine)...);
     }
 
     template<typename FieldType, size_t I>
-    FieldType ParseField() {
+    FieldType ParseFieldType(const std::stringstream &streamLine) {
         if constexpr (std::is_same_v<FieldType, int>) {
             return I;
         } else {
