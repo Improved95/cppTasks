@@ -8,7 +8,7 @@ int main() {
     input.open("test.csv");
     if (!input.is_open()) { return -1; }
 
-    CsvParser<std::string, std::string, int> parser(input, 0, '\n', ',', '"');
+    CsvParser<std::string, int> parser(input, 0, '\n', ',', '"');
 
     try {
         for (auto &el: parser) {

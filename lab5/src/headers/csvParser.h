@@ -53,31 +53,42 @@ public:
     }
 
     template<std::size_t ...Is>
-    std::tuple<Types...> ParseLine(std::string &stringLine, std::index_sequence<Is...>) {
-        std::stringstream streamLine(stringLine);
-        return std::make_tuple(ParseField<Types>(streamLine, Is)...);
+    std::tuple<Types...> ParseLine(std::string &fieldString, std::index_sequence<Is...>) {
+        size_t currentPositionInFieldString = 0;
+        return std::make_tuple(ParseField<Types>(fieldString, Is, currentPositionInFieldString)...);
     }
 
     template<typename FieldType>
-    FieldType ParseField(std::stringstream &streamLine, const size_t columnNumber) {
-        std::string stringField;
-        getline(streamLine, stringField, this->columnDelimeter);
-//        std::cout << stringField << std::endl;
-        if (stringField[0] == this->quoteSymbol) {
-            if (stringField[stringField.size() - 1] == this->quoteSymbol) {
-                stringField = stringField.substr(1, stringField.size() - 2);
+    FieldType ParseField(std::string &fieldString, const size_t columnNumber, size_t &curPosInFieldStr) {
+        std::string returnFieldString;
+
+        size_t quoteSymbolQuantity = 0;
+        char prev = 0;
+        bool parsingField = true;
+        for (; curPosInFieldStr < fieldString.size() && parsingField; curPosInFieldStr++) {
+            if (fieldString[curPosInFieldStr] == this->quoteSymbol) {
+                quoteSymbolQuantity++;
+                if (prev == this->quoteSymbol) {
+                    returnFieldString += fieldString[curPosInFieldStr];
+                }
+            } else if (fieldString[curPosInFieldStr] == this->columnDelimeter) {
+                if (quoteSymbolQuantity == 0 || (prev = this->quoteSymbol && quoteSymbolQuantity % 2 == 0)) {
+                    parsingField = false;
+                } else {
+                    returnFieldString += fieldString[curPosInFieldStr];
+                }
             } else {
-                throw IncorrectDataFormat("Incorrect format of data in " + std::to_string(this->linesNumber) +
-                    " row, " + std::to_string(columnNumber) + " column.");
+                returnFieldString += fieldString[curPosInFieldStr];
             }
+            prev = fieldString[curPosInFieldStr];
         }
 
         if constexpr (std::is_same_v<FieldType, int>) {
             size_t converterCharsNumber;
             long long value;
             try {
-                value = std::stoll(stringField, &converterCharsNumber);
-                if (converterCharsNumber != stringField.size()) {
+                value = std::stoll(returnFieldString, &converterCharsNumber);
+                if (converterCharsNumber != returnFieldString.size()) {
                     throw IncorrectDataFormat("Incorrect format of data in " + std::to_string(this->linesNumber) +
                                               " row, " + std::to_string(columnNumber) + " column.");
                 }
@@ -87,7 +98,7 @@ public:
             }
             return value;
         } else {
-            return stringField;
+            return returnFieldString;
         }
     }
 
