@@ -62,21 +62,28 @@ public:
     FieldType ParseField(std::stringstream &streamLine, const size_t columnNumber) {
         std::string stringField;
         getline(streamLine, stringField, this->columnDelimeter);
+//        std::cout << stringField << std::endl;
         if (stringField[0] == this->quoteSymbol) {
             if (stringField[stringField.size() - 1] == this->quoteSymbol) {
                 stringField = stringField.substr(1, stringField.size() - 2);
             } else {
-                throw IncorrectDataFormat("Incorrect format of data in " + std::to_string(this->linesNumber + 1) +
+                throw IncorrectDataFormat("Incorrect format of data in " + std::to_string(this->linesNumber) +
                     " row, " + std::to_string(columnNumber) + " column.");
             }
         }
 
         if constexpr (std::is_same_v<FieldType, int>) {
             size_t converterCharsNumber;
-            long long value = std::stoll(stringField, &converterCharsNumber);
-            if (converterCharsNumber != stringField.size()) {
+            long long value;
+            try {
+                value = std::stoll(stringField, &converterCharsNumber);
+                if (converterCharsNumber != stringField.size()) {
+                    throw IncorrectDataFormat("Incorrect format of data in " + std::to_string(this->linesNumber) +
+                                              " row, " + std::to_string(columnNumber) + " column.");
+                }
+            } catch (std::exception &ex) {
                 throw IncorrectDataFormat("Incorrect format of data in " + std::to_string(this->linesNumber) +
-                                            " row, " + std::to_string(columnNumber) + " column.");
+                                          " row, " + std::to_string(columnNumber) + " column.");
             }
             return value;
         } else {
