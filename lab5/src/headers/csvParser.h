@@ -72,7 +72,7 @@ public:
                     returnFieldString += fieldString[curPosInFieldStr];
                 }
             } else if (fieldString[curPosInFieldStr] == this->columnDelimeter) {
-                if (quoteSymbolQuantity == 0 || (prev = this->quoteSymbol && quoteSymbolQuantity % 2 == 0)) {
+                if (quoteSymbolQuantity == 0 || (prev == this->quoteSymbol && quoteSymbolQuantity % 2 == 0)) {
                     parsingField = false;
                 } else {
                     returnFieldString += fieldString[curPosInFieldStr];
